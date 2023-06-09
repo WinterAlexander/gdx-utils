@@ -48,7 +48,7 @@ public class CollectionUtil {
 
 	/**
 	 * Returns a random element in the specified array. NOT THREAD SAFE. Use
-	 * {@link #random(Random, T[])} for thread safe version
+	 * {@link #random(Random, Object[])} for thread safe version
 	 *
 	 * @param array array of elements to pick from
 	 * @param <T>   type of elements

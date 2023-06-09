@@ -2,7 +2,9 @@ package me.winter.gdx.utils;
 
 import com.badlogic.gdx.utils.StringBuilder;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 /**
  * Utility class to display time
@@ -67,7 +69,8 @@ public class TimeUtil {
 	}
 
 	public static boolean isToday(long millis) {
-		return LocalDate.now().equals(LocalDate.ofEpochDay(millis / 1000L / 60L / 60L / 24L));
+		LocalDate date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
+		return LocalDate.now().equals(date);
 	}
 
 	/**
