@@ -12,26 +12,24 @@ import static org.junit.Assert.assertArrayEquals;
  *
  * @author Alexander Winter
  */
-public class CollectionUtilTest
-{
+public class CollectionUtilTest {
 	@Test
-	public void testExcept()
-	{
+	public void testExcept() {
 		String foo = "foo";
 		String bar = "bar";
 		String fizz = "fizz";
 		String crunch = "crunch";
 
-		String[] arr = new String[] { foo, bar, fizz, crunch };
+		String[] arr = new String[]{foo, bar, fizz, crunch};
 
 		String[] withoutfoo = except(String.class, arr, foo);
 		String[] withoutbar = except(String.class, arr, bar);
 		String[] withoutfizz = except(String.class, arr, fizz);
 		String[] withoutcrunch = except(String.class, arr, crunch);
 
-		assertArrayEquals(withoutfoo, new String[] { bar, fizz, crunch });
-		assertArrayEquals(withoutbar, new String[] { foo, fizz, crunch });
-		assertArrayEquals(withoutfizz, new String[] { foo, bar, crunch });
-		assertArrayEquals(withoutcrunch, new String[] { foo, bar, fizz });
+		assertArrayEquals(withoutfoo, new String[]{bar, fizz, crunch});
+		assertArrayEquals(withoutbar, new String[]{foo, fizz, crunch});
+		assertArrayEquals(withoutfizz, new String[]{foo, bar, crunch});
+		assertArrayEquals(withoutcrunch, new String[]{foo, bar, fizz});
 	}
 }

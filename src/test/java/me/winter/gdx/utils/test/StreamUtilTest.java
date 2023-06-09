@@ -15,11 +15,9 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Alexander Winter
  */
-public class StreamUtilTest
-{
+public class StreamUtilTest {
 	@Test
-	public void testDataOutputStreamCompability() throws IOException
-	{
+	public void testDataOutputStreamCompability() throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		DataOutputStream oStream = new DataOutputStream(outputStream);

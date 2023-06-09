@@ -19,14 +19,11 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Alexander Winter
  */
-public class SerializationUtilTest
-{
+public class SerializationUtilTest {
 	@Test
-	public void testColorSerialization() throws IOException
-	{
+	public void testColorSerialization() throws IOException {
 		Random random = new Random();
-		for(int i = 0; i < 20000; i++)
-		{
+		for(int i = 0; i < 20000; i++) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Color color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
 
@@ -46,11 +43,9 @@ public class SerializationUtilTest
 	}
 
 	@Test
-	public void testRGBSerialization() throws IOException
-	{
+	public void testRGBSerialization() throws IOException {
 		Random random = new Random();
-		for(int i = 0; i < 20000; i++)
-		{
+		for(int i = 0; i < 20000; i++) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Color color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
 

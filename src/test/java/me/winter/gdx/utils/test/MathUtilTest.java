@@ -12,13 +12,11 @@ import static org.junit.Assert.*;
  *
  * @author Alexander Winter
  */
-public class MathUtilTest
-{
+public class MathUtilTest {
 	private static final float FLOAT_ERROR = 0.001f;
 
 	@Test
-	public void testProjectToRectEdge()
-	{
+	public void testProjectToRectEdge() {
 		assertEquals(new TestVec2(5f, 0f), projectToRectEdge(0f, 10f, 20f, new TestVec2()));
 		assertEquals(new TestVec2(5f, 5f), projectToRectEdge(45f, 10f, 10f, new TestVec2()));
 		assertEquals(new TestVec2(0f, 10f), projectToRectEdge(90f, 10f, 20f, new TestVec2()));
@@ -31,8 +29,7 @@ public class MathUtilTest
 	}
 
 	@Test
-	public void testNegModFloat()
-	{
+	public void testNegModFloat() {
 		assertEquals(15f, negMod(375f, 360f), FLOAT_ERROR);
 		assertEquals(345f, negMod(-15f, 360f), FLOAT_ERROR);
 		assertEquals(90f, negMod(90f, 360f), FLOAT_ERROR);
@@ -42,17 +39,14 @@ public class MathUtilTest
 	}
 
 	@Test
-	public void testNegModComparison()
-	{
-		for(int i = Integer.MIN_VALUE / 1000; i < Integer.MAX_VALUE / 1000; i += 461)
-		{
+	public void testNegModComparison() {
+		for(int i = Integer.MIN_VALUE / 1000; i < Integer.MAX_VALUE / 1000; i += 461) {
 			float val = Float.intBitsToFloat(i);
 			assertEquals("Value: " + val, slowNegMod(val, 360f), negMod(val, 360f), FLOAT_ERROR);
 		}
 	}
 
-	private static float slowNegMod(float val, float divider)
-	{
+	private static float slowNegMod(float val, float divider) {
 		while(val < 0)
 			val += divider;
 
@@ -60,8 +54,7 @@ public class MathUtilTest
 	}
 
 	@Test
-	public void testLineIntersectsLine()
-	{
+	public void testLineIntersectsLine() {
 		assertTrue(lineIntersectsLine(0f, 0f, 5f, 5f, 0f, 5f, 5f, 0f));
 		assertTrue(lineIntersectsLine(0f, 5f, 5f, 0f, 0f, 0f, 5f, 5f));
 

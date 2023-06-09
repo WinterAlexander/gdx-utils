@@ -15,11 +15,9 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Alexander Winter
  */
-public class FileUtilTest
-{
+public class FileUtilTest {
 	@Test
-	public void testSimultaneousFileCreation() throws Throwable
-	{
+	public void testSimultaneousFileCreation() throws Throwable {
 		File testTmp = new File("test-tmp");
 		if(testTmp.exists())
 			assertTrue(testTmp.delete());
@@ -27,13 +25,10 @@ public class FileUtilTest
 		Array<Throwable> errors = new Array<>();
 
 		Runnable create = () -> {
-			try
-			{
+			try {
 				Thread.sleep(10);
 				ensureFile(testTmp);
-			}
-			catch(Throwable t)
-			{
+			} catch(Throwable t) {
 				errors.add(t);
 			}
 		};

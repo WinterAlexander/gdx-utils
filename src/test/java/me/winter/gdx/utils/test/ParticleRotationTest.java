@@ -16,13 +16,11 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Alexander Winter
  */
-public class ParticleRotationTest
-{
+public class ParticleRotationTest {
 	private static final float ERROR = 0.1f;
 
 	@Test
-	public void testSimpleRotation()
-	{
+	public void testSimpleRotation() {
 		ParticleEffect effect = new ParticleEffect();
 
 		ParticleEmitter emitter = new ParticleEmitter();
@@ -85,8 +83,7 @@ public class ParticleRotationTest
 	}
 
 	@Test
-	public void testZeroRotation()
-	{
+	public void testZeroRotation() {
 		ParticleEffect effect = new ParticleEffect();
 
 		ParticleEmitter emitter = new ParticleEmitter();

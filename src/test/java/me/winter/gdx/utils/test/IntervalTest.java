@@ -14,11 +14,9 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Alexander Winter
  */
-public class IntervalTest
-{
+public class IntervalTest {
 	@Test
-	public void testSelfSimplification()
-	{
+	public void testSelfSimplification() {
 		Interval a = new SimpleInterval(0, 5);
 		a = a.add(new SimpleInterval(4, 8));
 

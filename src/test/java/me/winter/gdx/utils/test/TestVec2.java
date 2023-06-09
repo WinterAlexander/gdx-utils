@@ -9,23 +9,20 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Alexander Winter
  */
-public class TestVec2 extends Vector2
-{
-	public TestVec2() {}
+public class TestVec2 extends Vector2 {
+	public TestVec2() {
+	}
 
-	public TestVec2(float x, float y)
-	{
+	public TestVec2(float x, float y) {
 		super(x, y);
 	}
 
-	public TestVec2(Vector2 v)
-	{
+	public TestVec2(Vector2 v) {
 		super(v);
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if(!(obj instanceof Vector2))
 			return false;
 

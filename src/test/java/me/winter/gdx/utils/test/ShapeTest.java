@@ -11,14 +11,12 @@ import static org.junit.Assert.*;
  * <p>
  * Created on 2018-01-27.
  *
- * @see Shape
  * @author Alexander Winter
+ * @see Shape
  */
-public class ShapeTest
-{
+public class ShapeTest {
 	@Test
-	public void testRectContains()
-	{
+	public void testRectContains() {
 		Rectangle rect1 = new Rectangle(new Vector2(0f, 10f), new Vector2(20, 20));
 
 		assertTrue(rect1.contains(-9, 1));
@@ -28,8 +26,7 @@ public class ShapeTest
 	}
 
 	@Test
-	public void testCirclePolyOverlap()
-	{
+	public void testCirclePolyOverlap() {
 		Vector2 polyPos = new Vector2();
 		Vector2 circlePos = new Vector2();
 
@@ -51,8 +48,7 @@ public class ShapeTest
 	}
 
 	@Test
-	public void testAnnulusProject()
-	{
+	public void testAnnulusProject() {
 		Annulus annulus = new Annulus(new Vector2(0f, 0f), 1f, 5f);
 		Vector2 proj = new Vector2(6f, 0f);
 		annulus.projectOnto(proj);
@@ -65,8 +61,7 @@ public class ShapeTest
 	}
 
 	@Test
-	public void infiniteProjection()
-	{
+	public void infiniteProjection() {
 		Circle circle = new Circle(new Vector2(0f, 0f), 1f);
 		Vector2 point = new Vector2(Float.POSITIVE_INFINITY, 0f);
 		circle.projectOnto(point);

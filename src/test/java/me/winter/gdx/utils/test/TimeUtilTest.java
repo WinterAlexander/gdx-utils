@@ -14,11 +14,9 @@ import static org.junit.Assert.*;
  *
  * @author Alexander Winter
  */
-public class TimeUtilTest
-{
+public class TimeUtilTest {
 	@Test
-	public void testDisplayIntoMillis()
-	{
+	public void testDisplayIntoMillis() {
 		StringBuilder sb = new StringBuilder();
 		initTimeDisplay(sb);
 
@@ -36,8 +34,7 @@ public class TimeUtilTest
 	}
 
 	@Test
-	public void testDisplayIntoFromTicks()
-	{
+	public void testDisplayIntoFromTicks() {
 		StringBuilder sb = new StringBuilder();
 		initTimeDisplay(sb);
 
@@ -52,24 +49,21 @@ public class TimeUtilTest
 	}
 
 	@Test
-	public void testIsToday()
-	{
+	public void testIsToday() {
 		assertTrue(TimeUtil.isToday(System.currentTimeMillis()));
 		assertFalse(TimeUtil.isToday(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
 		assertFalse(TimeUtil.isToday(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
 	}
 
 	@Test
-	public void durationParseTest()
-	{
+	public void durationParseTest() {
 		assertEquals(0, parseDuration("0"));
 		assertEquals(0, parseDuration("0d"));
 		assertEquals(0, parseDuration("0m"));
 		assertEquals(0, parseDuration("0h"));
 		assertEquals(0, parseDuration("0s"));
 
-		for(int i = 0; i < 10; i++)
-		{
+		for(int i = 0; i < 10; i++) {
 			assertEquals(i * 1000, parseDuration(i + "s"));
 			assertEquals(i * 1000 * 60, parseDuration(i + "m"));
 			assertEquals(i * 1000 * 60 * 60, parseDuration(i + "h"));
