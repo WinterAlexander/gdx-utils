@@ -256,10 +256,11 @@ public class SerializationUtil {
 			throw new IllegalArgumentException("Unknown number type: " + number.getClass());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "RedundantCast"})
 	public static <T> T readAny(InputStream stream, Class<T> type) throws IOException {
 		if(CustomSerializable.class.isAssignableFrom(type))
-			return readSerializable(stream, type.asSubclass(CustomSerializable.class));
+			// this cast is not redundant, this is an error from IntelliJ
+			return (T)readSerializable(stream, type.asSubclass(CustomSerializable.class));
 		else if(type == Color.class)
 			return (T)new Color(readInt(stream));
 		else if(type == String.class)
@@ -269,7 +270,7 @@ public class SerializationUtil {
 		else if(type == Vector3.class)
 			return (T)new Vector3(readFloat(stream), readFloat(stream), readFloat(stream));
 		else if(type.isEnum())
-			return readEnum(stream, type.asSubclass(Enum.class));
+			return (T)readEnum(stream, type.asSubclass(Enum.class));
 		else
 			return readPrimitive(stream, type);
 	}
