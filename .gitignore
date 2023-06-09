@@ -1,0 +1,10 @@
+.idea/
+*.class
+hs_err_pid*
+*.jar
+.attach_pid*
+.gradle
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+target/
