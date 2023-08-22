@@ -27,7 +27,7 @@ public class SerializationUtil {
 	private static final byte BYTE_T = 5;
 	private static final byte NULL_T = 6;
 
-	public static <T extends CustomSerializable> T readSerializable(InputStream inputStream, Class<T> type) throws IOException {
+	public static <T extends Readable> T readSerializable(InputStream inputStream, Class<T> type) throws IOException {
 		T newInstance;
 		try {
 			newInstance = type.getDeclaredConstructor().newInstance();
@@ -101,7 +101,7 @@ public class SerializationUtil {
 		StreamUtil.writeInt24(stream, Color.argb8888(color));
 	}
 
-	public static void readBuffered(InputStream stream, CustomSerializable serializable) throws IOException {
+	public static void readBuffered(InputStream stream, Serializable serializable) throws IOException {
 		int size = StreamUtil.readInt(stream);
 
 		if(size < 0)
@@ -123,7 +123,7 @@ public class SerializationUtil {
 		serializable.readFrom(new ByteArrayInputStream(data));
 	}
 
-	public static void writeBuffered(OutputStream stream, CustomSerializable serializable) throws IOException {
+	public static void writeBuffered(OutputStream stream, Serializable serializable) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		serializable.writeTo(baos);
 		StreamUtil.writeInt(stream, baos.size());
@@ -257,9 +257,9 @@ public class SerializationUtil {
 
 	@SuppressWarnings({"unchecked", "RedundantCast"})
 	public static <T> T readAny(InputStream stream, Class<T> type) throws IOException {
-		if(CustomSerializable.class.isAssignableFrom(type))
+		if(Serializable.class.isAssignableFrom(type))
 			// this cast is not redundant, this is an error from IntelliJ
-			return (T)readSerializable(stream, type.asSubclass(CustomSerializable.class));
+			return (T)readSerializable(stream, type.asSubclass(Serializable.class));
 		else if(type == Color.class)
 			return (T)new Color(StreamUtil.readInt(stream));
 		else if(type == String.class)
@@ -275,8 +275,8 @@ public class SerializationUtil {
 	}
 
 	public static void writeAny(OutputStream stream, Object thing) throws IOException {
-		if(thing instanceof CustomSerializable)
-			((CustomSerializable)thing).writeTo(stream);
+		if(thing instanceof Serializable)
+			((Serializable)thing).writeTo(stream);
 		else if(thing instanceof Color)
 			StreamUtil.writeInt(stream, rgba8888((Color)thing));
 		else if(thing instanceof String)
