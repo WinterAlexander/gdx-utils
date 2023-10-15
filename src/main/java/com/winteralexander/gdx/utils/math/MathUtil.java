@@ -243,6 +243,7 @@ public class MathUtil {
 	}
 
 	/**
+	 * @param number to get sign of
 	 * @return the sign of the number, 1 for positive, -1 for positive
 	 */
 	public static float signOf(float number) {
@@ -251,6 +252,7 @@ public class MathUtil {
 	}
 
 	/**
+	 * @param number to get sign of
 	 * @return the sign of the number, 1 for positive, -1 for positive
 	 */
 	public static int signOf(int number) {

@@ -211,6 +211,7 @@ public class SerializationUtil {
 	/**
 	 * Reads a number and its type from stream
 	 *
+	 * @param stream to read from
 	 * @return number read from stream
 	 */
 	public static Number readNumber(InputStream stream) throws IOException {
@@ -245,6 +246,7 @@ public class SerializationUtil {
 	/**
 	 * Writes a number and its type into the stream
 	 *
+	 * @param stream stream to write to
 	 * @param number to write into stream
 	 */
 	public static void writeNumber(OutputStream stream, Number number) throws IOException {

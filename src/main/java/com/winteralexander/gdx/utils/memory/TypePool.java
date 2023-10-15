@@ -53,6 +53,8 @@ public class TypePool {
 
 	/**
 	 * Obtains an object from the {@link #get(Class) pool}.
+	 * @param type type to obtain object for
+	 * @return object for that type
 	 */
 	public <T> T obtain(Class<T> type) {
 		return get(type).obtain();
@@ -60,6 +62,7 @@ public class TypePool {
 
 	/**
 	 * Frees an object from the {@link #get(Class) pool}.
+	 * @param object object to free
 	 */
 	public void free(Object object) {
 		if(object == null)
@@ -76,6 +79,8 @@ public class TypePool {
 	/**
 	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
 	 * don't need to be from the same pool.
+	 *
+	 * @param objects objects to free
 	 */
 	public void freeAll(Array<?> objects) {
 		freeAll(objects, false);
@@ -84,6 +89,7 @@ public class TypePool {
 	/**
 	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored.
 	 *
+	 * @param objects objects to free
 	 * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object.
 	 */
 	public void freeAll(Array<?> objects, boolean samePool) {
