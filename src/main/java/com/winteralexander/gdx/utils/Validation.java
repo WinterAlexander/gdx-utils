@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Collection;
 
+import static com.winteralexander.gdx.utils.TypeUtil.boxedType;
+
 /**
  * Utility class to help classes validate their inputs
  * <p>
@@ -24,7 +26,8 @@ public class Validation {
 	 */
 	public static int ensurePositive(int value, String name) {
 		if(value < 0)
-			throw new IllegalArgumentException(name + " must be a positive integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a positive integer but was " +
+					value);
 		return value;
 	}
 
@@ -38,7 +41,8 @@ public class Validation {
 	 */
 	public static int ensureStrictlyPositive(int value, String name) {
 		if(value <= 0)
-			throw new IllegalArgumentException(name + " must be a strictly positive integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a strictly positive integer but " +
+					"was " + value);
 		return value;
 	}
 
@@ -52,7 +56,8 @@ public class Validation {
 	 */
 	public static float ensurePositive(float value, String name) {
 		if(value < 0)
-			throw new IllegalArgumentException(name + " must be a positive integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a positive integer but was " +
+					value);
 		return value;
 	}
 
@@ -66,7 +71,8 @@ public class Validation {
 	 */
 	public static float ensureStrictlyPositive(float value, String name) {
 		if(value <= 0)
-			throw new IllegalArgumentException(name + " must be a strictly positive integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a strictly positive integer but " +
+					"was " + value);
 		return value;
 	}
 
@@ -80,7 +86,8 @@ public class Validation {
 	 */
 	public static long ensurePositive(long value, String name) {
 		if(value < 0)
-			throw new IllegalArgumentException(name + " must be a positive long integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a positive long integer but was " +
+					value);
 		return value;
 	}
 
@@ -94,7 +101,8 @@ public class Validation {
 	 */
 	public static long ensureStrictlyPositive(long value, String name) {
 		if(value <= 0)
-			throw new IllegalArgumentException(name + " must be a strictly positive long integer but was " + value);
+			throw new IllegalArgumentException(name + " must be a strictly positive long integer " +
+					"but was " + value);
 		return value;
 	}
 
@@ -111,7 +119,8 @@ public class Validation {
 	 */
 	public static int ensureInRange(int value, int min, int max, String name) {
 		if(value < min || value >= max)
-			throw new IllegalArgumentException(name + " must be an integer between [" + min + ", " + max + "[ but was " + value);
+			throw new IllegalArgumentException(name + " must be an integer between [" + min + ", " +
+					max + "[ but was " + value);
 		return value;
 	}
 
@@ -128,7 +137,8 @@ public class Validation {
 	 */
 	public static float ensureInRange(float value, float min, float max, String name) {
 		if(value < min || value > max)
-			throw new IllegalArgumentException(name + " must be a floating point between [" + min + ", " + max + "] but was " + value);
+			throw new IllegalArgumentException(name + " must be a floating point between [" + min +
+					", " + max + "] but was " + value);
 		return value;
 	}
 
@@ -177,14 +187,16 @@ public class Validation {
 	public static <T extends Collection<?>> T ensureNotEmpty(T collection, String name) {
 		ensureNotNull(collection, name);
 		if(collection.isEmpty())
-			throw new IllegalArgumentException("Collection (" + collection.getClass().getName() + ") " + name + " cannot be empty");
+			throw new IllegalArgumentException("Collection (" + collection.getClass().getName() +
+					") " + name + " cannot be empty");
 		return collection;
 	}
 
 	public static <T extends Array<?>> T ensureNotEmpty(T array, String name) {
 		ensureNotNull(array, name);
 		if(array.size == 0)
-			throw new IllegalArgumentException("Collection (" + array.getClass().getName() + ") " + name + " cannot be empty");
+			throw new IllegalArgumentException("Collection (" + array.getClass().getName() + ") " +
+					name + " cannot be empty");
 		return array;
 	}
 
@@ -193,13 +205,14 @@ public class Validation {
 		ensureNotNull(objects, "objects");
 
 		if(objects.length != types.length)
-			throw new IllegalArgumentException("Amount of objects mismatches. Expected " + types.length + " but only given " + objects.length);
+			throw new IllegalArgumentException("Amount of objects mismatches. Expected " +
+					types.length + " but only given " + objects.length);
 
 		for(int i = 0; i < types.length; i++) {
 			if(types[i].isAssignableFrom(objects[i].getClass()))
 				continue;
 
-			if(types[i].isPrimitive() && TypeUtil.boxedType(types[i]) == objects[i].getClass())
+			if(types[i].isPrimitive() && boxedType(types[i]) == objects[i].getClass())
 				continue;
 
 			throw new IllegalArgumentException("Type of objects mismatches at index " + i);

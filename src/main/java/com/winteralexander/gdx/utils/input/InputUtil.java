@@ -5,28 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
-import com.winteralexander.gdx.utils.SystemUtil;
 
 /**
  * Utility class to interact with {@link Input}
  * <p>
- * Created on 2017-11-08.
+ * Created on 2023-10-15.
  *
  * @author Alexander Winter
  */
 public class InputUtil {
-	private InputUtil() {}
-
-	public static void postRunnable(Runnable runnable) {
-		Gdx.app.postRunnable(runnable);
-	}
-
-	public static void postRunnable(Runnable runnable, long millis) {
-		new Thread(() -> {
-			SystemUtil.sleep(millis);
-			postRunnable(runnable);
-		}).start();
-	}
 
 	public static void registerInput(InputProcessor processor) {
 		InputProcessor current = Gdx.input.getInputProcessor();

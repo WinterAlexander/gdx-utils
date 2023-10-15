@@ -1,7 +1,8 @@
 package com.winteralexander.gdx.utils.log;
 
 import com.badlogic.gdx.ApplicationLogger;
-import com.winteralexander.gdx.utils.Validation;
+
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * {@link ApplicationLogger} which feedsback into a regular MakerKing
@@ -15,7 +16,7 @@ public class GDXLoggerWrapper implements ApplicationLogger {
 	private final Logger logger;
 
 	public GDXLoggerWrapper(Logger logger) {
-		Validation.ensureNotNull(logger, "logger");
+		ensureNotNull(logger, "logger");
 		this.logger = logger;
 	}
 

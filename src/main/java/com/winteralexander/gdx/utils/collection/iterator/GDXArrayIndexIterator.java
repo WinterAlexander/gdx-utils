@@ -2,6 +2,8 @@ package com.winteralexander.gdx.utils.collection.iterator;
 
 import com.badlogic.gdx.utils.Array;
 
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
+
 /**
  * Implementation of an IndexIterator using a LibGDX array
  * <p>
@@ -14,6 +16,7 @@ public class GDXArrayIndexIterator<T> implements IndexIterator<T> {
 	private int index;
 
 	public GDXArrayIndexIterator(Array<T> array) {
+		ensureNotNull(array, "array");
 		this.array = array;
 	}
 

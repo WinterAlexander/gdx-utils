@@ -1,8 +1,7 @@
 package com.winteralexander.gdx.utils.collection.iterator;
 
-import com.winteralexander.gdx.utils.Validation;
-
 import static com.winteralexander.gdx.utils.Validation.ensureInRange;
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * {@link IndexIterator} for Java arrays
@@ -18,9 +17,9 @@ public class JavaArrayIndexIterator<T> implements IndexIterator<T> {
 	private int index;
 
 	public JavaArrayIndexIterator(T[] array, int startIndex, int endIndex) {
-		Validation.ensureNotNull(array, "array");
-		Validation.ensureInRange(startIndex, 0, endIndex + 1, "startIndex");
-		Validation.ensureInRange(endIndex, startIndex, array.length + 1, "endIndex");
+		ensureNotNull(array, "array");
+		ensureInRange(startIndex, 0, endIndex + 1, "startIndex");
+		ensureInRange(endIndex, startIndex, array.length + 1, "endIndex");
 		this.array = array;
 		this.startIndex = startIndex;
 		this.endIndex = endIndex;

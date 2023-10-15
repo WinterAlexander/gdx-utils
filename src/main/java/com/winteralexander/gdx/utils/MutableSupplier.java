@@ -3,6 +3,8 @@ package com.winteralexander.gdx.utils;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
+
 /**
  * {@link Supplier} that has an internal cache variable to prevent creation of
  * new instances in {@link #get()}
@@ -16,8 +18,8 @@ public class MutableSupplier<T> implements Supplier<T> {
 	private final T cacheValue;
 
 	public MutableSupplier(T cacheValue, Consumer<T> cacheModifier) {
-		Validation.ensureNotNull(cacheValue, "cacheValue");
-		Validation.ensureNotNull(cacheModifier, "cacheModifier");
+		ensureNotNull(cacheValue, "cacheValue");
+		ensureNotNull(cacheModifier, "cacheModifier");
 		this.cacheValue = cacheValue;
 		this.supplier = cacheModifier;
 	}

@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils;
 
+import java.nio.ByteOrder;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -11,6 +12,15 @@ import java.util.Locale;
  * @author Alexander Winter
  */
 public class StringUtil {
+	private static final char[] HEX_LOOKUP_TABLE_LOWER = new char[] {
+			0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+			0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66
+	};
+	private static final char[] HEX_LOOKUP_TABLE_UPPER = new char[] {
+			0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+			0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46
+	};
+
 	private StringUtil() {}
 
 	public static String join(Iterable<String> strings, String separator) {
@@ -150,5 +160,38 @@ public class StringUtil {
 	public static String quote(String value) {
 		return "\"" + value.replaceAll("\\\\", "\\\\\\\\")
 				.replaceAll("\"", "\\\\\"") + "\"";
+	}
+
+	/**
+	 * Takes a byte array and returns its hexadecimal representation in string
+	 *
+	 * @param byteArray array of data to represent as hexadecimal string
+	 * @param upperCase true for upper case, false for lower case
+	 * @param byteOrder endianess of the hexadecimal representation
+	 * @return hexadecimal representation of the data
+	 * @see <a href="https://stackoverflow.com/a/58118078/5771029">StackOverflow answer</a>
+	 */
+	public static String toHexString(byte[] byteArray, boolean upperCase, ByteOrder byteOrder) {
+		// our output size will be exactly 2x byte-array length
+		final char[] buffer = new char[byteArray.length * 2];
+
+		// choose lower or uppercase lookup table
+		final char[] lookup = upperCase ? HEX_LOOKUP_TABLE_UPPER : HEX_LOOKUP_TABLE_LOWER;
+
+		int index;
+		for(int i = 0; i < byteArray.length; i++) {
+			// for little endian we count from last to first
+			index = (byteOrder == ByteOrder.BIG_ENDIAN) ? i : byteArray.length - i - 1;
+
+			// extract the upper 4 bit and look up char (0-A)
+			buffer[i << 1] = lookup[(byteArray[index] >> 4) & 0xF];
+			// extract the lower 4 bit and look up char (0-A)
+			buffer[(i << 1) + 1] = lookup[(byteArray[index] & 0xF)];
+		}
+		return new String(buffer);
+	}
+
+	public static String toHexString(byte[] byteArray) {
+		return toHexString(byteArray, true, ByteOrder.BIG_ENDIAN);
 	}
 }

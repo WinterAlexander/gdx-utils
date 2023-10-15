@@ -1,9 +1,10 @@
 package com.winteralexander.gdx.utils.log;
 
-import com.winteralexander.gdx.utils.io.FileUtil;
-
 import java.io.File;
 import java.io.IOException;
+
+import static com.winteralexander.gdx.utils.io.FileUtil.getDailyLogfileName;
+import static com.winteralexander.gdx.utils.io.FileUtil.getLogFile;
 
 /**
  * File logger that logs to a file with the current date.
@@ -14,17 +15,17 @@ import java.io.IOException;
  */
 public class CurrentDateFileLogger extends FileLogger {
 	public CurrentDateFileLogger(LogLevel logLevel, File baseDir) {
-		super(logLevel, FileUtil.getLogFile(baseDir));
+		super(logLevel, getLogFile(baseDir));
 	}
 
 	public CurrentDateFileLogger(LogLevel logLevel, File baseDir, boolean append) {
-		super(logLevel, FileUtil.getLogFile(baseDir), append);
+		super(logLevel, getLogFile(baseDir), append);
 	}
 
 	@Override
 	protected void write(String line) throws IOException {
-		if(!file.getName().equals(FileUtil.getDailyLogfileName()))
-			file = FileUtil.getLogFile(file.getParentFile());
+		if(!file.getName().equals(getDailyLogfileName()))
+			file = getLogFile(file.getParentFile());
 		super.write(line);
 	}
 }

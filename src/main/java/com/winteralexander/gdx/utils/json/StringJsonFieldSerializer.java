@@ -1,7 +1,8 @@
 package com.winteralexander.gdx.utils.json;
 
-import com.winteralexander.gdx.utils.StringUtil;
 import com.winteralexander.gdx.utils.Validation;
+
+import static com.winteralexander.gdx.utils.StringUtil.quote;
 
 /**
  * {@link JsonFieldSerializer} for a simple type like number, string or enum
@@ -21,6 +22,6 @@ public class StringJsonFieldSerializer<T> implements JsonFieldSerializer<T> {
 
 	@Override
 	public String toJson(T object) {
-		return StringUtil.quote(name) + ":" + StringUtil.quote(String.valueOf(object));
+		return quote(name) + ":" + quote(object + "");
 	}
 }

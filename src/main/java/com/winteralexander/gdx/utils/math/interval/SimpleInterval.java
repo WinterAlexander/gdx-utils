@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.math.interval;
 
-import com.winteralexander.gdx.utils.math.FloatUtil;
+import static com.winteralexander.gdx.utils.math.FloatUtil.max;
+import static com.winteralexander.gdx.utils.math.FloatUtil.min;
 
 /**
  * Interval from a start and an end, always inclusive
@@ -13,8 +14,8 @@ public class SimpleInterval implements Interval {
 	public final float start, end;
 
 	public SimpleInterval(float x1, float x2) {
-		this.start = FloatUtil.min(x1, x2);
-		this.end = FloatUtil.max(x1, x2);
+		this.start = min(x1, x2);
+		this.end = max(x1, x2);
 	}
 
 	@Override
@@ -23,7 +24,7 @@ public class SimpleInterval implements Interval {
 			SimpleInterval simInt = (SimpleInterval)other;
 
 			if(simInt.start <= end && start <= simInt.end)
-				return new SimpleInterval(FloatUtil.min(start, simInt.start), FloatUtil.max(end, simInt.end));
+				return new SimpleInterval(min(start, simInt.start), max(end, simInt.end));
 			return new IntervalUnion(this, other);
 		}
 

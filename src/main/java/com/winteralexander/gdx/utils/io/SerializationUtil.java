@@ -283,7 +283,7 @@ public class SerializationUtil {
 		else if(type == Color.class)
 			return (T)new Color(readInt(stream));
 		else if(type == String.class)
-			return (T)StreamUtil.readUTF(stream);
+			return (T)readUTF(stream);
 		else if(type == Vector2.class)
 			return (T)new Vector2(readFloat(stream), readFloat(stream));
 		else if(type == Vector3.class)

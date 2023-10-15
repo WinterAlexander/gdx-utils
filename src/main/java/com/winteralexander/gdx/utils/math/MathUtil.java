@@ -18,6 +18,24 @@ public class MathUtil {
 
 	private MathUtil() {}
 
+	/**
+	 * Checks whether the provided value is in the provided range
+	 *
+	 * @param value value to check
+	 * @param min   minimum value in the range, inclusive
+	 * @param max   maximum value in the range, exclusive
+	 * @return true if in the range, otherwise false
+	 */
+	public static boolean inRange(int value, int min, int max) {
+		return value >= min && value < max;
+	}
+
+	public static int greatestCommonDivisor(int a, int b) {
+		if(b == 0)
+			return a;
+		return greatestCommonDivisor(b, a % b);
+	}
+
 	public static boolean lineIntersectsLine(float l1StartX, float l1StartY, float l1EndX, float l1EndY,
 	                                         float l2StartX, float l2StartY, float l2EndX, float l2EndY) {
 		tmpVec2.set(l1StartX, l1StartY).sub(l1EndX, l1EndY).rotate90(1);

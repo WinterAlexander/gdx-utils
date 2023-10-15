@@ -1,6 +1,6 @@
 package com.winteralexander.gdx.utils.async;
 
-import com.winteralexander.gdx.utils.input.InputUtil;
+import com.winteralexander.gdx.utils.GdxUtil;
 
 import java.util.function.Consumer;
 
@@ -18,7 +18,7 @@ public interface GdxCallback<T> extends Consumer<T> {
 
 	@Override
 	default void accept(T value) {
-		InputUtil.postRunnable(() -> receive(value));
+		GdxUtil.postRunnable(() -> receive(value));
 	}
 
 	void receive(T t);

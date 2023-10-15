@@ -1,8 +1,9 @@
 package com.winteralexander.gdx.utils.json;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.StringUtil;
 import com.winteralexander.gdx.utils.Validation;
+
+import static com.winteralexander.gdx.utils.StringUtil.quote;
 
 /**
  * {@link JsonFieldSerializer} for a {@link Vector2}
@@ -21,6 +22,6 @@ public class Vector2JsonFieldSerializer implements JsonFieldSerializer<Vector2> 
 
 	@Override
 	public String toJson(Vector2 object) {
-		return StringUtil.quote(name) + ":[" + object.x + "," + object.y + "]";
+		return quote(name) + ":[" + object.x + "," + object.y + "]";
 	}
 }

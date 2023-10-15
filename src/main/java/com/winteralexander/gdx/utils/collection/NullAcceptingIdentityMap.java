@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.IdentityMap;
 import com.winteralexander.gdx.utils.ObjectUtil;
 import com.winteralexander.gdx.utils.Validation;
 
-import static com.winteralexander.gdx.utils.ObjectUtil.coalesce;
+import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
 
 /**
  * {@link IdentityMap} that accepts the null key by replacing it with a non
@@ -47,12 +47,12 @@ public class NullAcceptingIdentityMap<K, V> extends IdentityMap<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		return super.put(ObjectUtil.coalesce(key, nullKeyPlaceholder), value);
+		return super.put(firstNonNull(key, nullKeyPlaceholder), value);
 	}
 
 	@Override
 	public <T extends K> V get(T key) {
-		return super.get(ObjectUtil.coalesce(key, nullKeyPlaceholder));
+		return super.get(firstNonNull(key, nullKeyPlaceholder));
 	}
 
 	@Override
@@ -62,12 +62,12 @@ public class NullAcceptingIdentityMap<K, V> extends IdentityMap<K, V> {
 
 	@Override
 	public V remove(K key) {
-		return super.remove(ObjectUtil.coalesce(key, nullKeyPlaceholder));
+		return super.remove(firstNonNull(key, nullKeyPlaceholder));
 	}
 
 	@Override
 	public boolean containsKey(K key) {
-		return super.containsKey(ObjectUtil.coalesce(key, nullKeyPlaceholder));
+		return super.containsKey(firstNonNull(key, nullKeyPlaceholder));
 	}
 
 	@Override

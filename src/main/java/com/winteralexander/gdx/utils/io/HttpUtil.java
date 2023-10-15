@@ -2,6 +2,7 @@ package com.winteralexander.gdx.utils.io;
 
 
 import com.sun.net.httpserver.HttpExchange;
+import com.winteralexander.gdx.utils.Validation;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,7 +24,8 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 public class HttpUtil {
 	private HttpUtil() {}
 
-	public static void sendResponse(HttpExchange exchange, int code, String response) throws IOException {
+	public static void sendResponse(HttpExchange exchange, int code, String response)
+			throws IOException {
 		byte[] bytes = response.getBytes();
 		exchange.sendResponseHeaders(code, bytes.length);
 		OutputStream os = exchange.getResponseBody();
@@ -33,7 +35,8 @@ public class HttpUtil {
 
 	public static String get(String url, Object... params) throws IOException {
 		if(params.length % 2 == 1)
-			throw new IllegalArgumentException("Http params array must contain an even amount of elements");
+			throw new IllegalArgumentException("Http params array must contain an even amount of " +
+					"elements");
 
 		StringBuilder urlWithParams = new StringBuilder(url);
 
@@ -77,7 +80,9 @@ public class HttpUtil {
 		int responseCode = connection.getResponseCode();
 
 		// read response
-		InputStream input = responseCode < 300 ? connection.getInputStream() : connection.getErrorStream();
+		InputStream input = responseCode < 300
+				? connection.getInputStream()
+				: connection.getErrorStream();
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
 
 		StringBuilder responseBuilder = new StringBuilder();
@@ -95,7 +100,8 @@ public class HttpUtil {
 
 	public static String post(String url, Object... params) throws IOException {
 		if(params.length % 2 == 1)
-			throw new IllegalArgumentException("Http params array must contain an even amount of elements");
+			throw new IllegalArgumentException("Http params array must contain an even amount of " +
+					"elements");
 
 		Map<String, String> map = new HashMap<>();
 
@@ -147,7 +153,8 @@ public class HttpUtil {
 			if(paramsBuilder.length() > 0)
 				paramsBuilder.deleteCharAt(paramsBuilder.length() - 1);
 		} else
-			throw new UnsupportedOperationException("Content type " + contentType + " is not supported");
+			throw new UnsupportedOperationException("Content type " + contentType + " is not " +
+					"supported");
 
 		String params = paramsBuilder.toString();
 
@@ -156,7 +163,7 @@ public class HttpUtil {
 		HttpURLConnection connection = (HttpURLConnection)urlObj.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Type", contentType.getValue());
-		connection.setRequestProperty("Content-Length", String.valueOf(params.getBytes().length));
+		connection.setRequestProperty("Content-Length", "" + params.getBytes().length);
 
 		if(requestProperties != null)
 			for(Entry<String, String> property : requestProperties.entrySet())
@@ -173,7 +180,9 @@ public class HttpUtil {
 		int responseCode = connection.getResponseCode();
 
 		// read response
-		InputStream input = responseCode < 300 ? connection.getInputStream() : connection.getErrorStream();
+		InputStream input = responseCode < 300
+				? connection.getInputStream()
+				: connection.getErrorStream();
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
 
 		StringBuilder responseBuilder = new StringBuilder();

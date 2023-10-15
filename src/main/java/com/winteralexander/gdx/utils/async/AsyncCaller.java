@@ -11,6 +11,8 @@ import com.winteralexander.gdx.utils.log.NullLogger;
 
 import java.util.function.Consumer;
 
+import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
+
 /**
  * Utility class to make async calls with a callback and handle exceptions
  *
@@ -22,7 +24,8 @@ public class AsyncCaller<R> {
 	private final Call<R> call;
 	private Consumer<R> callback;
 	private Consumer<Void> finallyCallback;
-	private final OrderedMap<Class<? extends Exception>, Consumer<? extends Exception>> exCallbacks = new OrderedMap<>();
+	private final OrderedMap<Class<? extends Exception>,
+			Consumer<? extends Exception>> exCallbacks = new OrderedMap<>();
 	private boolean called = false;
 
 	private final Tracker tracker = StackTracker.cut("AsyncCaller");
@@ -69,6 +72,7 @@ public class AsyncCaller<R> {
 	 *
 	 * @param type     type to match
 	 * @param callback exception callback
+	 * @param <T>      type of the exception
 	 * @return the same AsyncCaller
 	 */
 	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
@@ -78,22 +82,77 @@ public class AsyncCaller<R> {
 	}
 
 	/**
-	 * Adds a callback to a specific exception type. Any exception matching
-	 * specific type exactly or via inheritance will be called. If you add an
-	 * exception callback to the same exception type twice, the first one will
-	 * be overwritten.
+	 * @see #except(Class, Consumer)
 	 * <p>
 	 * This method wraps the callback using specified CallbackWrapper.
-	 *
-	 * @param type     type to match
-	 * @param callback exception callback
-	 * @return the same AsyncCaller
 	 */
 	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
 	                                                   Consumer<T> callback,
 	                                                   CallbackWrapper wrapper) {
-		exCallbacks.put(type, wrapper.wrap(callback));
+		return except(type, wrapper.wrap(callback));
+	}
+
+	/**
+	 * Adds a callback to an array of exception types which are all inheriting a base exception
+	 * type which is the type passed to the callback. If one of the provided exception type was
+	 * already added as a callback it will be overwritten with the new callback.
+	 *
+	 * @param type1    first type to match
+	 * @param type2    second type to match
+	 * @param callback exception callback
+	 * @param <T>      base type of the exceptions
+	 * @return this AsyncCaller, for chaining
+	 */
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Consumer<T> callback) {
+		//noinspection unchecked
+		except((Class<T>)type1, callback);
+		//noinspection unchecked
+		except((Class<T>)type2, callback);
 		return this;
+	}
+
+
+	/**
+	 * @see #except(Class, Class, Consumer)
+	 * <p>
+	 * This method wraps the callback using specified CallbackWrapper.
+	 */
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(type1, type2, wrapper.wrap(callback));
+	}
+
+	/**
+	 * @see #except(Class, Class, Consumer)
+	 */
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Class<? extends T> type3,
+	                                                   Consumer<T> callback) {
+		//noinspection unchecked
+		except((Class<T>)type1, callback);
+		//noinspection unchecked
+		except((Class<T>)type2, callback);
+		//noinspection unchecked
+		except((Class<T>)type3, callback);
+		return this;
+	}
+
+	/**
+	 * @see #except(Class, Class, Class, Consumer)
+	 * <p>
+	 * This method wraps the callback using specified CallbackWrapper.
+	 */
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Class<? extends T> type3,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(type1, type2, type3, wrapper.wrap(callback));
 	}
 
 	/**
@@ -149,9 +208,10 @@ public class AsyncCaller<R> {
 			logger.error("AsyncCaller was destroyed without ever being executed !", tracker.get());
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void dispatch(Exception exception) {
-		for(Entry<Class<? extends Exception>, Consumer<? extends Exception>> entry : exCallbacks.entries()) {
+		for(Entry<Class<? extends Exception>,
+				Consumer<? extends Exception>> entry : exCallbacks.entries()) {
 			if(entry.key.isInstance(exception)) {
 				((Consumer)entry.value).accept(exception);
 				return;
@@ -162,7 +222,7 @@ public class AsyncCaller<R> {
 	}
 
 	public static void setLogger(Logger logger) {
-		AsyncCaller.logger = ObjectUtil.coalesce(logger, new NullLogger());
+		AsyncCaller.logger = firstNonNull(logger, new NullLogger());
 	}
 
 	/**
@@ -202,16 +262,26 @@ public class AsyncCaller<R> {
 		return new AsyncCaller<>(() -> function.call(param));
 	}
 
-	public static <P1, P2, R> AsyncCaller<R> async(CheckedBiFunction<P1, P2, R> function, P1 param1, P2 param2) {
+	public static <P1, P2, R> AsyncCaller<R> async(CheckedBiFunction<P1, P2, R> function,
+	                                               P1 param1, P2 param2) {
 		return new AsyncCaller<>(() -> function.call(param1, param2));
 	}
 
-	public static <P1, P2, P3, R> AsyncCaller<R> async(CheckedTriFunction<P1, P2, P3, R> function, P1 param1, P2 param2, P3 param3) {
+	public static <P1, P2, P3, R> AsyncCaller<R> async(CheckedTriFunction<P1, P2, P3, R> function,
+	                                                   P1 param1, P2 param2, P3 param3) {
 		return new AsyncCaller<>(() -> function.call(param1, param2, param3));
 	}
 
-	public static <P1, P2, P3, P4, R> AsyncCaller<R> async(CheckedQuadriFunction<P1, P2, P3, P4, R> function, P1 param1, P2 param2, P3 param3, P4 param4) {
+	public static <P1, P2, P3, P4, R>
+	AsyncCaller<R> async(CheckedQuadriFunction<P1, P2, P3, P4, R> function,
+	                     P1 param1, P2 param2, P3 param3, P4 param4) {
 		return new AsyncCaller<>(() -> function.call(param1, param2, param3, param4));
+	}
+
+	public static <P1, P2, P3, P4, P5, R>
+	AsyncCaller<R> async(CheckedPentaFunction<P1, P2, P3, P4, P5, R> function,
+	                     P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+		return new AsyncCaller<>(() -> function.call(param1, param2, param3, param4, param5));
 	}
 
 	public static <P> AsyncCaller<Void> async(CheckedVoidFunction<P> function, P param) {
@@ -221,23 +291,39 @@ public class AsyncCaller<R> {
 		});
 	}
 
-	public static <P1, P2> AsyncCaller<Void> async(CheckedBiVoidFunction<P1, P2> function, P1 param1, P2 param2) {
+	public static <P1, P2> AsyncCaller<Void> async(CheckedBiVoidFunction<P1, P2> function,
+	                                               P1 param1,
+	                                               P2 param2) {
 		return new AsyncCaller<>(() -> {
 			function.call(param1, param2);
 			return null;
 		});
 	}
 
-	public static <P1, P2, P3> AsyncCaller<Void> async(CheckedTriVoidFunction<P1, P2, P3> function, P1 param1, P2 param2, P3 param3) {
+	public static <P1, P2, P3> AsyncCaller<Void> async(CheckedTriVoidFunction<P1, P2, P3> function,
+	                                                   P1 param1,
+	                                                   P2 param2,
+	                                                   P3 param3) {
 		return new AsyncCaller<>(() -> {
 			function.call(param1, param2, param3);
 			return null;
 		});
 	}
 
-	public static <P1, P2, P3, P4> AsyncCaller<Void> async(CheckedQuadriVoidFunction<P1, P2, P3, P4> function, P1 param1, P2 param2, P3 param3, P4 param4) {
+	public static <P1, P2, P3, P4>
+	AsyncCaller<Void> async(CheckedQuadriVoidFunction<P1, P2, P3, P4> function,
+	                        P1 param1, P2 param2, P3 param3, P4 param4) {
 		return new AsyncCaller<>(() -> {
 			function.call(param1, param2, param3, param4);
+			return null;
+		});
+	}
+
+	public static <P1, P2, P3, P4, P5>
+	AsyncCaller<Void> async(CheckedPentaVoidFunction<P1, P2, P3, P4, P5> function,
+	                        P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+		return new AsyncCaller<>(() -> {
+			function.call(param1, param2, param3, param4, param5);
 			return null;
 		});
 	}
@@ -279,6 +365,10 @@ public class AsyncCaller<R> {
 		R call(P1 param1, P2 param2, P3 param3, P4 param4) throws Exception;
 	}
 
+	public interface CheckedPentaFunction<P1, P2, P3, P4, P5, R> {
+		R call(P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) throws Exception;
+	}
+
 	@FunctionalInterface
 	public interface CheckedVoidAction {
 		void call() throws Exception;
@@ -302,5 +392,9 @@ public class AsyncCaller<R> {
 	@FunctionalInterface
 	public interface CheckedQuadriVoidFunction<P1, P2, P3, P4> {
 		void call(P1 param1, P2 param2, P3 param3, P4 param4) throws Exception;
+	}
+
+	public interface CheckedPentaVoidFunction<P1, P2, P3, P4, P5> {
+		void call(P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) throws Exception;
 	}
 }

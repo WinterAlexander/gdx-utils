@@ -5,9 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.Vec2Supplier;
-import com.winteralexander.gdx.utils.math.MathUtil;
 
 import java.util.function.Supplier;
+
+import static com.badlogic.gdx.math.Intersector.intersectSegmentCircle;
+import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 
 /**
  * Represents an annulus, which is basically a 2D donut
@@ -44,7 +46,7 @@ public class Annulus implements Shape {
 	@Override
 	public boolean contains(float x, float y) {
 		float dst2 = getPosition().dst2(x, y);
-		return dst2 <= MathUtil.pow2(getOuterRadius()) && dst2 >= MathUtil.pow2(getInnerRadius());
+		return dst2 <= pow2(getOuterRadius()) && dst2 >= pow2(getInnerRadius());
 	}
 
 	@Override
@@ -52,23 +54,26 @@ public class Annulus implements Shape {
 		float firstDst2 = getPosition().dst2(x, y);
 		float secondDst2 = getPosition().dst2(x2, y2);
 
-		if(firstDst2 < MathUtil.pow2(getInnerRadius()) && secondDst2 < MathUtil.pow2(getInnerRadius()))
+		if(firstDst2 < pow2(getInnerRadius()) && secondDst2 < pow2(getInnerRadius()))
 			return false;
 
-		return Intersector.intersectSegmentCircle(tmpVec.set(x, y), tmpVec2.set(x2, y2), getPosition(), getOuterRadius());
+		return intersectSegmentCircle(tmpVec.set(x, y),
+				tmpVec2.set(x2, y2),
+				getPosition(),
+				getOuterRadius());
 	}
 
 	@Override
 	public boolean overlaps(Shape shape) {
 		if(shape instanceof Circle) {
-			float dst2 = getPosition().dst2(((Circle)shape).getPosition().x, ((Circle)shape).getPosition().y);
+			float dst2 = getPosition().dst2(((Circle)shape).getPosition());
 
-			if(dst2 > MathUtil.pow2(getOuterRadius() + ((Circle)shape).getRadius()))
+			if(dst2 > pow2(getOuterRadius() + ((Circle)shape).getRadius()))
 				return false;
 
 			float innerR = getInnerRadius() - ((Circle)shape).getRadius();
 
-			return innerR <= 0f || dst2 >= MathUtil.pow2(innerR);
+			return innerR <= 0f || dst2 >= pow2(innerR);
 		}
 		return shape.overlaps(this);
 	}
@@ -153,7 +158,7 @@ public class Annulus implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Circle)shape).getPosition());
 
-			if(getPosition().dst2(((Circle)shape).getPosition()) > MathUtil.pow2(getOuterRadius() - ((Circle)shape).getRadius()))
+			if(getPosition().dst2(((Circle)shape).getPosition()) > pow2(getOuterRadius() - ((Circle)shape).getRadius()))
 				return false;
 
 			return !shape.overlaps(tmpInnerCircle);
@@ -165,7 +170,7 @@ public class Annulus implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Annulus)shape).getPosition());
 
-			if(getPosition().dst2(((Annulus)shape).getPosition()) > MathUtil.pow2(getOuterRadius() - ((Annulus)shape).getOuterRadius()))
+			if(getPosition().dst2(((Annulus)shape).getPosition()) > pow2(getOuterRadius() - ((Annulus)shape).getOuterRadius()))
 				return false;
 
 			return !shape.overlaps(tmpInnerCircle);

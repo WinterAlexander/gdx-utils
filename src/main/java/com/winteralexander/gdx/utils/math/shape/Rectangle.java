@@ -9,6 +9,8 @@ import com.winteralexander.gdx.utils.math.MathUtil;
 
 import java.util.function.Supplier;
 
+import static com.winteralexander.gdx.utils.math.MathUtil.*;
+
 /**
  * A rectangle shape which can be rotated
  * <p>
@@ -60,7 +62,7 @@ public class Rectangle implements Shape {
 
 	@Override
 	public boolean contains(float x, float y) {
-		return MathUtil.inOBB(x, y, getPosition().x, getPosition().y, getSize().x, getSize().y, getAngle());
+		return inOBB(x, y, getPosition().x, getPosition().y, getSize().x, getSize().y, getAngle());
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class Rectangle implements Shape {
 	@Override
 	public boolean overlaps(Shape shape) {
 		if(shape instanceof Rectangle)
-			return MathUtil.doOBBCollideWithOBB(getPosition().x,
+			return doOBBCollideWithOBB(getPosition().x,
 					getPosition().y,
 					getSize().x,
 					getSize().y,
@@ -137,7 +139,7 @@ public class Rectangle implements Shape {
 		closestY = closestY - y;
 		closestY *= closestY;
 
-		return closestX + closestY < MathUtil.pow2(radius);
+		return closestX + closestY < pow2(radius);
 	}
 
 	@Override

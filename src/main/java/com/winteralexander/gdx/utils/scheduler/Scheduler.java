@@ -18,8 +18,7 @@ import static java.lang.System.currentTimeMillis;
  * @author Alexander Winter
  * @see Task
  */
-public class Scheduler implements CallbackWrapper
-{
+public class Scheduler implements CallbackWrapper {
 	private final Logger logger;
 
 	private final Array<Task> tasks = new Array<>(false, 16), tmpTasks = new Array<>(false, 16);
@@ -27,7 +26,6 @@ public class Scheduler implements CallbackWrapper
 
 	private long pauseLength = 0, lastPause;
 	private volatile boolean running = false, updating = false;
-
 
 	/**
 	 * Creating a new scheduler stopped by default with a logger.

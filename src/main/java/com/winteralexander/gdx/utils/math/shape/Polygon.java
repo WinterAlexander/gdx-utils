@@ -6,12 +6,12 @@ import com.winteralexander.gdx.utils.ConstFloatSupplier;
 import com.winteralexander.gdx.utils.ConstSupplier;
 import com.winteralexander.gdx.utils.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
-import com.winteralexander.gdx.utils.math.MathUtil;
 
 import java.util.function.Supplier;
 
 import static com.badlogic.gdx.math.Intersector.intersectSegmentCircle;
 import static com.badlogic.gdx.math.Intersector.overlapConvexPolygons;
+import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 
 /**
  * {@link Shape} implemented from LibGDX's Polygon
@@ -113,7 +113,7 @@ public class Polygon implements Shape {
 		float[] vertices = polygon.getTransformedVertices();
 
 		tmpCircleCenter.set(x, y);
-		float squareRadius = MathUtil.pow2(radius);
+		float squareRadius = pow2(radius);
 		for(int i = 0; i < vertices.length; i += 2) {
 			if(i == 0)
 				tmpStart.set(vertices[vertices.length - 2], vertices[vertices.length - 1]);

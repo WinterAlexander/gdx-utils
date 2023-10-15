@@ -19,7 +19,6 @@ public class CollectionUtil {
 
 	public static int sizeOf(Iterable<?> iterable) {
 		int count = 0;
-		//noinspection UnusedAssignment
 		for(Object ignored : iterable)
 			count++;
 		return count;
@@ -49,7 +48,7 @@ public class CollectionUtil {
 
 	/**
 	 * Returns a random element in the specified array. NOT THREAD SAFE. Use
-	 * {@link #random(Random, Object[])} for thread safe version
+	 * {@link #random(Random, T[])} for thread safe version
 	 *
 	 * @param array array of elements to pick from
 	 * @param <T>   type of elements
@@ -119,6 +118,20 @@ public class CollectionUtil {
 	public static <T> boolean anyDuplicates(Array<T> array, ObjectSet<T> tmpSet) {
 		tmpSet.addAll(array);
 		return tmpSet.size < array.size;
+	}
+
+	public static <T> boolean contains(T[] array, T value) {
+		for(T current : array)
+			if(Objects.equals(current, value))
+				return true;
+		return false;
+	}
+
+	public static boolean contains(int[] array, int value) {
+		for(int current : array)
+			if(current == value)
+				return true;
+		return false;
 	}
 
 	@SafeVarargs

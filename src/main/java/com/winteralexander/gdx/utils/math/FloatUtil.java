@@ -9,7 +9,6 @@ import static java.lang.Math.abs;
  *
  * @author Alexander Winter
  */
-@SuppressWarnings("ManualMinMaxCalculation")
 public strictfp class FloatUtil {
 	public static final int DEFAULT_ULPS = 5;
 

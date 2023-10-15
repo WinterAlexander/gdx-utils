@@ -1,11 +1,12 @@
 package com.winteralexander.gdx.utils.log;
 
-import com.winteralexander.gdx.utils.io.FileUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
+import static com.winteralexander.gdx.utils.io.FileUtil.deleteFile;
+import static com.winteralexander.gdx.utils.io.FileUtil.ensureFile;
 
 /**
  * Logs to file with time
@@ -25,9 +26,9 @@ public class FileLogger extends AbstractLogger {
 		super(logLevel);
 
 		try {
-			FileUtil.ensureFile(file);
+			ensureFile(file);
 			if(!append)
-				FileUtil.deleteFile(file);
+				deleteFile(file);
 		} catch(IOException ex) {
 			throw new RuntimeException("Failed to initialize FileLogger", ex);
 		}

@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.io;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -16,7 +17,9 @@ public class NullPrintStream extends PrintStream {
 	public NullPrintStream() {
 		super(new OutputStream() {
 			@Override
-			public void write(int b) {}
+			public void write(int b) throws IOException {
+				// do nothing
+			}
 		});
 	}
 }

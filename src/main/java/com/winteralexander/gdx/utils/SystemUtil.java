@@ -1,13 +1,10 @@
 package com.winteralexander.gdx.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.winteralexander.gdx.utils.io.NullPrintStream;
 import com.winteralexander.gdx.utils.io.PortChecker;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -150,21 +147,5 @@ public class SystemUtil {
 			sb.append(String.format("%02X%s", macAddress[i], (i < macAddress.length - 1) ? "-" : ""));
 
 		return sb.toString();
-	}
-
-	public static boolean openURI(String uri) {
-		PrintStream prevErr = System.err;
-		try {
-			System.setErr(NullPrintStream.instance);
-		} catch(SecurityException ignored) {
-			return Gdx.net.openURI(uri);
-		}
-
-		try {
-
-			return Gdx.net.openURI(uri);
-		} finally {
-			System.setErr(prevErr);
-		}
 	}
 }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.Vec2Supplier;
-import com.winteralexander.gdx.utils.math.MathUtil;
 
 import java.util.function.Supplier;
 
@@ -45,7 +44,7 @@ public class Circle implements Shape {
 		float dx = getPosition().x - x;
 		float dy = getPosition().y - y;
 
-		return dx * dx + dy * dy <= MathUtil.pow2(getRadius());
+		return dx * dx + dy * dy <= pow2(getRadius());
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class Circle implements Shape {
 			float dx = getPosition().x - ((Circle)shape).getPosition().x;
 			float dy = getPosition().y - ((Circle)shape).getPosition().y;
 
-			return dx * dx + dy * dy <= MathUtil.pow2(getRadius() + ((Circle)shape).getRadius());
+			return dx * dx + dy * dy <= pow2(getRadius() + ((Circle)shape).getRadius());
 		}
 
 		return shape.overlaps(this);
@@ -134,7 +133,7 @@ public class Circle implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Circle)shape).getPosition());
 
-			return getPosition().dst2(((Circle)shape).getPosition()) <= MathUtil.pow2(getRadius() - ((Circle)shape).getRadius());
+			return getPosition().dst2(((Circle)shape).getPosition()) <= pow2(getRadius() - ((Circle)shape).getRadius());
 		}
 
 		if(shape instanceof Annulus) {
@@ -143,7 +142,7 @@ public class Circle implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Annulus)shape).getPosition());
 
-			return getPosition().dst2(((Annulus)shape).getPosition()) <= MathUtil.pow2(getRadius() - ((Annulus)shape).getOuterRadius());
+			return getPosition().dst2(((Annulus)shape).getPosition()) <= pow2(getRadius() - ((Annulus)shape).getOuterRadius());
 		}
 
 		if(shape instanceof MultiShape) {

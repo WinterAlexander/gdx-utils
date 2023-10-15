@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.Array;
 
 import java.lang.reflect.*;
 
+import static com.winteralexander.gdx.utils.TypeUtil.isPrimitiveBox;
+
 /**
  * Utility class to use reflection on objects
  * <p>
@@ -361,7 +363,7 @@ public class ReflectionUtil {
 					else if(obj.getClass().isAssignableFrom(String.class))
 						sb.append("\"").append(obj).append("\"").append(newLine);
 
-					else if(obj.getClass().isPrimitive() || obj.getClass().isEnum() || TypeUtil.isPrimitiveBox(obj.getClass()))
+					else if(obj.getClass().isPrimitive() || obj.getClass().isEnum() || isPrimitiveBox(obj.getClass()))
 						sb.append(obj).append(newLine);
 
 					else if(objects.contains(obj, true))
@@ -414,6 +416,7 @@ public class ReflectionUtil {
 						}
 					} catch(Throwable ex) {
 						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
+						ex.printStackTrace();
 					}
 				}
 
@@ -426,5 +429,25 @@ public class ReflectionUtil {
 		}
 
 		return sb.toString();
+	}
+
+	@SuppressWarnings({ "unchecked", "raw" })
+	public static void disableAccessWarnings() {
+		try {
+			Class unsafeClass = Class.forName("sun.misc.Unsafe");
+			Field field = unsafeClass.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			Object unsafe = field.get(null);
+
+			Method putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile",
+					Object.class, long.class, Object.class);
+			Method staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset",
+					Field.class);
+
+			Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+			Field loggerField = loggerClass.getDeclaredField("logger");
+			Long offset = (Long)staticFieldOffset.invoke(unsafe, loggerField);
+			putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
+		} catch(Exception ignored) {}
 	}
 }
