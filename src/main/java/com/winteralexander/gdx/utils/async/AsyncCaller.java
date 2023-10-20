@@ -2,7 +2,6 @@ package com.winteralexander.gdx.utils.async;
 
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.OrderedMap;
-import com.winteralexander.gdx.utils.ObjectUtil;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.error.StackTracker;
 import com.winteralexander.gdx.utils.error.Tracker;
@@ -10,6 +9,7 @@ import com.winteralexander.gdx.utils.log.Logger;
 import com.winteralexander.gdx.utils.log.NullLogger;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
 
@@ -24,6 +24,7 @@ public class AsyncCaller<R> {
 	private final Call<R> call;
 	private Consumer<R> callback;
 	private Consumer<Void> finallyCallback;
+	private final OrderedMap<Predicate<Class<? extends Exception>>, Integer> retries = new OrderedMap<>();
 	private final OrderedMap<Class<? extends Exception>,
 			Consumer<? extends Exception>> exCallbacks = new OrderedMap<>();
 	private boolean called = false;
@@ -81,6 +82,14 @@ public class AsyncCaller<R> {
 		return this;
 	}
 
+	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
+													   int retryCount,
+	                                                   Consumer<T> callback) {
+		retries.put(c -> c == type, retryCount);
+		exCallbacks.put(type, callback);
+		return this;
+	}
+
 	/**
 	 * @see #except(Class, Consumer)
 	 * <p>
@@ -90,6 +99,13 @@ public class AsyncCaller<R> {
 	                                                   Consumer<T> callback,
 	                                                   CallbackWrapper wrapper) {
 		return except(type, wrapper.wrap(callback));
+	}
+
+	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
+													   int retryCount,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(type, retryCount, wrapper.wrap(callback));
 	}
 
 	/**
@@ -113,6 +129,17 @@ public class AsyncCaller<R> {
 		return this;
 	}
 
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+													   int retryCount,
+	                                                   Consumer<T> callback) {
+		//noinspection unchecked
+		except((Class<T>)type1, callback);
+		//noinspection unchecked
+		except((Class<T>)type2, callback);
+		retries.put(c -> c == type1 || c == type2, retryCount);
+		return this;
+	}
 
 	/**
 	 * @see #except(Class, Class, Consumer)
@@ -124,6 +151,14 @@ public class AsyncCaller<R> {
 	                                                   Consumer<T> callback,
 	                                                   CallbackWrapper wrapper) {
 		return except(type1, type2, wrapper.wrap(callback));
+	}
+
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+													   int retryCount,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(type1, type2, retryCount, wrapper.wrap(callback));
 	}
 
 	/**
@@ -142,6 +177,21 @@ public class AsyncCaller<R> {
 		return this;
 	}
 
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Class<? extends T> type3,
+													   int retryCount,
+	                                                   Consumer<T> callback) {
+		//noinspection unchecked
+		except((Class<T>)type1, callback);
+		//noinspection unchecked
+		except((Class<T>)type2, callback);
+		//noinspection unchecked
+		except((Class<T>)type3, callback);
+		retries.put(c -> c == type1 || c == type2 || c == type3, retryCount);
+		return this;
+	}
+
 	/**
 	 * @see #except(Class, Class, Class, Consumer)
 	 * <p>
@@ -153,6 +203,31 @@ public class AsyncCaller<R> {
 	                                                   Consumer<T> callback,
 	                                                   CallbackWrapper wrapper) {
 		return except(type1, type2, type3, wrapper.wrap(callback));
+	}
+
+
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
+	                                                   Class<? extends T> type2,
+	                                                   Class<? extends T> type3,
+													   int retryCount,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(type1, type2, type3, retryCount, wrapper.wrap(callback));
+	}
+
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T>[] types,
+	                                                   Consumer<T> callback) {
+		for(Class<? extends T> type : types) {
+			//noinspection unchecked
+			except((Class<T>)type, callback);
+		}
+		return this;
+	}
+
+	public <T extends Exception> AsyncCaller<R> except(Class<? extends T>[] types,
+	                                                   Consumer<T> callback,
+	                                                   CallbackWrapper wrapper) {
+		return except(types, wrapper.wrap(callback));
 	}
 
 	/**
