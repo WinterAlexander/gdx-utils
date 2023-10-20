@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * Utility class to make async calls with a callback and handle exceptions
@@ -24,7 +25,7 @@ public class AsyncCaller<R> {
 	private final Call<R> call;
 	private Consumer<R> callback;
 	private Consumer<Void> finallyCallback;
-	private final OrderedMap<Predicate<Class<? extends Exception>>, Integer> retries = new OrderedMap<>();
+	private final OrderedMap<TypeMatcher, Integer> retries = new OrderedMap<>();
 	private final OrderedMap<Class<? extends Exception>,
 			Consumer<? extends Exception>> exCallbacks = new OrderedMap<>();
 	private boolean called = false;
@@ -32,7 +33,7 @@ public class AsyncCaller<R> {
 	private final Tracker tracker = StackTracker.cut("AsyncCaller");
 
 	public AsyncCaller(Call<R> call) {
-		Validation.ensureNotNull(call, "call");
+		ensureNotNull(call, "call");
 		this.call = call;
 	}
 
