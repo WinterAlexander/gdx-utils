@@ -17,6 +17,12 @@ import java.util.function.Function;
 public class CollectionUtil {
 	private static final Random DEFAULT_RANDOM = new Random();
 
+	/**
+	 * Counts the number of element in an iterable by iterating through it
+	 *
+	 * @param iterable iterable to compute the size of
+	 * @return number of element in iterable
+	 */
 	public static int sizeOf(Iterable<?> iterable) {
 		int count = 0;
 		for(Object ignored : iterable)
@@ -24,6 +30,12 @@ public class CollectionUtil {
 		return count;
 	}
 
+	/**
+	 * Counts the number of element left in an iterator by iterating through it
+	 *
+	 * @param iterator iterator to compute the size of
+	 * @return number of element in iterator
+	 */
 	public static int sizeOf(Iterator<?> iterator) {
 		int count = 0;
 		for(; iterator.hasNext(); iterator.next())
@@ -31,10 +43,22 @@ public class CollectionUtil {
 		return count;
 	}
 
+	/**
+	 * Retrieves the last element of an array
+	 * @param array array to get the last element of
+	 * @return last element
+	 * @param <T> type of array elements
+	 */
 	public static <T> T last(T[] array) {
 		return array[array.length - 1];
 	}
 
+	/**
+	 * Retrieves the last element of an array
+	 * @param array array to get the last element of
+	 * @return last element
+	 * @param <T> type of array elements
+	 */
 	public static <T> T last(Array<T> array) {
 		if(array.size == 0)
 			throw new IllegalArgumentException("Array is empty");
@@ -42,6 +66,15 @@ public class CollectionUtil {
 		return array.get(array.size - 1);
 	}
 
+	/**
+	 * Provides an iterable over the range of an array, without copying the array
+	 *
+	 * @param array array to get iterable over a range of its values
+	 * @param startIndex start index of the range, inclusive
+	 * @param endIndex end index of the range, exclusive
+	 * @return iterable object to iterange over range of array
+	 * @param <T> type of array elements
+	 */
 	public static <T> Iterable<T> range(T[] array, int startIndex, int endIndex) {
 		return new JavaArrayIndexIterator<>(array, startIndex, endIndex);
 	}
@@ -51,17 +84,34 @@ public class CollectionUtil {
 	 * {@link #random(Random, Object[])} for thread safe version
 	 *
 	 * @param array array of elements to pick from
-	 * @param <T>   type of elements
 	 * @return a random element in the array
+	 * @param <T> type of elements
 	 */
 	public static <T> T random(T[] array) {
 		return random(DEFAULT_RANDOM, array);
 	}
 
+	/**
+	 * Returns a random element in the specified array.
+	 *
+	 * @param random random number generator to use
+	 * @param array array of elements to pick from
+	 * @return a random element in the array
+	 * @param <T> type of elements
+	 */
 	public static <T> T random(Random random, T[] array) {
 		return array[random.nextInt(array.length)];
 	}
 
+	/**
+	 * Finds the index of an element in an array. Equality is defined by the equals() function. If
+	 * the element could not be found in the array, returns -1 instead.
+	 *
+	 * @param array array of elements to find the index
+	 * @param element element to find
+	 * @return index of element in array, or -1 if not found
+	 * @param <T> type of elements
+	 */
 	public static <T> int indexOf(T[] array, T element) {
 		for(int i = 0; i < array.length; i++)
 			if(Objects.equals(element, array[i]))
@@ -70,6 +120,15 @@ public class CollectionUtil {
 		return -1;
 	}
 
+	/**
+	 * Evaluates elements of an array and returns true if any of the element match the specified
+	 * predicate. May not evaluate all elements if one is found to be true early.
+	 *
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches any element in the array
+	 * @param <T> type of elements
+	 */
 	public static <T> boolean any(Iterable<T> array, Predicate<T> predicate) {
 		for(T element : array)
 			if(predicate.evaluate(element))
@@ -78,14 +137,15 @@ public class CollectionUtil {
 		return false;
 	}
 
-	public static <T> boolean all(Iterable<T> array, Predicate<T> predicate) {
-		for(T element : array)
-			if(!predicate.evaluate(element))
-				return false;
-
-		return true;
-	}
-
+	/**
+	 * Evaluates elements of an array and returns true if any of the elements matches the specified
+	 * predicate. May not evaluate all elements if one is found to be true early.
+	 *
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches any element in the array
+	 * @param <T> type of elements
+	 */
 	public static <T> boolean any(T[] array, Predicate<T> predicate) {
 		for(T element : array)
 			if(predicate.evaluate(element))
@@ -94,6 +154,32 @@ public class CollectionUtil {
 		return false;
 	}
 
+	/**
+	 * Evaluates elements of an array and returns true if all the elements match the specified
+	 * predicate. May not evaluate all elements if one is found to be false early.
+	 *
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches all elements in the array
+	 * @param <T> type of elements
+	 */
+	public static <T> boolean all(Iterable<T> array, Predicate<T> predicate) {
+		for(T element : array)
+			if(!predicate.evaluate(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates elements of an array and returns true if all the elements match the specified
+	 * predicate. May not evaluate all elements if one is found to be false early.
+	 *
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches all elements in the array
+	 * @param <T> type of elements
+	 */
 	public static <T> boolean all(T[] array, Predicate<T> predicate) {
 		for(T element : array)
 			if(!predicate.evaluate(element))
@@ -221,10 +307,45 @@ public class CollectionUtil {
 		Arrays.sort(array.items, 0, array.size, comparator);
 	}
 
-	public static <K, V> void putAll(IdentityMap<K, V> into, IdentityMap<? extends K, ? extends V> content) {
+	public static <K, V> void putAll(IdentityMap<K, V> into,
+	                                 IdentityMap<? extends K, ? extends V> content) {
 		into.ensureCapacity(content.size);
 		for(Entry<? extends K, ? extends V> entry : content)
 			into.put(entry.key, entry.value);
+	}
+
+	/**
+	 * Adds all the values of an iterable to an {@link ObjectSet}
+	 *
+	 * @param set set to add values to
+	 * @param values values to add
+	 * @param <T> type of elements
+	 */
+	public static <T> void addAll(ObjectSet<T> set, Iterable<T> values) {
+		for(T value : values)
+			set.add(value);
+	}
+
+	/**
+	 * Adds all the integers of an iterable to an {@link IntSet}
+	 *
+	 * @param set set to add values to
+	 * @param values values to add
+	 */
+	public static void addAll(IntSet set, Iterable<Integer> values) {
+		for(Integer value : values)
+			set.add(value);
+	}
+
+	/**
+	 * Adds all the values of an iterable to an {@link Array}
+	 *
+	 * @param array array to add values to
+	 * @param values values to add
+	 */
+	public static <T> void addAll(Array<T> array, Iterable<T> values) {
+		for(T value : values)
+			array.add(value);
 	}
 
 	public static Object[] toObjectArray(int[] intArray) {
@@ -291,8 +412,8 @@ public class CollectionUtil {
 	public static <T, R> Array<R> mapArray(Array<T> input, Function<T, R> mapper, Array<R> output) {
 		output.clear();
 		output.ensureCapacity(input.size);
-		for(T t : input)
-			output.add(mapper.apply(t));
+		for(int i = 0; i < input.size; i++)
+			output.add(mapper.apply(input.get(i)));
 		return output;
 	}
 }
