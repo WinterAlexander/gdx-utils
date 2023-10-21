@@ -1,8 +1,8 @@
 package com.winteralexander.gdx.utils.collection.iterator;
 
-import com.winteralexander.gdx.utils.Validation;
-
 import java.util.Iterator;
+
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * {@link Iterable} made out of 2 other iterables merged together
@@ -17,8 +17,8 @@ public class MergeIterable<T> implements Iterable<T> {
 	private final MergeIterator<T> tmpIterator = new MergeIterator<>();
 
 	public MergeIterable(Iterable<T> iterable1, Iterable<T> iterable2) {
-		Validation.ensureNotNull(iterable1, "iterable1");
-		Validation.ensureNotNull(iterable2, "iterable2");
+		ensureNotNull(iterable1, "iterable1");
+		ensureNotNull(iterable2, "iterable2");
 		this.iterable1 = iterable1;
 		this.iterator2 = iterable2;
 	}
