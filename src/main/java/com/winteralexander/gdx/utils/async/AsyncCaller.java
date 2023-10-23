@@ -1,15 +1,14 @@
 package com.winteralexander.gdx.utils.async;
 
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.OrderedMap;
-import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.error.StackTracker;
 import com.winteralexander.gdx.utils.error.Tracker;
 import com.winteralexander.gdx.utils.log.Logger;
 import com.winteralexander.gdx.utils.log.NullLogger;
 
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
@@ -17,17 +16,18 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 /**
  * Utility class to make async calls with a callback and handle exceptions
  *
- * @param <R>
+ * @param <R> return type of the async call
  */
 public class AsyncCaller<R> {
 	private static Logger logger = new NullLogger();
+	private static ObjectSet<AsyncCaller<?>> calls = new ObjectSet<>();
 
 	private final Call<R> call;
 	private Consumer<R> callback;
 	private Consumer<Void> finallyCallback;
-	private final OrderedMap<Class<? extends Exception>,
-			Consumer<? extends Exception>> exCallbacks = new OrderedMap<>();
+	private final OrderedMap<Class<? extends Exception>, ExceptionCallback> exCallbacks = new OrderedMap<>();
 	private boolean called = false;
+	private volatile boolean cancelled = false;
 
 	private final Tracker tracker = StackTracker.cut("AsyncCaller");
 
@@ -51,8 +51,7 @@ public class AsyncCaller<R> {
 	}
 
 	/**
-	 * Sets the callback to be executed when async task is done without any
-	 * errors.
+	 * Sets the callback to be executed when async task is completed without any errors.
 	 * <p>
 	 * This method wraps the callback using specified CallbackWrapper
 	 *
@@ -78,7 +77,7 @@ public class AsyncCaller<R> {
 	 */
 	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
 	                                                   Consumer<T> callback) {
-		exCallbacks.put(type, callback);
+		exCallbacks.put(type, new ExceptionCallback(callback, true));
 		return this;
 	}
 
@@ -93,23 +92,16 @@ public class AsyncCaller<R> {
 		return except(type, wrapper.wrap(callback));
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
-	                                                        Predicate<T> callback) {
-		exCallbacks.put(type, ex -> {
-			if(callback.test((T)ex))
-				execute();
-		});
+	                                                        Consumer<T> retryCallback) {
+		exCallbacks.put(type, new ExceptionCallback(retryCallback, true));
 		return this;
 	}
 
 	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
-	                                                        Predicate<T> callback,
+	                                                        Consumer<T> callback,
 	                                                        CallbackWrapper wrapper) {
-		return except(type, wrapper.wrap(ex -> {
-			if(callback.test((T)ex))
-				execute();
-		}));
+		return exceptRetry(type, wrapper.wrap(callback));
 	}
 
 	/**
@@ -190,7 +182,7 @@ public class AsyncCaller<R> {
 	}
 
 	/**
-	 * Adds a callback to be always executed regardless of the aync call failing
+	 * Adds a callback to be always executed regardless of the async call failing
 	 *
 	 * @param callback callback to always call
 	 * @return the same AsyncCaller
@@ -201,7 +193,7 @@ public class AsyncCaller<R> {
 	}
 
 	/**
-	 * Adds a callback to be always executed regardless of the aync call failing
+	 * Adds a callback to be always executed regardless of the async call failing
 	 * <p>
 	 * This method wraps the callback using specified CallbackWrapper
 	 *
@@ -213,25 +205,43 @@ public class AsyncCaller<R> {
 		return this;
 	}
 
+	public void cancel() {
+		cancelled = true;
+	}
+
 	/**
 	 * Executes the async call
 	 */
 	public void execute() {
 		called = true;
+
+		if(cancelled)
+			return;
+
 		new Thread(() -> {
 			StackTracker.enter(tracker);
-			try {
-				R value = call.execute();
-				if(callback != null)
-					callback.accept(value);
-			} catch(Exception ex) {
-				StackTracker.appendFullStack(ex);
-				dispatch(ex);
-			} finally {
-				if(finallyCallback != null)
-					finallyCallback.accept(null);
-				StackTracker.exit(tracker);
+			boolean retry;
+			do {
+				retry = false;
+				try {
+					R value = call.execute();
+					if(callback != null && !cancelled)
+						callback.accept(value);
+				} catch(Exception ex) {
+					if(!cancelled) {
+						StackTracker.appendFullStack(ex);
+						retry = dispatch(ex);
+					}
+				} finally {
+					if(!retry && !cancelled)
+					{
+						if(finallyCallback != null)
+							finallyCallback.accept(null);
+						StackTracker.exit(tracker);
+					}
+				}
 			}
+			while(retry && !cancelled);
 		}, "AsyncCaller execution").start();
 	}
 
@@ -243,16 +253,17 @@ public class AsyncCaller<R> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void dispatch(Exception exception) {
+	private boolean dispatch(Exception exception) {
 		for(Entry<Class<? extends Exception>,
-				Consumer<? extends Exception>> entry : exCallbacks.entries()) {
+				ExceptionCallback> entry : exCallbacks.entries()) {
 			if(entry.key.isInstance(exception)) {
-				((Consumer)entry.value).accept(exception);
-				return;
+				((Consumer)entry.value.callback).accept(exception);
+				return entry.value.retry;
 			}
 		}
 
 		logger.error("Unhandled exception in AsyncCaller!", exception);
+		return false;
 	}
 
 	public static void setLogger(Logger logger) {
@@ -399,6 +410,7 @@ public class AsyncCaller<R> {
 		R call(P1 param1, P2 param2, P3 param3, P4 param4) throws Exception;
 	}
 
+	@FunctionalInterface
 	public interface CheckedPentaFunction<P1, P2, P3, P4, P5, R> {
 		R call(P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) throws Exception;
 	}
@@ -428,7 +440,19 @@ public class AsyncCaller<R> {
 		void call(P1 param1, P2 param2, P3 param3, P4 param4) throws Exception;
 	}
 
+	@FunctionalInterface
 	public interface CheckedPentaVoidFunction<P1, P2, P3, P4, P5> {
 		void call(P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) throws Exception;
+	}
+
+	private static class ExceptionCallback {
+		public final Consumer<? extends Exception> callback;
+		public final boolean retry;
+
+		public ExceptionCallback(Consumer<? extends Exception> callback, boolean retry) {
+			ensureNotNull(callback, "callback");
+			this.callback = callback;
+			this.retry = retry;
+		}
 	}
 }
