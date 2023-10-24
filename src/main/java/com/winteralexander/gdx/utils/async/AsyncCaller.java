@@ -3,6 +3,7 @@ package com.winteralexander.gdx.utils.async;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.OrderedMap;
+import com.winteralexander.gdx.utils.SystemUtil;
 import com.winteralexander.gdx.utils.error.StackTracker;
 import com.winteralexander.gdx.utils.error.Tracker;
 import com.winteralexander.gdx.utils.log.Logger;
@@ -21,6 +22,10 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 public class AsyncCaller<R> {
 	private static Logger logger = new NullLogger();
 	private static ObjectSet<AsyncCaller<?>> calls = new ObjectSet<>();
+	/**
+	 * Default delay before retrying a request, in milliseconds
+	 */
+	public static final long DEFAULT_RETRY_DELAY = 50L;
 
 	private final Call<R> call;
 	private Consumer<R> callback;
@@ -77,7 +82,7 @@ public class AsyncCaller<R> {
 	 */
 	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
 	                                                   Consumer<T> callback) {
-		exCallbacks.put(type, new ExceptionCallback(callback, false));
+		exCallbacks.put(type, new ExceptionCallback(callback, -1L));
 		return this;
 	}
 
@@ -110,7 +115,7 @@ public class AsyncCaller<R> {
 	 * @return the same AsyncCaller
 	 */
 	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type) {
-		return exceptRetry(type, ex -> {});
+		return exceptRetry(type, DEFAULT_RETRY_DELAY, ex -> {});
 	}
 
 	/**
@@ -125,10 +130,40 @@ public class AsyncCaller<R> {
 	 */
 	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
 	                                                        Consumer<T> retryCallback) {
-		exCallbacks.put(type, new ExceptionCallback(retryCallback, true));
-		return this;
+		return exceptRetry(type, DEFAULT_RETRY_DELAY, retryCallback);
 	}
 
+	/**
+	 * Adds an automatic retrying behavior on an exception type with an empty callback. Any
+	 * exception matching the specified type exactly or via inheritance will be set to retry.
+	 * Overwrites any previously set callbacks or retry configuration for this exception type.
+	 *
+	 * @param type type to match
+	 * @param retryDelay delay before retrying
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type, long retryDelay) {
+		return exceptRetry(type, retryDelay, ex -> {});
+	}
+
+	/**
+	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
+	 * callback is called everytime the async caller is about to retry the call. Any exception
+	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
+	 * any previously set callbacks or retry configuration for this exception type.
+	 *
+	 * @param type type to match
+	 * @param retryDelay delay before retrying
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
+															long retryDelay,
+	                                                        Consumer<T> retryCallback) {
+		exCallbacks.put(type, new ExceptionCallback(retryCallback, retryDelay));
+		return this;
+	}
 
 	/**
 	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
@@ -276,7 +311,10 @@ public class AsyncCaller<R> {
 				} catch(Exception ex) {
 					if(!cancelled) {
 						StackTracker.appendFullStack(ex);
-						retry = dispatch(ex);
+						long delay = dispatch(ex);
+						retry = delay >= 0;
+						if(retry)
+							SystemUtil.sleepIfRequired(delay);
 					}
 				} finally {
 					if(!retry && !cancelled)
@@ -299,17 +337,17 @@ public class AsyncCaller<R> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private boolean dispatch(Exception exception) {
+	private long dispatch(Exception exception) {
 		for(Entry<Class<? extends Exception>,
 				ExceptionCallback> entry : exCallbacks.entries()) {
 			if(entry.key.isInstance(exception)) {
 				((Consumer)entry.value.callback).accept(exception);
-				return entry.value.retry;
+				return entry.value.retryDelay;
 			}
 		}
 
 		logger.error("Unhandled exception in AsyncCaller!", exception);
-		return false;
+		return -1;
 	}
 
 	public static void setLogger(Logger logger) {
@@ -493,12 +531,15 @@ public class AsyncCaller<R> {
 
 	private static class ExceptionCallback {
 		public final Consumer<? extends Exception> callback;
-		public final boolean retry;
+		/**
+		 * Number of milliseconds before retrying the request, or -1 if not retrying
+		 */
+		public final long retryDelay;
 
-		public ExceptionCallback(Consumer<? extends Exception> callback, boolean retry) {
+		public ExceptionCallback(Consumer<? extends Exception> callback, long retryDelay) {
 			ensureNotNull(callback, "callback");
 			this.callback = callback;
-			this.retry = retry;
+			this.retryDelay = retryDelay;
 		}
 	}
 }
