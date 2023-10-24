@@ -1,30 +1,29 @@
 package com.winteralexander.gdx.utils.async;
 
-import com.winteralexander.gdx.utils.log.Logger;
-
 import java.util.concurrent.Executor;
 
-import static com.winteralexander.gdx.utils.async.AsyncCaller.async;
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
- * Executor that starts new threads everytime
+ * Executor that uses an {@link AsyncCallManager} to execute its runnables
  * <p>
  * Created on 2018-12-23.
  *
  * @author Alexander Winter
  */
 public class AsyncExecutor implements Executor {
-	private final Logger logger;
+	private final AsyncCallManager asyncManager;
 
-	public AsyncExecutor(Logger logger) {
-		this.logger = logger;
+	public AsyncExecutor(AsyncCallManager asyncManager) {
+		ensureNotNull(asyncManager, "asyncManager");
+		this.asyncManager = asyncManager;
 	}
 
 	@Override
 	public void execute(Runnable command) {
-		async(command::run)
-				.except(Exception.class,
-						ex -> logger.error("Exception in AsyncExecutor", ex), GdxCallback.gdxWrapper)
-				.execute();
+		asyncManager.async(command::run)
+		.except(Exception.class,
+				ex -> asyncManager.getLogger().error("Exception in AsyncExecutor", ex))
+		.execute();
 	}
 }

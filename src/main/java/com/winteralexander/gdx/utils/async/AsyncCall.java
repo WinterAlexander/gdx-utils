@@ -1,7 +1,6 @@
 package com.winteralexander.gdx.utils.async;
 
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.winteralexander.gdx.utils.SystemUtil;
 import com.winteralexander.gdx.utils.error.StackTracker;
@@ -11,7 +10,6 @@ import com.winteralexander.gdx.utils.log.NullLogger;
 
 import java.util.function.Consumer;
 
-import static com.winteralexander.gdx.utils.ObjectUtil.firstNonNull;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
@@ -19,14 +17,12 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
  *
  * @param <R> return type of the async call
  */
-public class AsyncCaller<R> {
-	private static Logger logger = new NullLogger();
-	private static ObjectSet<AsyncCaller<?>> calls = new ObjectSet<>();
-	/**
-	 * Default delay before retrying a request, in milliseconds
-	 */
-	public static final long DEFAULT_RETRY_DELAY = 50L;
+public class AsyncCall<R> {
+	private static final AsyncCallManager defaultManager = new AsyncCallManager(new NullLogger(),
+			50L,
+			new ThreadPerTaskExecutor("AsyncCall executor"));
 
+	private final AsyncCallManager manager;
 	private final Call<R> call;
 	private Consumer<R> callback;
 	private Consumer<Void> finallyCallback;
@@ -36,8 +32,10 @@ public class AsyncCaller<R> {
 
 	private final Tracker tracker = StackTracker.cut("AsyncCaller");
 
-	public AsyncCaller(Call<R> call) {
+	public AsyncCall(AsyncCallManager manager, Call<R> call) {
+		ensureNotNull(manager, "manager");
 		ensureNotNull(call, "call");
+		this.manager = manager;
 		this.call = call;
 	}
 
@@ -47,7 +45,7 @@ public class AsyncCaller<R> {
 	 * @param callback callback to be executed
 	 * @return the same AsyncCaller
 	 */
-	public AsyncCaller<R> then(Consumer<R> callback) {
+	public AsyncCall<R> then(Consumer<R> callback) {
 		if(this.callback != null)
 			throw new IllegalStateException("A callback was already set for this call");
 
@@ -64,7 +62,7 @@ public class AsyncCaller<R> {
 	 * @param wrapper  wrapper of the callback
 	 * @return the same AsyncCaller
 	 */
-	public AsyncCaller<R> then(Consumer<R> callback, CallbackWrapper wrapper) {
+	public AsyncCall<R> then(Consumer<R> callback, CallbackWrapper wrapper) {
 		this.callback = wrapper.wrap(callback);
 		return this;
 	}
@@ -80,8 +78,8 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
-	                                                   Consumer<T> callback) {
+	public <T extends Exception> AsyncCall<R> except(Class<T> type,
+	                                                 Consumer<T> callback) {
 		exCallbacks.put(type, new ExceptionCallback(callback, -1L));
 		return this;
 	}
@@ -99,9 +97,9 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<T> type,
-	                                                   Consumer<T> callback,
-	                                                   CallbackWrapper wrapper) {
+	public <T extends Exception> AsyncCall<R> except(Class<T> type,
+	                                                 Consumer<T> callback,
+	                                                 CallbackWrapper wrapper) {
 		return except(type, wrapper.wrap(callback));
 	}
 
@@ -114,8 +112,8 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type) {
-		return exceptRetry(type, DEFAULT_RETRY_DELAY, ex -> {});
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type) {
+		return exceptRetry(type, manager.getDefaultRetryDelay(), ex -> {});
 	}
 
 	/**
@@ -128,9 +126,9 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
-	                                                        Consumer<T> retryCallback) {
-		return exceptRetry(type, DEFAULT_RETRY_DELAY, retryCallback);
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Consumer<T> retryCallback) {
+		return exceptRetry(type, manager.getDefaultRetryDelay(), retryCallback);
 	}
 
 	/**
@@ -143,7 +141,7 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type, long retryDelay) {
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type, long retryDelay) {
 		return exceptRetry(type, retryDelay, ex -> {});
 	}
 
@@ -158,9 +156,9 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
-															long retryDelay,
-	                                                        Consumer<T> retryCallback) {
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      long retryDelay,
+	                                                      Consumer<T> retryCallback) {
 		exCallbacks.put(type, new ExceptionCallback(retryCallback, retryDelay));
 		return this;
 	}
@@ -179,9 +177,9 @@ public class AsyncCaller<R> {
 	 * @param <T> type of the exception
 	 * @return the same AsyncCaller
 	 */
-	public <T extends Exception> AsyncCaller<R> exceptRetry(Class<T> type,
-	                                                        Consumer<T> callback,
-	                                                        CallbackWrapper wrapper) {
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Consumer<T> callback,
+	                                                      CallbackWrapper wrapper) {
 		return exceptRetry(type, wrapper.wrap(callback));
 	}
 
@@ -196,9 +194,9 @@ public class AsyncCaller<R> {
 	 * @param <T>      base type of the exceptions
 	 * @return this AsyncCaller, for chaining
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
-	                                                   Class<? extends T> type2,
-	                                                   Consumer<T> callback) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
+	                                                 Class<? extends T> type2,
+	                                                 Consumer<T> callback) {
 		//noinspection unchecked
 		except((Class<T>)type1, callback);
 		//noinspection unchecked
@@ -211,20 +209,20 @@ public class AsyncCaller<R> {
 	 * <p>
 	 * This method wraps the callback using specified CallbackWrapper.
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
-	                                                   Class<? extends T> type2,
-	                                                   Consumer<T> callback,
-	                                                   CallbackWrapper wrapper) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
+	                                                 Class<? extends T> type2,
+	                                                 Consumer<T> callback,
+	                                                 CallbackWrapper wrapper) {
 		return except(type1, type2, wrapper.wrap(callback));
 	}
 
 	/**
 	 * @see #except(Class, Class, Consumer)
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
-	                                                   Class<? extends T> type2,
-	                                                   Class<? extends T> type3,
-	                                                   Consumer<T> callback) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
+	                                                 Class<? extends T> type2,
+	                                                 Class<? extends T> type3,
+	                                                 Consumer<T> callback) {
 		//noinspection unchecked
 		except((Class<T>)type1, callback);
 		//noinspection unchecked
@@ -239,16 +237,16 @@ public class AsyncCaller<R> {
 	 * <p>
 	 * This method wraps the callback using specified CallbackWrapper.
 	 */
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T> type1,
-	                                                   Class<? extends T> type2,
-	                                                   Class<? extends T> type3,
-	                                                   Consumer<T> callback,
-	                                                   CallbackWrapper wrapper) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
+	                                                 Class<? extends T> type2,
+	                                                 Class<? extends T> type3,
+	                                                 Consumer<T> callback,
+	                                                 CallbackWrapper wrapper) {
 		return except(type1, type2, type3, wrapper.wrap(callback));
 	}
 
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T>[] types,
-	                                                   Consumer<T> callback) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T>[] types,
+	                                                 Consumer<T> callback) {
 		for(Class<? extends T> type : types) {
 			//noinspection unchecked
 			except((Class<T>)type, callback);
@@ -256,9 +254,9 @@ public class AsyncCaller<R> {
 		return this;
 	}
 
-	public <T extends Exception> AsyncCaller<R> except(Class<? extends T>[] types,
-	                                                   Consumer<T> callback,
-	                                                   CallbackWrapper wrapper) {
+	public <T extends Exception> AsyncCall<R> except(Class<? extends T>[] types,
+	                                                 Consumer<T> callback,
+	                                                 CallbackWrapper wrapper) {
 		return except(types, wrapper.wrap(callback));
 	}
 
@@ -268,7 +266,7 @@ public class AsyncCaller<R> {
 	 * @param callback callback to always call
 	 * @return the same AsyncCaller
 	 */
-	public AsyncCaller<R> always(Runnable callback) {
+	public AsyncCall<R> always(Runnable callback) {
 		this.finallyCallback = v -> callback.run();
 		return this;
 	}
@@ -281,13 +279,42 @@ public class AsyncCaller<R> {
 	 * @param callback callback to always call
 	 * @return the same AsyncCaller
 	 */
-	public AsyncCaller<R> always(Runnable callback, CallbackWrapper wrapper) {
+	public AsyncCall<R> always(Runnable callback, CallbackWrapper wrapper) {
 		this.finallyCallback = wrapper.wrap(v -> callback.run());
 		return this;
 	}
 
 	public void cancel() {
 		cancelled = true;
+	}
+
+	private void run() {
+		StackTracker.enter(tracker);
+		boolean retry;
+		do {
+			retry = false;
+			try {
+				R value = call.execute();
+				if(callback != null && !cancelled)
+					callback.accept(value);
+			} catch(Exception ex) {
+				if(!cancelled) {
+					StackTracker.appendFullStack(ex);
+					long delay = dispatch(ex);
+					retry = delay >= 0;
+					if(retry)
+						SystemUtil.sleepIfRequired(delay);
+				}
+			} finally {
+				if(!retry && !cancelled)
+				{
+					if(finallyCallback != null)
+						finallyCallback.accept(null);
+					StackTracker.exit(tracker);
+				}
+			}
+		}
+		while(retry && !cancelled);
 	}
 
 	/**
@@ -299,41 +326,14 @@ public class AsyncCaller<R> {
 		if(cancelled)
 			return;
 
-		new Thread(() -> {
-			StackTracker.enter(tracker);
-			boolean retry;
-			do {
-				retry = false;
-				try {
-					R value = call.execute();
-					if(callback != null && !cancelled)
-						callback.accept(value);
-				} catch(Exception ex) {
-					if(!cancelled) {
-						StackTracker.appendFullStack(ex);
-						long delay = dispatch(ex);
-						retry = delay >= 0;
-						if(retry)
-							SystemUtil.sleepIfRequired(delay);
-					}
-				} finally {
-					if(!retry && !cancelled)
-					{
-						if(finallyCallback != null)
-							finallyCallback.accept(null);
-						StackTracker.exit(tracker);
-					}
-				}
-			}
-			while(retry && !cancelled);
-		}, "AsyncCaller execution").start();
+		manager.getExecutor().execute(this::run);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void finalize() {
 		if(!called)
-			logger.error("AsyncCaller was destroyed without ever being executed !", tracker.get());
+			manager.getLogger().error("AsyncCaller was destroyed without ever being executed !", tracker.get());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -346,12 +346,12 @@ public class AsyncCaller<R> {
 			}
 		}
 
-		logger.error("Unhandled exception in AsyncCaller!", exception);
+		manager.getLogger().error("Unhandled exception in AsyncCaller", exception);
 		return -1;
 	}
 
 	public static void setLogger(Logger logger) {
-		AsyncCaller.logger = firstNonNull(logger, new NullLogger());
+		defaultManager.setLogger(logger);
 	}
 
 	/**
@@ -360,11 +360,8 @@ public class AsyncCaller<R> {
 	 * @param function function with no params
 	 * @return AsyncCaller of the function
 	 */
-	public static AsyncCaller<Void> async(CheckedVoidAction function) {
-		return new AsyncCaller<>(() -> {
-			function.call();
-			return null;
-		});
+	public static AsyncCall<Void> async(CheckedVoidAction function) {
+		return defaultManager.async(function);
 	}
 
 	/**
@@ -374,8 +371,8 @@ public class AsyncCaller<R> {
 	 * @param <R>      return type of function
 	 * @return AsyncCaller of the function
 	 */
-	public static <R> AsyncCaller<R> async(CheckedSupplier<R> function) {
-		return new AsyncCaller<>(function::call);
+	public static <R> AsyncCall<R> async(CheckedSupplier<R> function) {
+		return defaultManager.async(function);
 	}
 
 	/**
@@ -387,74 +384,55 @@ public class AsyncCaller<R> {
 	 * @param <R>      result type of the function
 	 * @return AsyncCaller of the function
 	 */
-	public static <P, R> AsyncCaller<R> async(CheckedFunction<P, R> function, P param) {
-		return new AsyncCaller<>(() -> function.call(param));
+	public static <P, R> AsyncCall<R> async(CheckedFunction<P, R> function, P param) {
+		return defaultManager.async(function, param);
 	}
 
-	public static <P1, P2, R> AsyncCaller<R> async(CheckedBiFunction<P1, P2, R> function,
-	                                               P1 param1, P2 param2) {
-		return new AsyncCaller<>(() -> function.call(param1, param2));
+	public static <P1, P2, R> AsyncCall<R> async(CheckedBiFunction<P1, P2, R> function,
+	                                             P1 param1, P2 param2) {
+		return defaultManager.async(function, param1, param2);
 	}
 
-	public static <P1, P2, P3, R> AsyncCaller<R> async(CheckedTriFunction<P1, P2, P3, R> function,
-	                                                   P1 param1, P2 param2, P3 param3) {
-		return new AsyncCaller<>(() -> function.call(param1, param2, param3));
+	public static <P1, P2, P3, R> AsyncCall<R> async(CheckedTriFunction<P1, P2, P3, R> function,
+	                                                 P1 param1, P2 param2, P3 param3) {
+		return defaultManager.async(function, param1, param2, param3);
 	}
 
-	public static <P1, P2, P3, P4, R>
-	AsyncCaller<R> async(CheckedQuadriFunction<P1, P2, P3, P4, R> function,
-	                     P1 param1, P2 param2, P3 param3, P4 param4) {
-		return new AsyncCaller<>(() -> function.call(param1, param2, param3, param4));
+	public static <P1, P2, P3, P4, R> AsyncCall<R> async(CheckedQuadriFunction<P1, P2, P3, P4, R> function,
+	                                                     P1 param1, P2 param2, P3 param3, P4 param4) {
+		return defaultManager.async(function, param1, param2, param3, param4);
 	}
 
-	public static <P1, P2, P3, P4, P5, R>
-	AsyncCaller<R> async(CheckedPentaFunction<P1, P2, P3, P4, P5, R> function,
-	                     P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
-		return new AsyncCaller<>(() -> function.call(param1, param2, param3, param4, param5));
+	public static <P1, P2, P3, P4, P5, R> AsyncCall<R> async(CheckedPentaFunction<P1, P2, P3, P4, P5, R> function,
+	                                                         P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+		return defaultManager.async(function, param1, param2, param3, param4, param5);
 	}
 
-	public static <P> AsyncCaller<Void> async(CheckedVoidFunction<P> function, P param) {
-		return new AsyncCaller<>(() -> {
-			function.call(param);
-			return null;
-		});
+	public static <P> AsyncCall<Void> async(CheckedVoidFunction<P> function, P param) {
+		return defaultManager.async(function, param);
 	}
 
-	public static <P1, P2> AsyncCaller<Void> async(CheckedBiVoidFunction<P1, P2> function,
-	                                               P1 param1,
-	                                               P2 param2) {
-		return new AsyncCaller<>(() -> {
-			function.call(param1, param2);
-			return null;
-		});
+	public static <P1, P2> AsyncCall<Void> async(CheckedBiVoidFunction<P1, P2> function,
+	                                             P1 param1,
+	                                             P2 param2) {
+		return defaultManager.async(function, param1, param2);
 	}
 
-	public static <P1, P2, P3> AsyncCaller<Void> async(CheckedTriVoidFunction<P1, P2, P3> function,
-	                                                   P1 param1,
-	                                                   P2 param2,
-	                                                   P3 param3) {
-		return new AsyncCaller<>(() -> {
-			function.call(param1, param2, param3);
-			return null;
-		});
+	public static <P1, P2, P3> AsyncCall<Void> async(CheckedTriVoidFunction<P1, P2, P3> function,
+	                                                 P1 param1,
+	                                                 P2 param2,
+	                                                 P3 param3) {
+		return defaultManager.async(function, param1, param2, param3);
 	}
 
-	public static <P1, P2, P3, P4>
-	AsyncCaller<Void> async(CheckedQuadriVoidFunction<P1, P2, P3, P4> function,
-	                        P1 param1, P2 param2, P3 param3, P4 param4) {
-		return new AsyncCaller<>(() -> {
-			function.call(param1, param2, param3, param4);
-			return null;
-		});
+	public static <P1, P2, P3, P4> AsyncCall<Void> async(CheckedQuadriVoidFunction<P1, P2, P3, P4> function,
+	                                                     P1 param1, P2 param2, P3 param3, P4 param4) {
+		return defaultManager.async(function, param1, param2, param3, param4);
 	}
 
-	public static <P1, P2, P3, P4, P5>
-	AsyncCaller<Void> async(CheckedPentaVoidFunction<P1, P2, P3, P4, P5> function,
-	                        P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
-		return new AsyncCaller<>(() -> {
-			function.call(param1, param2, param3, param4, param5);
-			return null;
-		});
+	public static <P1, P2, P3, P4, P5> AsyncCall<Void> async(CheckedPentaVoidFunction<P1, P2, P3, P4, P5> function,
+	                                                         P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+		return defaultManager.async(function, param1, param2, param3, param4, param5);
 	}
 
 	/**
