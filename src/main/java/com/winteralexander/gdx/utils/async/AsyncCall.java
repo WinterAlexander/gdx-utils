@@ -30,6 +30,8 @@ public class AsyncCall<R> {
 	private boolean called = false;
 	private volatile boolean cancelled = false;
 
+	private long retryDelay;
+
 	private final Tracker tracker = StackTracker.cut("AsyncCaller");
 
 	public AsyncCall(AsyncCallManager manager, Call<R> call) {
@@ -37,6 +39,7 @@ public class AsyncCall<R> {
 		ensureNotNull(call, "call");
 		this.manager = manager;
 		this.call = call;
+		this.retryDelay = manager.getDefaultRetryDelay();
 	}
 
 	/**
@@ -80,7 +83,7 @@ public class AsyncCall<R> {
 	 */
 	public <T extends Exception> AsyncCall<R> except(Class<T> type,
 	                                                 Consumer<T> callback) {
-		exCallbacks.put(type, new ExceptionCallback(callback, -1L));
+		exCallbacks.put(type, new ExceptionCallback(callback, false));
 		return this;
 	}
 
@@ -136,149 +139,6 @@ public class AsyncCall<R> {
 	                                                 Runnable callback,
 	                                                 CallbackWrapper wrapper) {
 		return except(type, wrapper.wrap(ex -> callback.run()));
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with an empty callback. Any
-	 * exception matching the specified type exactly or via inheritance will be set to retry.
-	 * Overwrites any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type) {
-		return exceptRetry(type, manager.getDefaultRetryDelay(), ex -> {});
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param retryCallback callback called once per retry attempt
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      Consumer<T> retryCallback) {
-		return exceptRetry(type, manager.getDefaultRetryDelay(), retryCallback);
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param retryCallback callback called once per retry attempt
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      Runnable retryCallback) {
-		return exceptRetry(type, ex -> retryCallback.run());
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with an empty callback. Any
-	 * exception matching the specified type exactly or via inheritance will be set to retry.
-	 * Overwrites any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param retryDelay delay before retrying
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type, long retryDelay) {
-		return exceptRetry(type, retryDelay, ex -> {});
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param retryDelay delay before retrying
-	 * @param retryCallback callback called once per retry attempt
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      long retryDelay,
-	                                                      Consumer<T> retryCallback) {
-		exCallbacks.put(type, new ExceptionCallback(retryCallback, retryDelay));
-		return this;
-	}
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 *
-	 * @param type type to match
-	 * @param retryDelay delay before retrying
-	 * @param retryCallback callback called once per retry attempt
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      long retryDelay,
-	                                                      Runnable retryCallback) {
-		exCallbacks.put(type, new ExceptionCallback(ex -> retryCallback.run(), retryDelay));
-		return this;
-	}
-
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 * <p>
-	 * This method wraps the callback using specified CallbackWrapper. Note that since the callback
-	 * is wrapped, the code executed for callback may be run in another thread and end up executing
-	 * after the async caller has restarted for its retry attempt.
-	 *
-	 * @param type type to match
-	 * @param retryCallback callback called once per retry attempt
-	 * @param wrapper to wrap the callback
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      Consumer<T> retryCallback,
-	                                                      CallbackWrapper wrapper) {
-		return exceptRetry(type, wrapper.wrap(retryCallback));
-	}
-
-
-	/**
-	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
-	 * callback is called everytime the async caller is about to retry the call. Any exception
-	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
-	 * any previously set callbacks or retry configuration for this exception type.
-	 * <p>
-	 * This method wraps the callback using specified CallbackWrapper. Note that since the callback
-	 * is wrapped, the code executed for callback may be run in another thread and end up executing
-	 * after the async caller has restarted for its retry attempt.
-	 *
-	 * @param type type to match
-	 * @param retryCallback callback called once per retry attempt
-	 * @param wrapper to wrap the callback
-	 * @param <T> type of the exception
-	 * @return the same AsyncCaller
-	 */
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
-	                                                      Runnable retryCallback,
-	                                                      CallbackWrapper wrapper) {
-		return exceptRetry(type, wrapper.wrap(ex -> retryCallback.run()));
 	}
 
 	/**
@@ -431,6 +291,134 @@ public class AsyncCall<R> {
 	}
 
 	/**
+	 * Adds an automatic retrying behavior on an exception type with an empty callback. Any
+	 * exception matching the specified type exactly or via inheritance will be set to retry.
+	 * Overwrites any previously set callbacks or retry configuration for this exception type.
+	 *
+	 * @param type type to match
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type) {
+		return exceptRetry(type, ex -> {});
+	}
+
+	/**
+	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
+	 * callback is called everytime the async caller is about to retry the call. Any exception
+	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
+	 * any previously set callbacks or retry configuration for this exception type.
+	 *
+	 * @param type type to match
+	 * @param retryCallback callback called once per retry attempt
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Consumer<T> retryCallback) {
+		exCallbacks.put(type, new ExceptionCallback(retryCallback, true));
+		return this;
+	}
+
+	/**
+	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
+	 * callback is called everytime the async caller is about to retry the call. Any exception
+	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
+	 * any previously set callbacks or retry configuration for this exception type.
+	 *
+	 * @param type type to match
+	 * @param retryCallback callback called once per retry attempt
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Runnable retryCallback) {
+		return exceptRetry(type, ex -> retryCallback.run());
+	}
+
+
+	/**
+	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
+	 * callback is called everytime the async caller is about to retry the call. Any exception
+	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
+	 * any previously set callbacks or retry configuration for this exception type.
+	 * <p>
+	 * This method wraps the callback using specified CallbackWrapper. Note that since the callback
+	 * is wrapped, the code executed for callback may be run in another thread and end up executing
+	 * after the async caller has restarted for its retry attempt.
+	 *
+	 * @param type type to match
+	 * @param retryCallback callback called once per retry attempt
+	 * @param wrapper to wrap the callback
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Consumer<T> retryCallback,
+	                                                      CallbackWrapper wrapper) {
+		return exceptRetry(type, wrapper.wrap(retryCallback));
+	}
+
+
+	/**
+	 * Adds an automatic retrying behavior on an exception type with a provided callback. The
+	 * callback is called everytime the async caller is about to retry the call. Any exception
+	 * matching the specified type exactly or via inheritance will be set to retry. Overwrites
+	 * any previously set callbacks or retry configuration for this exception type.
+	 * <p>
+	 * This method wraps the callback using specified CallbackWrapper. Note that since the callback
+	 * is wrapped, the code executed for callback may be run in another thread and end up executing
+	 * after the async caller has restarted for its retry attempt.
+	 *
+	 * @param type type to match
+	 * @param retryCallback callback called once per retry attempt
+	 * @param wrapper to wrap the callback
+	 * @param <T> type of the exception
+	 * @return the same AsyncCaller
+	 */
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<T> type,
+	                                                      Runnable retryCallback,
+	                                                      CallbackWrapper wrapper) {
+		return exceptRetry(type, wrapper.wrap(ex -> retryCallback.run()));
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
+	                                                      Consumer<T> callback) {
+		for(Class<? extends T> type : types) {
+			//noinspection unchecked
+			exceptRetry((Class<T>)type, callback);
+		}
+		return this;
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
+	                                                      Runnable callback) {
+		for(Class<? extends T> type : types) {
+			//noinspection unchecked
+			exceptRetry((Class<T>)type, callback);
+		}
+		return this;
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
+	                                                      Consumer<T> callback,
+	                                                      CallbackWrapper wrapper) {
+		return exceptRetry(types, wrapper.wrap(callback));
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
+	                                                      Runnable callback,
+	                                                      CallbackWrapper wrapper) {
+		return exceptRetry(types, wrapper.wrap(ex -> callback.run()));
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types) {
+		for(Class<? extends T> type : types)
+			exceptRetry(type);
+		return this;
+	}
+
+	/**
 	 * Adds a callback to be always executed regardless of the async call failing
 	 *
 	 * @param callback callback to always call
@@ -470,10 +458,9 @@ public class AsyncCall<R> {
 			} catch(Exception ex) {
 				if(!cancelled) {
 					StackTracker.appendFullStack(ex);
-					long delay = dispatch(ex);
-					retry = delay >= 0;
+					retry = dispatch(ex);
 					if(retry)
-						SystemUtil.sleepIfRequired(delay);
+						SystemUtil.sleepIfRequired(retryDelay);
 				}
 			} finally {
 				if(!retry && !cancelled)
@@ -507,21 +494,30 @@ public class AsyncCall<R> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private long dispatch(Exception exception) {
+	private boolean dispatch(Exception exception) {
 		for(Entry<Class<? extends Exception>,
 				ExceptionCallback> entry : exCallbacks.entries()) {
 			if(entry.key.isInstance(exception)) {
 				((Consumer)entry.value.callback).accept(exception);
-				return entry.value.retryDelay;
+				return entry.value.retry;
 			}
 		}
 
 		manager.getLogger().error("Unhandled exception in AsyncCaller", exception);
-		return -1;
+		return false;
 	}
 
 	public static void setLogger(Logger logger) {
 		defaultManager.setLogger(logger);
+	}
+
+	public long getRetryDelay() {
+		return retryDelay;
+	}
+
+	public AsyncCall<R> retryDelay(long retryDelay) {
+		this.retryDelay = retryDelay;
+		return this;
 	}
 
 	/**
@@ -682,12 +678,12 @@ public class AsyncCall<R> {
 		/**
 		 * Number of milliseconds before retrying the request, or -1 if not retrying
 		 */
-		public final long retryDelay;
+		public final boolean retry;
 
-		public ExceptionCallback(Consumer<? extends Exception> callback, long retryDelay) {
+		public ExceptionCallback(Consumer<? extends Exception> callback, boolean retry) {
 			ensureNotNull(callback, "callback");
 			this.callback = callback;
-			this.retryDelay = retryDelay;
+			this.retry = retry;
 		}
 	}
 }
