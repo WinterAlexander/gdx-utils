@@ -236,6 +236,11 @@ public class CollectionUtil {
 		return array;
 	}
 
+	@SafeVarargs
+	public static <T> T[] toArray(T... values) {
+		return values;
+	}
+
 	public static <T> T[] toArray(Class<T> type, Iterable<T> iterable) {
 		return toArray(type, iterable.iterator());
 	}
