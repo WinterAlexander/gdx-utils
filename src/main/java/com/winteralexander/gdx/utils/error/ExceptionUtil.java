@@ -6,6 +6,8 @@ import com.winteralexander.gdx.utils.Validation;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
+
 /**
  * Utility class to do operations with Exceptions or Throwables
  * <p>
@@ -17,7 +19,7 @@ public class ExceptionUtil {
 	private ExceptionUtil() {}
 
 	public static int getDepth(Throwable throwable) {
-		Validation.ensureNotNull(throwable, "throwable");
+		ensureNotNull(throwable, "throwable");
 		int depth = 0;
 		while(throwable.getCause() != null) {
 			depth++;
@@ -67,6 +69,19 @@ public class ExceptionUtil {
 		} catch(Throwable ex) {
 			return true;
 		}
+	}
+
+	/**
+	 * Throws the specified exception while bypassing Java's checked system. Allows for throwing
+	 * checked exceptions in a function that is not marked as throwing those exceptions.
+	 *
+	 * @param ex exception to throw
+	 * @param <E> implementation detail needed for bypass to work
+	 * @throws E implementation detail needed for bypass to work
+	 */
+	@SuppressWarnings("unchecked")
+	public static <E extends Throwable> void bypassThrow(Exception ex) throws E {
+		throw (E) ex;
 	}
 
 	@FunctionalInterface
