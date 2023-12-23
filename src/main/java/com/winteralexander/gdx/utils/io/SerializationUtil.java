@@ -315,4 +315,49 @@ public class SerializationUtil {
 		else
 			writePrimitive(stream, thing);
 	}
+
+	public static void writeMany(OutputStream stream, Object first, Object second)
+			throws IOException {
+		writeAny(stream, first);
+		writeAny(stream, second);
+	}
+
+	public static void writeMany(OutputStream stream, Object first, Object second, Object third)
+			throws IOException {
+		writeAny(stream, first);
+		writeAny(stream, second);
+		writeAny(stream, third);
+	}
+
+	public static void writeMany(OutputStream stream,
+	                             Object first,
+	                             Object second,
+	                             Object third,
+	                             Object fourth)
+			throws IOException {
+		writeAny(stream, first);
+		writeAny(stream, second);
+		writeAny(stream, third);
+		writeAny(stream, fourth);
+	}
+
+	public static void writeMany(OutputStream stream,
+	                             Object first,
+	                             Object second,
+	                             Object third,
+								 Object fourth,
+	                             Object fifth)
+			throws IOException {
+		writeAny(stream, first);
+		writeAny(stream, second);
+		writeAny(stream, third);
+		writeAny(stream, fourth);
+		writeAny(stream, fifth);
+	}
+
+	public static void writeMany(OutputStream stream, Object... things) throws IOException {
+		for(Object thing : things)
+			writeAny(stream, thing);
+	}
+
 }
