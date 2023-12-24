@@ -29,7 +29,7 @@ public class SerializationUtil {
 	private static final byte NULL_T = 6;
 
 	public static <T extends Readable> T readSerializable(InputStream inputStream,
-	                                                      Class<T> type) throws IOException {
+														  Class<T> type) throws IOException {
 		T newInstance;
 		try {
 			newInstance = type.getDeclaredConstructor().newInstance();
@@ -42,8 +42,8 @@ public class SerializationUtil {
 	}
 
 	public static <T> void readSmallArray(InputStream stream,
-	                                      Class<T> type,
-	                                      Array<T> out) throws IOException {
+										  Class<T> type,
+										  Array<T> out) throws IOException {
 		out.clear();
 		int size = readShort(stream);
 		out.ensureCapacity(size);
@@ -52,15 +52,15 @@ public class SerializationUtil {
 	}
 
 	public static void writeSmallArray(OutputStream stream,
-	                                   Array<?> array) throws IOException {
+									   Array<?> array) throws IOException {
 		writeShort(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeAny(stream, array.get(i));
 	}
 
 	public static <T> void readArray(InputStream stream,
-	                                 Class<T> type,
-	                                 Array<T> out) throws IOException {
+									 Class<T> type,
+									 Array<T> out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -69,16 +69,16 @@ public class SerializationUtil {
 	}
 
 	public static void writeArray(OutputStream stream,
-	                              Array<?> array) throws IOException {
+								  Array<?> array) throws IOException {
 		writeInt(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeAny(stream, array.get(i));
 	}
 
 	public static <K, V> void readMap(InputStream stream,
-	                                  Class<K> keyType,
-	                                  Class<V> valueType,
-	                                  ObjectMap<K, V> out) throws IOException {
+									  Class<K> keyType,
+									  Class<V> valueType,
+									  ObjectMap<K, V> out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -87,7 +87,7 @@ public class SerializationUtil {
 	}
 
 	public static void writeMap(OutputStream stream,
-	                            ObjectMap<?, ?> map) throws IOException {
+								ObjectMap<?, ?> map) throws IOException {
 		writeInt(stream, map.size);
 		for(ObjectMap.Entry<?, ?> entry : map.entries()) {
 			writeAny(stream, entry.key);
@@ -96,29 +96,29 @@ public class SerializationUtil {
 	}
 
 	public static void readColor(InputStream stream,
-	                             Color out) throws IOException {
+								 Color out) throws IOException {
 		Color.argb8888ToColor(out, readInt(stream));
 	}
 
 	public static void writeColor(OutputStream stream,
-	                              Color color) throws IOException {
+								  Color color) throws IOException {
 		writeInt(stream, Color.argb8888(color));
 	}
 
 	public static void readRGB(InputStream stream,
-	                           Color out) throws IOException {
+							   Color out) throws IOException {
 		float prevA = out.a;
 		Color.argb8888ToColor(out, readInt24(stream));
 		out.a = prevA;
 	}
 
 	public static void writeRGB(OutputStream stream,
-	                            Color color) throws IOException {
+								Color color) throws IOException {
 		writeInt24(stream, Color.argb8888(color));
 	}
 
 	public static void readBuffered(InputStream stream,
-	                                Readable serializable) throws IOException {
+									Readable serializable) throws IOException {
 		int size = readInt(stream);
 
 		if(size < 0)
@@ -141,7 +141,7 @@ public class SerializationUtil {
 	}
 
 	public static void writeBuffered(OutputStream stream,
-	                                 Writable serializable) throws IOException {
+									 Writable serializable) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		serializable.writeTo(baos);
 		writeInt(stream, baos.size());
@@ -150,7 +150,7 @@ public class SerializationUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T readPrimitive(InputStream stream,
-	                                  Class<T> type) throws IOException {
+									  Class<T> type) throws IOException {
 		if(type == int.class || type == Integer.class)
 			return (T)Integer.valueOf(readInt(stream));
 
@@ -179,7 +179,7 @@ public class SerializationUtil {
 	}
 
 	public static void writePrimitive(OutputStream outputStream,
-	                                  Object primitive) throws IOException {
+									  Object primitive) throws IOException {
 		if(primitive instanceof Integer)
 			writeInt(outputStream, (Integer)primitive);
 
@@ -330,10 +330,10 @@ public class SerializationUtil {
 	}
 
 	public static void writeMany(OutputStream stream,
-	                             Object first,
-	                             Object second,
-	                             Object third,
-	                             Object fourth)
+								 Object first,
+								 Object second,
+								 Object third,
+								 Object fourth)
 			throws IOException {
 		writeAny(stream, first);
 		writeAny(stream, second);
@@ -342,11 +342,11 @@ public class SerializationUtil {
 	}
 
 	public static void writeMany(OutputStream stream,
-	                             Object first,
-	                             Object second,
-	                             Object third,
+								 Object first,
+								 Object second,
+								 Object third,
 								 Object fourth,
-	                             Object fifth)
+								 Object fifth)
 			throws IOException {
 		writeAny(stream, first);
 		writeAny(stream, second);
@@ -359,5 +359,4 @@ public class SerializationUtil {
 		for(Object thing : things)
 			writeAny(stream, thing);
 	}
-
 }
