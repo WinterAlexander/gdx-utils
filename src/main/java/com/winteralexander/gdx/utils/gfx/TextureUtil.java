@@ -2,8 +2,16 @@ package com.winteralexander.gdx.utils.gfx;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.zip.Deflater;
 
 /**
  * Utility class to interact with textures and texture regions
@@ -79,5 +87,21 @@ public class TextureUtil {
 
 		//set blending back to default
 		p.setBlending(Pixmap.Blending.SourceOver);
+	}
+
+	public static BufferedImage toBufferedImage(Pixmap pixmap) throws IOException {
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+			PixmapIO.PNG writer = new PixmapIO.PNG(pixmap.getWidth() * pixmap.getHeight() * 4);
+			try {
+				writer.setFlipY(false);
+				writer.setCompression(Deflater.NO_COMPRESSION);
+				writer.write(baos, pixmap);
+			} finally {
+				writer.dispose();
+			}
+
+			return ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
+		}
 	}
 }
