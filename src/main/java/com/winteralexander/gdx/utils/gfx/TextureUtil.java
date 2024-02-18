@@ -90,18 +90,17 @@ public class TextureUtil {
 	}
 
 	public static BufferedImage toBufferedImage(Pixmap pixmap) throws IOException {
-		try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			PixmapIO.PNG writer = new PixmapIO.PNG(pixmap.getWidth() * pixmap.getHeight() * 4);
-			try {
-				writer.setFlipY(false);
-				writer.setCompression(Deflater.NO_COMPRESSION);
-				writer.write(baos, pixmap);
-			} finally {
-				writer.dispose();
-			}
-
-			return ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
+		PixmapIO.PNG writer = new PixmapIO.PNG(pixmap.getWidth() * pixmap.getHeight() * 4);
+		try {
+			writer.setFlipY(false);
+			writer.setCompression(Deflater.NO_COMPRESSION);
+			writer.write(baos, pixmap);
+		} finally {
+			writer.dispose();
 		}
+
+		return ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
 	}
 }
