@@ -59,6 +59,9 @@ public class TextureUtil {
 				region.getRegionWidth(),
 				region.getRegionHeight());
 
+		if(region.getTexture().getTextureData().disposePixmap())
+			texPixmap.dispose();
+
 		return pixmap;
 	}
 
