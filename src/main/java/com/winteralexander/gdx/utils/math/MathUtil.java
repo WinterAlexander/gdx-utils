@@ -232,7 +232,7 @@ public class MathUtil {
 		if(py < y)
 			closestY = y;
 
-		return pow2(x - closestX) + pow2(y - closestY);
+		return pow2(px - closestX) + pow2(py - closestY);
 	}
 
 	public static float distanceSquaredToAABB(Vector2 point,
