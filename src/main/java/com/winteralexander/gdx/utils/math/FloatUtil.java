@@ -39,20 +39,32 @@ public strictfp class FloatUtil {
 	}
 
 	public static float max(float a, float b) {
-		return (a >= b) ? a : b;
+		return a >= b ? a : b;
 	}
 
 	public static float max(float a, float b, float c) {
-		float a1 = (a >= b) ? a : b;
-		return (a1 >= c) ? a1 : c;
+		float a1 = a >= b ? a : b;
+		return a1 >= c ? a1 : c;
+	}
+
+	public static float max(float a, float b, float c, float d) {
+		float a1 = a >= b ? a : b;
+		float b1 = c >= d ? c : d;
+		return a1 >= b1 ? a1 : b1;
 	}
 
 	public static float min(float a, float b) {
-		return (a <= b) ? a : b;
+		return a <= b ? a : b;
 	}
 
 	public static float min(float a, float b, float c) {
-		float a1 = (a <= b) ? a : b;
-		return (a1 <= c) ? a1 : c;
+		float a1 = a <= b ? a : b;
+		return a1 <= c ? a1 : c;
+	}
+
+	public static float min(float a, float b, float c, float d) {
+		float a1 = a <= b ? a : b;
+		float b1 = c <= d ? c : d;
+		return a1 <= b1 ? a1 : b1;
 	}
 }
