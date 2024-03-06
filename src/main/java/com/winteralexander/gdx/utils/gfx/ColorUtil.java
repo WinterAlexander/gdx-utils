@@ -48,4 +48,8 @@ public class ColorUtil {
 	public static Color randomRGBColor() {
 		return randomRGBColor(new Color());
 	}
+
+	public static Color div(Color dividend, Color divisor) {
+		return dividend.mul(1.0f / divisor.r, 1.0f / divisor.g, 1.0f / divisor.b, 1.0f / divisor.a);
+	}
 }
