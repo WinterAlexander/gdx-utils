@@ -52,9 +52,25 @@ public class Vector3i implements IntVector<Vector3i> {
 		return this;
 	}
 
+	public Vector3i set(float x, float y, float z) {
+		return set(x, y, z, 1);
+	}
+
+	public Vector3i set(float x, float y, float z, int unitSize) {
+		return set(Math.round(x * unitSize), Math.round(y * unitSize), Math.round(z * unitSize));
+	}
+
 	@Override
 	public Vector3i set(Vector3i v) {
 		return set(v.x, v.y, v.z);
+	}
+
+	public Vector3i set(Vector3 vec) {
+		return set(vec.x, vec.y, vec.z);
+	}
+
+	public Vector3i set(Vector3 vec, int unitSize) {
+		return set(vec.x, vec.y, vec.z, unitSize);
 	}
 
 	public boolean equals(int x, int y, int z) {
@@ -194,5 +210,20 @@ public class Vector3i implements IntVector<Vector3i> {
 
 	public Vector3i mulAdd(Vector3i v, Vector3 mulVec) {
 		return mulAdd(v, mulVec.x, mulVec.y, mulVec.z);
+	}
+
+	public Vector3 toVec3() {
+		return toVec3(new Vector3());
+	}
+
+	public Vector3 toVec3(Vector3 out) {
+		return toVec3(out, 1);
+	}
+
+	public Vector3 toVec3(Vector3 out, int unitSize) {
+		out.x = (float)x / unitSize;
+		out.y = (float)y / unitSize;
+		out.z = (float)z / unitSize;
+		return out;
 	}
 }
