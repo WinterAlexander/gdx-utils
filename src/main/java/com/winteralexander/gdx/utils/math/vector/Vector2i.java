@@ -53,6 +53,22 @@ public class Vector2i implements IntVector<Vector2i> {
 		return set(v.x, v.y);
 	}
 
+	public Vector2i set(float x, float y) {
+		return set(x, y, 1);
+	}
+
+	public Vector2i set(float x, float y, int unitSize) {
+		return set(Math.round(x * unitSize), Math.round(y * unitSize));
+	}
+
+	public Vector2i set(Vector2 vec) {
+		return set(vec.x, vec.y);
+	}
+
+	public Vector2i set(Vector2 vec, int unitSize) {
+		return set(vec.x, vec.y, unitSize);
+	}
+
 	public Vector2i add(int x, int y) {
 		this.x += x;
 		this.y += y;
@@ -171,5 +187,19 @@ public class Vector2i implements IntVector<Vector2i> {
 		this.x += Math.round(v.x * mulVec.x);
 		this.y += Math.round(v.y * mulVec.y);
 		return this;
+	}
+
+	public Vector2 toVec2() {
+		return toVec2(new Vector2());
+	}
+
+	public Vector2 toVec2(Vector2 out) {
+		return toVec2(out, 1);
+	}
+
+	public Vector2 toVec2(Vector2 out, int unitSize) {
+		out.x = (float)x / unitSize;
+		out.y = (float)y / unitSize;
+		return out;
 	}
 }
