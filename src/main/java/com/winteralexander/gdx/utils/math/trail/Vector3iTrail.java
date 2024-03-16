@@ -1,6 +1,5 @@
 package com.winteralexander.gdx.utils.math.trail;
 
-import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import com.winteralexander.gdx.utils.math.vector.Vector3i;
 
 import java.io.IOException;

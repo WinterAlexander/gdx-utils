@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.math.vector;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.winteralexander.gdx.utils.io.Serializable;
 
 /**
  * A vector made with integer components
@@ -9,7 +10,7 @@ import com.badlogic.gdx.math.Interpolation;
  *
  * @author Alexander Winter
  */
-public interface IntVector<T extends IntVector<T>> {
+public interface IntVector<T extends IntVector<T>> extends Serializable {
 	/**
 	 * @return copy of this vector
 	 */

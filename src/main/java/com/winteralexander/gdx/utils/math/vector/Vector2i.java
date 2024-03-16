@@ -1,7 +1,6 @@
 package com.winteralexander.gdx.utils.math.vector;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.io.Serializable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +17,7 @@ import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
  *
  * @author Alexander Winter
  */
-public class Vector2i implements IntVector<Vector2i>, Serializable {
+public class Vector2i implements IntVector<Vector2i> {
 	public int x, y;
 
 	public Vector2i() {
@@ -121,9 +120,9 @@ public class Vector2i implements IntVector<Vector2i>, Serializable {
 
 	@Override
 	public Vector2i lerp(Vector2i target, float alpha) {
-
-
-		return null;
+		x = Math.round(x * (1.0f - alpha) + target.x * alpha);
+		y = Math.round(y * (1.0f - alpha) + target.y * alpha);
+		return this;
 	}
 
 	public boolean equals(int x, int y) {
