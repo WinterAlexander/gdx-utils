@@ -13,7 +13,7 @@ import java.io.OutputStream;
  *
  * @author Alexander Winter
  */
-public class Vector3iTrail extends Trail<Vector3i> {
+public class Vec3iTrail extends Trail<Vector3i> {
 	@Override
 	protected void writeElement(OutputStream output, Vector3i element) throws IOException {
 		element.writeTo(output);
@@ -32,8 +32,8 @@ public class Vector3iTrail extends Trail<Vector3i> {
 	}
 
 	@Override
-	public Vector3iTrail cpy() {
-		Vector3iTrail trail = new Vector3iTrail();
+	public Vec3iTrail cpy() {
+		Vec3iTrail trail = new Vec3iTrail();
 		trail.set(this);
 		return trail;
 	}

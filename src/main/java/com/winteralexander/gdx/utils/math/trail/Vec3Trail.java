@@ -16,7 +16,7 @@ import static com.winteralexander.gdx.utils.io.StreamUtil.writeFloat;
  *
  * @author Alexander Winter
  */
-public class Vector3Trail extends Trail<Vector3> {
+public class Vec3Trail extends Trail<Vector3> {
 	@Override
 	protected void writeElement(OutputStream output, Vector3 element) throws IOException {
 		writeFloat(output, element.x);
@@ -35,8 +35,8 @@ public class Vector3Trail extends Trail<Vector3> {
 	}
 
 	@Override
-	public Vector3Trail cpy() {
-		Vector3Trail trail = new Vector3Trail();
+	public Vec3Trail cpy() {
+		Vec3Trail trail = new Vec3Trail();
 		trail.set(this);
 		return trail;
 	}
