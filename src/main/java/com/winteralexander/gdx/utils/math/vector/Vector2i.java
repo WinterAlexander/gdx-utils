@@ -1,7 +1,14 @@
 package com.winteralexander.gdx.utils.math.vector;
 
 import com.badlogic.gdx.math.Vector2;
+import com.winteralexander.gdx.utils.io.Serializable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import static com.winteralexander.gdx.utils.io.StreamUtil.readInt;
+import static com.winteralexander.gdx.utils.io.StreamUtil.writeInt;
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 
 /**
@@ -11,7 +18,7 @@ import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
  *
  * @author Alexander Winter
  */
-public class Vector2i implements IntVector<Vector2i> {
+public class Vector2i implements IntVector<Vector2i>, Serializable {
 	public int x, y;
 
 	public Vector2i() {
@@ -126,6 +133,18 @@ public class Vector2i implements IntVector<Vector2i> {
 	@Override
 	public boolean equals(Vector2i other) {
 		return x == other.x && y == other.y;
+	}
+
+	@Override
+	public void readFrom(InputStream input) throws IOException {
+		x = readInt(input);
+		y = readInt(input);
+	}
+
+	@Override
+	public void writeTo(OutputStream output) throws IOException {
+		writeInt(output, x);
+		writeInt(output, y);
 	}
 
 	@Override

@@ -1,5 +1,14 @@
 package com.winteralexander.gdx.utils.math.vector;
 
+import com.winteralexander.gdx.utils.io.Serializable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import static com.winteralexander.gdx.utils.io.StreamUtil.readInt;
+import static com.winteralexander.gdx.utils.io.StreamUtil.writeInt;
+
 /**
  * 3D implementation for {@link IntVector}
  * <p>
@@ -7,7 +16,7 @@ package com.winteralexander.gdx.utils.math.vector;
  *
  * @author Alexander Winter
  */
-public class Vector3i extends IntVector<Vector3i> {
+public class Vector3i implements IntVector<Vector3i>, Serializable {
 	public int x, y, z;
 
 	public Vector3i() {
@@ -54,6 +63,20 @@ public class Vector3i extends IntVector<Vector3i> {
 	@Override
 	public boolean equals(Vector3i other) {
 		return x == other.x && y == other.y && z == other.z;
+	}
+
+	@Override
+	public void readFrom(InputStream input) throws IOException {
+		x = readInt(input);
+		y = readInt(input);
+		z = readInt(input);
+	}
+
+	@Override
+	public void writeTo(OutputStream output) throws IOException {
+		writeInt(output, x);
+		writeInt(output, y);
+		writeInt(output, z);
 	}
 
 	@Override

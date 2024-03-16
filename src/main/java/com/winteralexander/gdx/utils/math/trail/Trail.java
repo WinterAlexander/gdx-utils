@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.math;
+package com.winteralexander.gdx.utils.math.trail;
 
 import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.Validation;
@@ -69,7 +69,7 @@ public abstract class Trail<T> implements Serializable {
 		if(o == null || getClass() != o.getClass())
 			return false;
 
-		Trail trail = (Trail)o;
+		Trail<?> trail = (Trail<?>)o;
 		return cycle == trail.cycle && Objects.equals(destinations, trail.destinations);
 	}
 

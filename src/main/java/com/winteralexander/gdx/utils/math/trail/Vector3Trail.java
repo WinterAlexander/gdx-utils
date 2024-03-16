@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.math;
+package com.winteralexander.gdx.utils.math.trail;
 
 import com.badlogic.gdx.math.Vector3;
 
@@ -10,7 +10,7 @@ import static com.winteralexander.gdx.utils.io.StreamUtil.readFloat;
 import static com.winteralexander.gdx.utils.io.StreamUtil.writeFloat;
 
 /**
- * {@link Trail} for points in 3D space using Vector2 (float coordinates)
+ * {@link Trail} for points in 3D space using Vector3 (float coordinates)
  * <p>
  * Created on 2024-03-16.
  *

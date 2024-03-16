@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.math;
+package com.winteralexander.gdx.utils.math.trail;
 
 import com.badlogic.gdx.math.Vector2;
 
