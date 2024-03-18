@@ -29,11 +29,16 @@ public class Hash {
 
 	private Hash() {}
 
-	public static String sha256(String input) {
+	public static byte[] sha256AsBytes(String input) {
 		byte[] hash;
 		synchronized(sha256Algorithm) {
 			hash = sha256Algorithm.digest(input.getBytes(UTF_8));
 		}
+		return hash;
+	}
+
+	public static String sha256(String input) {
+		byte[] hash = sha256AsBytes(input);
 		StringBuilder hexString = new StringBuilder();
 
 		for(byte b : hash) {
