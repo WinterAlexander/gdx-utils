@@ -17,5 +17,6 @@ Main features:
   - Networking utilities
   - Yet another Logger implementation (that wraps libGDX's logger)
   - Many math utilities, intersection for various shapes
+  - Quad trees
   - Task scheduler
   - Validation utility
