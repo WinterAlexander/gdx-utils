@@ -7,10 +7,14 @@ import com.winteralexander.gdx.utils.Validation;
 import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Gives access to useful method while working with files and resources
@@ -283,5 +287,66 @@ public class FileUtil {
 	 */
 	public static FileHandle toGdx(File file) {
 		return new FileHandle(file);
+	}
+
+	/**
+	 * Lists the resources in all java classpath (java.class.path) currently in execution.
+	 * This includes .class files
+	 *
+	 * @return list of resources present in class path
+	 */
+	public static List<String> listResources() throws IOException {
+		return listResources(fileName -> true);
+	}
+
+	/**
+	 * Lists the resources in all java classpath (java.class.path) currently in execution.
+	 * This includes .class files
+	 *
+	 * @return list of resources present in class path
+	 */
+	public static List<String> listResources(Predicate<String> condition) throws IOException {
+		ArrayList<String> out = new ArrayList<>();
+		String classPath = System.getProperty("java.class.path", ".");
+		String[] classPathElements = classPath.split(File.pathSeparator);
+
+		for(String element : classPathElements) {
+			File file = new File(element);
+			if(file.isDirectory())
+				listResourcesFromDir(file, file, condition, out);
+			else
+				listResourcesFromJar(file, condition, out);
+		}
+
+		return out;
+	}
+
+	private static void listResourcesFromJar(File jarFile, Predicate<String> condition, List<String> out)
+			throws IOException {
+		try(ZipFile zf = new ZipFile(jarFile)) {
+			Enumeration<? extends ZipEntry> e = zf.entries();
+			while(e.hasMoreElements()) {
+				ZipEntry ze = e.nextElement();
+				String fileName = ze.getName();
+				if(condition.test(fileName))
+					out.add(fileName);
+			}
+		}
+	}
+
+	private static void listResourcesFromDir(File root, File directory, Predicate<String> condition, List<String> out)
+			throws IOException {
+		File[] fileList = directory.listFiles();
+		if(fileList == null)
+			throw new IOException("listFiles returned null for file " + directory + " in listResourcesFromDir");
+		for(File file : fileList) {
+			if(file.isDirectory()) {
+				listResourcesFromDir(root, file, condition, out);
+				continue;
+			}
+			String fileName = root.toPath().relativize(file.toPath()).toString();
+			if(condition.test(fileName))
+				out.add(fileName);
+		}
 	}
 }

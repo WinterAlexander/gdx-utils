@@ -1,11 +1,17 @@
 package com.winteralexander.gdx.utils.test;
 
 import com.badlogic.gdx.utils.Array;
+import com.winteralexander.gdx.utils.io.FileUtil;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.winteralexander.gdx.utils.io.FileUtil.ensureFile;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -47,5 +53,14 @@ public class FileUtilTest {
 
 
 		assertTrue(testTmp.delete());
+	}
+
+	@Test
+	public void testGetResources() throws IOException {
+		List<String> resources = FileUtil.listResources(fileName -> fileName.startsWith("test_resources/"));
+		assertEquals(3, resources.size());
+		assertTrue(resources.contains("test_resources/test_resource.txt"));
+		assertTrue(resources.contains("test_resources/inner/test_inner.txt"));
+		assertTrue(resources.contains("test_resources/inner/test_inner2.txt"));
 	}
 }
