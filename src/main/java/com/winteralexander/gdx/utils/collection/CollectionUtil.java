@@ -421,4 +421,13 @@ public class CollectionUtil {
 			output.add(mapper.apply(input.get(i)));
 		return output;
 	}
+
+	@SuppressWarnings({ "rawtypes", "RedundantCast", "unchecked" })
+	public static <T> Iterable<T> castIterable(Iterable<?> other) {
+		return (Iterable<T>)(Iterable)other;
+	}
+
+	public static boolean allInstanceOf(Iterable<?> iterable, Class<?> type) {
+		return all(iterable, type::isInstance);
+	}
 }

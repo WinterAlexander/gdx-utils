@@ -1,9 +1,11 @@
 package com.winteralexander.gdx.utils.test.collection;
 
+import com.badlogic.gdx.utils.Array;
+import com.winteralexander.gdx.utils.collection.CollectionUtil;
 import org.junit.Test;
 
 import static com.winteralexander.gdx.utils.collection.CollectionUtil.except;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests methods in {@link CollectionUtilTest}
@@ -31,5 +33,21 @@ public class CollectionUtilTest {
 		assertArrayEquals(withoutbar, new String[]{foo, fizz, crunch});
 		assertArrayEquals(withoutfizz, new String[]{foo, bar, crunch});
 		assertArrayEquals(withoutcrunch, new String[]{foo, bar, fizz});
+	}
+
+	@Test
+	public void testIteratorCasting() {
+		Array<Object> objs = new Array<>();
+		objs.add("Heloo");
+		objs.add("Henloo");
+		objs.add("Halo");
+		objs.add("Allo");
+		assertTrue(CollectionUtil.allInstanceOf(objs, String.class));
+		assertTrue(CollectionUtil.allInstanceOf(objs, CharSequence.class));
+		Iterable<String> strs = CollectionUtil.castIterable(objs);
+		Array<String> array = CollectionUtil.toGdxArray(strs);
+		assertEquals(objs, array);
+		objs.add(new Object());
+		assertFalse(CollectionUtil.allInstanceOf(objs, String.class));
 	}
 }
