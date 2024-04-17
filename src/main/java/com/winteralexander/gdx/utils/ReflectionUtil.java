@@ -321,23 +321,38 @@ public class ReflectionUtil {
 	}
 
 	public static String toPrettyString(Object object) {
-		return toPrettyString(object, 0, new Array<>());
+		return toPrettyString(object, Integer.MAX_VALUE, 0, new Array<>());
 	}
 
-	private static String toPrettyString(Object object, int indentationLevel, Array<Object> objects) {
+	public static String toPrettyString(Object object,
+	                                     int maxDepth,
+	                                     int indentationLevel) {
+		return toPrettyString(object, maxDepth, indentationLevel, new Array<>());
+	}
+
+	private static String toPrettyString(Object object,
+										 int maxDepth,
+	                                     int indentationLevel,
+	                                     Array<Object> objects) {
 		objects.add(object);
+
+		if(maxDepth <= 0)
+			return object.toString() + '\n';
 
 		StringBuilder sb = new StringBuilder();
 		String newLine = System.lineSeparator();
 		Class<?> type = object.getClass();
 
-		sb.append(type.getSimpleName()).append('@').append(Integer.toHexString(object.hashCode())).append(newLine);
+		sb.append(type.getSimpleName())
+				.append('@')
+				.append(Integer.toHexString(object.hashCode()))
+				.append(newLine);
 
 		for(int i = 0; i < indentationLevel; i++)
 			sb.append('\t');
 
 		if(type.isArray()) {
-			if(!type.isAssignableFrom(Object[].class)) {
+			if(!Object[].class.isAssignableFrom(type)) {
 				int length = java.lang.reflect.Array.getLength(object);
 
 				Object[] objArr = new Object[length];
@@ -363,16 +378,24 @@ public class ReflectionUtil {
 					else if(obj.getClass().isAssignableFrom(String.class))
 						sb.append("\"").append(obj).append("\"").append(newLine);
 
-					else if(obj.getClass().isPrimitive() || obj.getClass().isEnum() || isPrimitiveBox(obj.getClass()))
+					else if(obj.getClass().isPrimitive()
+							|| obj.getClass().isEnum()
+							|| isPrimitiveBox(obj.getClass()))
 						sb.append(obj).append(newLine);
 
 					else if(objects.contains(obj, true))
-						sb.append(obj.getClass().getSimpleName()).append('@').append(Integer.toHexString(obj.hashCode())).append(newLine);
+						sb.append(obj.getClass().getSimpleName())
+								.append('@')
+								.append(Integer.toHexString(obj.hashCode()))
+								.append(newLine);
 
 					else
-						sb.append(toPrettyString(obj, indentationLevel + 1, objects));
+						sb.append(toPrettyString(obj, maxDepth - 1, indentationLevel + 1, objects));
 				} catch(Throwable ex) {
-					sb.append('(').append(ex.getClass().getSimpleName()).append(')').append(newLine);
+					sb.append('(')
+							.append(ex.getClass().getSimpleName())
+							.append(')')
+							.append(newLine);
 				}
 				n++;
 			}
@@ -402,17 +425,20 @@ public class ReflectionUtil {
 						if(obj == null)
 							sb.append("null").append(newLine);
 
-						else if(field.getType().isAssignableFrom(String.class))
+						else if(String.class.isAssignableFrom(field.getType()))
 							sb.append("\"").append(obj).append("\"").append(newLine);
 
 						else if(field.getType().isPrimitive() || field.getType().isEnum())
 							sb.append(obj).append(newLine);
 
 						else if(objects.contains(obj, true))
-							sb.append(obj.getClass().getSimpleName()).append('@').append(Integer.toHexString(obj.hashCode())).append(newLine);
+							sb.append(obj.getClass().getSimpleName())
+									.append('@')
+									.append(Integer.toHexString(obj.hashCode()))
+									.append(newLine);
 
 						else {
-							sb.append(toPrettyString(obj, indentationLevel + 1, objects));
+							sb.append(toPrettyString(obj, maxDepth - 1, indentationLevel + 1, objects));
 						}
 					} catch(Throwable ex) {
 						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
@@ -431,10 +457,10 @@ public class ReflectionUtil {
 		return sb.toString();
 	}
 
-	@SuppressWarnings({ "unchecked", "raw" })
+	@SuppressWarnings("raw")
 	public static void disableAccessWarnings() {
 		try {
-			Class unsafeClass = Class.forName("sun.misc.Unsafe");
+			Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 			Field field = unsafeClass.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			Object unsafe = field.get(null);
@@ -444,7 +470,7 @@ public class ReflectionUtil {
 			Method staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset",
 					Field.class);
 
-			Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+			Class<?> loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
 			Field loggerField = loggerClass.getDeclaredField("logger");
 			Long offset = (Long)staticFieldOffset.invoke(unsafe, loggerField);
 			putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
