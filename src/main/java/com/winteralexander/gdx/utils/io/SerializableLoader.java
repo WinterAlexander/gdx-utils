@@ -21,7 +21,8 @@ import static com.winteralexander.gdx.utils.io.SerializationUtil.readSerializabl
  *
  * @author Alexander Winter
  */
-public class SerializableLoader<T extends Serializable> extends SynchronousAssetLoader<T, CustomSerializableParameter<T>> {
+public class SerializableLoader<T extends Serializable>
+		extends SynchronousAssetLoader<T, CustomSerializableParameter<T>> {
 	private final Class<T> type;
 
 	public SerializableLoader(FileHandleResolver resolver, Class<T> type) {
@@ -30,7 +31,10 @@ public class SerializableLoader<T extends Serializable> extends SynchronousAsset
 	}
 
 	@Override
-	public T load(AssetManager assetManager, String fileName, FileHandle file, CustomSerializableParameter<T> parameter) {
+	public T load(AssetManager assetManager,
+	              String fileName,
+	              FileHandle file,
+	              CustomSerializableParameter<T> parameter) {
 		try {
 			InputStream inputStream = file.read();
 
@@ -40,12 +44,15 @@ public class SerializableLoader<T extends Serializable> extends SynchronousAsset
 
 			return obj;
 		} catch(Exception ex) {
-			throw new GdxRuntimeException("Couldn't load " + type.getSimpleName() + " in CustomSerializableLoader", ex);
+			throw new GdxRuntimeException("Couldn't load " + type.getSimpleName() +
+					" in CustomSerializableLoader", ex);
 		}
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, CustomSerializableParameter<T> parameter) {
+	public Array<AssetDescriptor> getDependencies(String fileName,
+	                                              FileHandle file,
+	                                              CustomSerializableParameter<T> parameter) {
 		return null;
 	}
 
