@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.math;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Offers useful methods and constants for LibGDX vectors
@@ -20,6 +21,13 @@ public class VectorUtil {
 	public static Vector2 round(Vector2 vec, int digits) {
 		vec.x = MathUtil.round(vec.x, digits);
 		vec.y = MathUtil.round(vec.y, digits);
+		return vec;
+	}
+
+	public static Vector3 round(Vector3 vec, int digits) {
+		vec.x = MathUtil.round(vec.x, digits);
+		vec.y = MathUtil.round(vec.y, digits);
+		vec.z = MathUtil.round(vec.z, digits);
 		return vec;
 	}
 }
