@@ -289,9 +289,12 @@ public class MathUtil {
 	}
 
 	public static float pow(float base, int exponent) {
-		float result = base;
+		float result = 1.0f;
 
-		for(int i = exponent - 1; i-- > 0; )
+		for(int j = -exponent; j-- > 0; )
+			result /= base;
+
+		for(int i = exponent; i-- > 0; )
 			result *= base;
 
 		return result;

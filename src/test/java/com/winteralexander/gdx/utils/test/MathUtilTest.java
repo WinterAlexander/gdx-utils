@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.test;
 
+import com.winteralexander.gdx.utils.math.MathUtil;
 import org.junit.Test;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.*;
@@ -60,5 +61,24 @@ public class MathUtilTest {
 
 		assertFalse(lineIntersectsLine(-1f, -1f, 1f, 1f, 0f, 2f, 2f, 0f));
 		assertFalse(lineIntersectsLine(-1f, -1f, 1f, 1f, 0f, 0f, 1f, -1f));
+	}
+
+	@Test
+	public void testPow() {
+		assertEquals(100.0f, MathUtil.pow(10f, 2), 1e-10f);
+		assertEquals(10.0f, MathUtil.pow(10f, 1), 1e-10f);
+		assertEquals(1.0f, MathUtil.pow(10f, 0), 1e-10f);
+		assertEquals(0.1f, MathUtil.pow(10f, -1), 1e-10f);
+		assertEquals(0.01f, MathUtil.pow(10f, -2), 1e-10f);
+	}
+
+	@Test
+	public void testRound() {
+		assertEquals(10.0f, MathUtil.round(13.123234f, -1), 1e-10f);
+		assertEquals(13.0f, MathUtil.round(13.123234f, 0), 1e-10f);
+		assertEquals(13.1f, MathUtil.round(13.123234f, 1), 1e-10f);
+		assertEquals(13.12f, MathUtil.round(13.123234f, 2), 1e-10f);
+		assertEquals(13.123f, MathUtil.round(13.123234f, 3), 1e-10f);
+		assertEquals(13.1232f, MathUtil.round(13.123234f, 4), 1e-10f);
 	}
 }
