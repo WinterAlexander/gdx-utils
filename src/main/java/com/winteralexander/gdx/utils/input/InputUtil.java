@@ -58,4 +58,19 @@ public class InputUtil {
 		else
 			Gdx.input.setInputProcessor(new InputMultiplexer());
 	}
+
+	public static boolean isCtrlPressed() {
+		return Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
+				|| Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT);
+	}
+
+	public static boolean isShiftPressed() {
+		return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+				|| Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
+	}
+
+	public static boolean isAltPressed() {
+		return Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)
+				|| Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT);
+	}
 }
