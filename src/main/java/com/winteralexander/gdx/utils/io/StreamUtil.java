@@ -24,6 +24,20 @@ public class StreamUtil {
 		return val != 0;
 	}
 
+	public static void readBitset(InputStream stream, boolean[] outBits) throws IOException {
+		if(outBits.length == 0)
+			return;
+
+		int byteCount = (outBits.length - 1) / 8 + 1;
+		int left = outBits.length;
+		for(int i = 0; i < byteCount; i++) {
+			int val = readUnsignedByte(stream);
+			for(int j = 0; j < Math.min(left, 8); j++)
+				outBits[i * 8 + j] = (val & (1 << j)) != 0;
+			left -= 8;
+		}
+	}
+
 	public static byte readByte(InputStream stream) throws IOException {
 		int val = stream.read();
 
@@ -152,6 +166,21 @@ public class StreamUtil {
 
 	public static void writeBoolean(OutputStream stream, boolean value) throws IOException {
 		stream.write(value ? 1 : 0);
+	}
+
+	public static void writeBitset(OutputStream stream, boolean[] bits) throws IOException {
+		if(bits.length == 0)
+			return;
+
+		int byteCount = (bits.length - 1) / 8 + 1;
+		int left = bits.length;
+		for(int i = 0; i < byteCount; i++) {
+			int val = 0;
+			for(int j = 0; j < Math.min(left, 8); j++)
+				val |= (bits[i * 8 + j] ? 1 : 0) << j;
+			left -= 8;
+			writeByte(stream, val);
+		}
 	}
 
 	public static void writeByte(OutputStream stream, int value) throws IOException {
