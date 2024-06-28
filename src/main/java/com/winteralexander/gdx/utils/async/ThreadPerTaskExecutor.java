@@ -21,6 +21,8 @@ public class ThreadPerTaskExecutor implements Executor {
 
 	@Override
 	public void execute(Runnable command) {
-		new Thread(command, name).start();
+		Thread thread = new Thread(command, name);
+		thread.setPriority(Thread.MIN_PRIORITY);
+		thread.start();
 	}
 }
