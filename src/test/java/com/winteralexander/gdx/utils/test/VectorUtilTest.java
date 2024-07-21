@@ -2,6 +2,8 @@ package com.winteralexander.gdx.utils.test;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector4;
+import com.winteralexander.gdx.utils.math.MathUtil;
 import com.winteralexander.gdx.utils.math.VectorUtil;
 import org.junit.Test;
 
@@ -29,5 +31,20 @@ public class VectorUtilTest {
 		Vector3 other = new Vector3(4f, 1f, 3f);
 		assertEquals(new Vector3(4f, 2f, 4f), VectorUtil.max(val.cpy(), other));
 		assertEquals(new Vector3(0f, 1f, 3f), VectorUtil.min(val.cpy(), other));
+	}
+
+	@Test
+	public void testRound() {
+		Vector2 val = new Vector2(0.199f, 0.149f);
+		VectorUtil.round(val, 2);
+		assertEquals(new Vector2(0.2f, 0.15f), val);
+
+		Vector3 val2 = new Vector3(0.199f, 0.149f, 2.51f);
+		VectorUtil.round(val2, 1);
+		assertEquals(new Vector3(0.2f, 0.1f, 2.5f), val2);
+
+		Vector4 val3 = new Vector4(444900f, 902031f, 120921f, 0.0000013f);
+		VectorUtil.round(val3, -2);
+		assertEquals(new Vector4(444900f, 902000f, 120900f, 0f), val3);
 	}
 }

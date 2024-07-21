@@ -14,6 +14,12 @@ import static java.lang.Math.*;
  * @author Alexander Winter
  */
 public class MathUtil {
+	private static final float[] powers10 = new float[] {
+		0.000_000_001f, 0.000_000_01f, 0.000_000_1f, 0.000_001f, 0.000_01f, -0.000_1f, 0.001f, 0.01f, 0.1f,
+		1f,
+		10f, 100f, 1_000f, 10_000f, 100_000f, 1_000_000f, 10_000_000f, 100_000_000f, 1_000_000_000f
+	};
+
 	private static final Vector2 tmpVec2 = new Vector2();
 
 	private MathUtil() {}
@@ -320,8 +326,15 @@ public class MathUtil {
 		return result;
 	}
 
+	public static float powerOf10(int exponent) {
+		if(exponent < -powers10.length / 2 || exponent > powers10.length / 2)
+			return pow(10f, exponent);
+
+		return powers10[powers10.length / 2 + exponent];
+	}
+
 	public static float round(float value, int digits) {
-		float power = pow(10, digits);
+		float power = powerOf10(digits);
 		return Math.round(value * power) / power;
 	}
 
