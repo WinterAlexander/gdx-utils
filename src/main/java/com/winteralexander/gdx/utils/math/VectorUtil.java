@@ -30,4 +30,46 @@ public class VectorUtil {
 		vec.z = MathUtil.round(vec.z, digits);
 		return vec;
 	}
+
+	public static Vector2 min(Vector2 vec, float x, float y) {
+		vec.x = Math.min(vec.x, x);
+		vec.y = Math.min(vec.y, y);
+		return vec;
+	}
+
+	public static Vector2 min(Vector2 vec, Vector2 min) {
+		return min(vec, min.x, min.y);
+	}
+
+	public static Vector2 max(Vector2 vec, float x, float y) {
+		vec.x = Math.max(vec.x, x);
+		vec.y = Math.max(vec.y, y);
+		return vec;
+	}
+
+	public static Vector2 max(Vector2 vec, Vector2 max) {
+		return max(vec, max.x, max.y);
+	}
+
+	public static Vector3 min(Vector3 vec, float x, float y, float z) {
+		vec.x = Math.min(vec.x, x);
+		vec.y = Math.min(vec.y, y);
+		vec.z = Math.min(vec.z, z);
+		return vec;
+	}
+
+	public static Vector3 min(Vector3 vec, Vector3 min) {
+		return min(vec, min.x, min.y, min.z);
+	}
+
+	public static Vector3 max(Vector3 vec, float x, float y, float z) {
+		vec.x = Math.max(vec.x, x);
+		vec.y = Math.max(vec.y, y);
+		vec.z = Math.max(vec.z, z);
+		return vec;
+	}
+
+	public static Vector3 max(Vector3 vec, Vector3 max) {
+		return max(vec, max.x, max.y, max.z);
+	}
 }
