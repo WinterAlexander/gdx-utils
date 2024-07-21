@@ -1,6 +1,5 @@
 package com.winteralexander.gdx.utils.test;
 
-import com.badlogic.gdx.graphics.Color;
 import com.winteralexander.gdx.utils.io.StreamUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,10 +7,7 @@ import org.junit.Test;
 import java.io.*;
 import java.util.Random;
 
-import static com.winteralexander.gdx.utils.io.SerializationUtil.readColor;
-import static com.winteralexander.gdx.utils.io.SerializationUtil.writeColor;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests StreamUtil

@@ -252,10 +252,18 @@ public class MathUtil {
 				size.x, size.y);
 	}
 
-	public static boolean doAABBCollideWithAABB(float x1, float y1,
-	                                            float w1, float h1,
-	                                            float x2, float y2,
-	                                            float w2, float h2) {
+	public static boolean doAABBIntersectWithAABB(Vector2 start1, Vector2 size1,
+	                                              Vector2 start2, Vector2 size2) {
+		return doAABBIntersectWithAABB(start1.x, start1.y,
+				size1.x, size1.y,
+				start2.x, start2.y,
+				size2.x, size2.y);
+	}
+
+	public static boolean doAABBIntersectWithAABB(float x1, float y1,
+	                                              float w1, float h1,
+	                                              float x2, float y2,
+	                                              float w2, float h2) {
 		if(x1 + w1 <= x2)
 			return false;
 
@@ -266,6 +274,18 @@ public class MathUtil {
 			return false;
 
 		return y1 < y2 + h2;
+	}
+
+	/**
+	 * @deprecated Will be removed in a future release, use
+	 * {@link #doAABBIntersectWithAABB(float, float, float, float, float, float, float, float)}
+	 */
+	@Deprecated
+	public static boolean doAABBCollideWithAABB(float x1, float y1,
+	                                            float w1, float h1,
+	                                            float x2, float y2,
+	                                            float w2, float h2) {
+		return doAABBIntersectWithAABB(x1, y1, w1, h1, x2, y2, w2, h2);
 	}
 
 	/**
