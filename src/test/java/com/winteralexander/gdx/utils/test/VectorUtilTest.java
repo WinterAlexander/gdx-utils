@@ -47,4 +47,23 @@ public class VectorUtilTest {
 		VectorUtil.round(val3, -2);
 		assertEquals(new Vector4(444900f, 902000f, 120900f, 0f), val3);
 	}
+
+	@Test
+	public void testGetComponent() {
+
+		Vector2 val = new Vector2(0.199f, 0.149f);
+		assertEquals(0.199f, VectorUtil.getComponent(val, 0), 1e-10f);
+		assertEquals(0.149f, VectorUtil.getComponent(val, 1), 1e-10f);
+
+		Vector3 val2 = new Vector3(0.199f, 0.149f, 2.51f);
+		assertEquals(0.199f, VectorUtil.getComponent(val2, 0), 1e-10f);
+		assertEquals(0.149f, VectorUtil.getComponent(val2, 1), 1e-10f);
+		assertEquals(2.51f, VectorUtil.getComponent(val2, 2), 1e-10f);
+
+		Vector4 val3 = new Vector4(444900f, 902031f, 120921f, 0.0000013f);
+		assertEquals(444900f, VectorUtil.getComponent(val3, 0), 1e-10f);
+		assertEquals(902031f, VectorUtil.getComponent(val3, 1), 1e-10f);
+		assertEquals(120921f, VectorUtil.getComponent(val3, 2), 1e-10f);
+		assertEquals(0.0000013f, VectorUtil.getComponent(val3, 3), 1e-10f);
+	}
 }

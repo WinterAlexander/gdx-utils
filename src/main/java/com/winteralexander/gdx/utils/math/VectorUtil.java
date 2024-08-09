@@ -4,9 +4,8 @@ import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
-import com.winteralexander.gdx.utils.math.vector.Vector2i;
-import com.winteralexander.gdx.utils.math.vector.Vector3i;
 
+import static com.winteralexander.gdx.utils.Validation.ensureInRange;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
@@ -107,5 +106,31 @@ public class VectorUtil {
 
 	public static Vector3 max(Vector3 vec, Vector3 max) {
 		return max(vec, max.x, max.y, max.z);
+	}
+
+	public static float getComponent(Vector2 vec, int component) {
+		ensureInRange(component, 0, 2, "component");
+		return component == 0 ? vec.x : vec.y;
+	}
+
+	public static float getComponent(Vector3 vec, int component) {
+		ensureInRange(component, 0, 3, "component");
+
+		return component == 0
+				? vec.x
+				: component == 1
+					? vec.y
+					: vec.z;
+	}
+	public static float getComponent(Vector4 vec, int component) {
+		ensureInRange(component, 0, 4, "component");
+
+		return component == 0
+				? vec.x
+				: component == 1
+					? vec.y
+					: component == 2
+						? vec.z
+						: vec.w;
 	}
 }
