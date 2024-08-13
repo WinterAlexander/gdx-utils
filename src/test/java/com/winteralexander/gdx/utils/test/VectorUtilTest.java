@@ -50,7 +50,6 @@ public class VectorUtilTest {
 
 	@Test
 	public void testGetComponent() {
-
 		Vector2 val = new Vector2(0.199f, 0.149f);
 		assertEquals(0.199f, VectorUtil.getComponent(val, 0), 1e-10f);
 		assertEquals(0.149f, VectorUtil.getComponent(val, 1), 1e-10f);
@@ -65,5 +64,30 @@ public class VectorUtilTest {
 		assertEquals(902031f, VectorUtil.getComponent(val3, 1), 1e-10f);
 		assertEquals(120921f, VectorUtil.getComponent(val3, 2), 1e-10f);
 		assertEquals(0.0000013f, VectorUtil.getComponent(val3, 3), 1e-10f);
+	}
+
+	@Test
+	public void testSetFromArray() {
+		Vector2 vec2 = new Vector2();
+		Vector3 vec3 = new Vector3();
+		Vector4 vec4 = new Vector4();
+		float[] array = {
+			1f, 2f, 3f, 4f, 5f, 6f, 7f
+		};
+
+		VectorUtil.setFromArray(vec2, array, 1);
+		assertEquals(2f, vec2.x, 1e-10f);
+		assertEquals(3f, vec2.y, 1e-10f);
+
+		VectorUtil.setFromArray(vec3, array, 0);
+		assertEquals(1f, vec3.x, 1e-10f);
+		assertEquals(2f, vec3.y, 1e-10f);
+		assertEquals(3f, vec3.z, 1e-10f);
+
+		VectorUtil.setFromArray(vec4, array, 3);
+		assertEquals(4f, vec4.x, 1e-10f);
+		assertEquals(5f, vec4.y, 1e-10f);
+		assertEquals(6f, vec4.z, 1e-10f);
+		assertEquals(7f, vec4.w, 1e-10f);
 	}
 }

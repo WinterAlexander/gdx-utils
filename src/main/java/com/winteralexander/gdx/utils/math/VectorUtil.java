@@ -122,6 +122,7 @@ public class VectorUtil {
 					? vec.y
 					: vec.z;
 	}
+
 	public static float getComponent(Vector4 vec, int component) {
 		ensureInRange(component, 0, 4, "component");
 
@@ -132,5 +133,26 @@ public class VectorUtil {
 					: component == 2
 						? vec.z
 						: vec.w;
+	}
+
+	public static void setFromArray(Vector2 vec, float[] array, int offset) {
+		if(array.length - offset < 2)
+			throw new IllegalArgumentException("Provided array doesn't contain enough values");
+
+		vec.set(array[offset], array[offset + 1]);
+	}
+
+	public static void setFromArray(Vector3 vec, float[] array, int offset) {
+		if(array.length - offset < 3)
+			throw new IllegalArgumentException("Provided array doesn't contain enough values");
+
+		vec.set(array[offset], array[offset + 1], array[offset + 2]);
+	}
+
+	public static void setFromArray(Vector4 vec, float[] array, int offset) {
+		if(array.length - offset < 4)
+			throw new IllegalArgumentException("Provided array doesn't contain enough values");
+
+		vec.set(array[offset], array[offset + 1], array[offset + 2], array[offset + 3]);
 	}
 }
