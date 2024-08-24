@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import java.lang.reflect.*;
 
 import static com.winteralexander.gdx.utils.TypeUtil.isPrimitiveBox;
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * Utility class to use reflection on objects
@@ -62,8 +63,8 @@ public class ReflectionUtil {
 	 * @param destination destination object
 	 */
 	public static void copy(Object source, Object destination) {
-		Validation.ensureNotNull(source, "source");
-		Validation.ensureNotNull(destination, "destination");
+		ensureNotNull(source, "source");
+		ensureNotNull(destination, "destination");
 
 		if(!source.getClass().equals(destination.getClass()))
 			throw new IllegalArgumentException("Objects are not the same type");
@@ -97,7 +98,7 @@ public class ReflectionUtil {
 	 * @param value  value to set
 	 */
 	public static void set(Object object, String field, Object value) {
-		Validation.ensureNotNull(object, "object");
+		ensureNotNull(object, "object");
 
 		set(object.getClass(), object, field, value);
 	}
@@ -111,9 +112,9 @@ public class ReflectionUtil {
 	 * @param value  value to set
 	 */
 	public static void set(Class<?> type, Object object, String field, Object value) {
-		Validation.ensureNotNull(type, "type");
-		Validation.ensureNotNull(field, "field");
-		Validation.ensureNotNull(value, "value");
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+		ensureNotNull(value, "value");
 
 		while(type != null) {
 			try {
@@ -139,9 +140,9 @@ public class ReflectionUtil {
 	}
 
 	public static <T> T getStatic(Class<?> type, String field, Class<T> returnType) {
-		Validation.ensureNotNull(type, "type");
-		Validation.ensureNotNull(field, "field");
-		Validation.ensureNotNull(returnType, "returnType");
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+		ensureNotNull(returnType, "returnType");
 
 
 		while(type != null) {
@@ -175,9 +176,9 @@ public class ReflectionUtil {
 	 * @param type   type of field
 	 */
 	public static <T> T get(Object object, String field, Class<T> type) {
-		Validation.ensureNotNull(object, "object");
-		Validation.ensureNotNull(field, "field");
-		Validation.ensureNotNull(type, "type");
+		ensureNotNull(object, "object");
+		ensureNotNull(field, "field");
+		ensureNotNull(type, "type");
 
 		Class<?> t = object.getClass();
 
@@ -200,8 +201,8 @@ public class ReflectionUtil {
 	}
 
 	public static boolean has(Class<?> type, String field) {
-		Validation.ensureNotNull(type, "type");
-		Validation.ensureNotNull(field, "field");
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
 
 		Class<?> t = type;
 
@@ -218,8 +219,8 @@ public class ReflectionUtil {
 	}
 
 	public static Class<?> getType(Class<?> type, String field) {
-		Validation.ensureNotNull(type, "type");
-		Validation.ensureNotNull(field, "field");
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
 
 		Class<?> t = type;
 
@@ -236,7 +237,7 @@ public class ReflectionUtil {
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
 	public static <T> T callStatic(Class<?> type, String method, Object... params) {
-		Validation.ensureNotNull(method, "method");
+		ensureNotNull(method, "method");
 
 		method = method.intern();
 
@@ -268,8 +269,8 @@ public class ReflectionUtil {
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
 	public static <T> T call(Object object, String method, Object... params) {
-		Validation.ensureNotNull(object, "object");
-		Validation.ensureNotNull(method, "method");
+		ensureNotNull(object, "object");
+		ensureNotNull(method, "method");
 
 		method = method.intern();
 		Class<?> t = object.getClass();
@@ -302,7 +303,7 @@ public class ReflectionUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T construct(Class<T> type, Object... params) {
-		Validation.ensureNotNull(type, "type");
+		ensureNotNull(type, "type");
 
 		for(Constructor<?> constructor : type.getDeclaredConstructors()) {
 			try {

@@ -1,5 +1,7 @@
 package com.winteralexander.gdx.utils.gfx;
 
+import com.winteralexander.gdx.utils.EnumConstantCache;
+
 /**
  * A type of transformation UV texture coordinates can sustain when drawing
  * <p>
@@ -7,8 +9,7 @@ package com.winteralexander.gdx.utils.gfx;
  *
  * @author Alexander Winter
  */
-public enum UVTransform
-{
+public enum UVTransform {
 	NONE(true, true, true, false, false, false, false, true),
 	FLIPPED_X(false, true, false, false, true, false, true, true),
 	FLIPPED_Y(true, false, true, true, false, true, false, false),
@@ -20,7 +21,7 @@ public enum UVTransform
 	CLOCKWISE(false, true, true, true, true, false, false, false),
 	;
 
-	public static final UVTransform[] values = values();
+	public static final UVTransform[] values = EnumConstantCache.store(values());
 
 	static {
 		for(UVTransform transform : values)
@@ -43,8 +44,10 @@ public enum UVTransform
 
 	private final boolean p1u, p1v, p2u, p2v, p3u, p3v, p4u, p4v;
 
-	UVTransform(boolean p1u, boolean p1v, boolean p2u, boolean p2v, boolean p3u, boolean p3v, boolean p4u, boolean p4v)
-	{
+	UVTransform(boolean p1u, boolean p1v,
+	            boolean p2u, boolean p2v,
+	            boolean p3u, boolean p3v,
+	            boolean p4u, boolean p4v) {
 		this.p1u = p1u;
 		this.p1v = p1v;
 		this.p2u = p2u;
@@ -55,10 +58,8 @@ public enum UVTransform
 		this.p4v = p4v;
 	}
 
-	public UVTransform opposite()
-	{
-		switch(this)
-		{
+	public UVTransform opposite() {
+		switch(this) {
 			case NONE:
 			case FLIPPED_X:
 			case FLIPPED_Y:
@@ -79,15 +80,13 @@ public enum UVTransform
 		}
 	}
 
-	public UVTransform flipX()
-	{
+	public UVTransform flipX() {
 		int v = ordinal();
 
 		return UVTransform.values[v ^ 1];
 	}
 
-	public UVTransform flipY()
-	{
+	public UVTransform flipY() {
 		int v = ordinal();
 
 		return UVTransform.values[v ^ 2];
@@ -99,11 +98,9 @@ public enum UVTransform
 	 * @param amount amount of 90 degree rotations to perform, 1 for cc, 2 for 180, 3 or -1 for c
 	 * @return rotated UVTransform
 	 */
-	public UVTransform rotate(int amount)
-	{
+	public UVTransform rotate(int amount) {
 		amount = Math.floorMod(amount, 4);
-		switch(amount)
-		{
+		switch(amount) {
 			case 0:
 				return this;
 			case 1:
@@ -117,10 +114,8 @@ public enum UVTransform
 		}
 	}
 
-	public UVTransform rotateCounterClockwise()
-	{
-		switch(this)
-		{
+	public UVTransform rotateCounterClockwise() {
+		switch(this) {
 			case NONE: return COUNTER_CLOCKWISE;
 			case COUNTER_CLOCKWISE: return UPSIDE_DOWN;
 			case UPSIDE_DOWN: return CLOCKWISE;
@@ -136,53 +131,43 @@ public enum UVTransform
 		}
 	}
 
-	public UVTransform rotate180()
-	{
+	public UVTransform rotate180() {
 		return rotateCounterClockwise().rotateCounterClockwise();
 	}
 
-	public UVTransform rotateClockwise()
-	{
+	public UVTransform rotateClockwise() {
 		return rotateCounterClockwise().rotateCounterClockwise().rotateCounterClockwise();
 	}
 
-	public float getP1U(float u, float u2)
-	{
+	public float getP1U(float u, float u2) {
 		return p1u ? u : u2;
 	}
 
-	public float getP1V(float v, float v2)
-	{
+	public float getP1V(float v, float v2) {
 		return p1v ? v : v2;
 	}
 
-	public float getP2U(float u, float u2)
-	{
+	public float getP2U(float u, float u2) {
 		return p2u ? u : u2;
 	}
 
-	public float getP2V(float v, float v2)
-	{
+	public float getP2V(float v, float v2) {
 		return p2v ? v : v2;
 	}
 
-	public float getP3U(float u, float u2)
-	{
+	public float getP3U(float u, float u2) {
 		return p3u ? u : u2;
 	}
 
-	public float getP3V(float v, float v2)
-	{
+	public float getP3V(float v, float v2) {
 		return p3v ? v : v2;
 	}
 
-	public float getP4U(float u, float u2)
-	{
+	public float getP4U(float u, float u2) {
 		return p4u ? u : u2;
 	}
 
-	public float getP4V(float v, float v2)
-	{
+	public float getP4V(float v, float v2) {
 		return p4v ? v : v2;
 	}
 }

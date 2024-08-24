@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests StreamUtil
@@ -52,6 +53,34 @@ public class StreamUtilTest {
 			StreamUtil.readBitset(bais, read);
 
 			assertArrayEquals(bitset, read);
+		}
+	}
+
+	@Test
+	public void testUTFStringSerialization() throws IOException {
+		String[] strs = new String[] { "Hello world\nhow are you today??",
+				"你好我叫凯文　こんにちわ私はケヴィンです",
+				"public static void main(String[] args) { System.out.println(\"Hello world!\"); }",
+				"{ data: \"Hello\", value: 15 }",
+				"éè😘"
+		};
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		for(String string : strs)
+			StreamUtil.writeUTF(outputStream, string);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+		for(String string : strs) {
+			String read = StreamUtil.readUTF(inputStream);
+			assertEquals(string, read);
+		}
+		inputStream.reset();
+		DataInputStream dis = new DataInputStream(inputStream);
+
+		for(String string : strs) {
+			String read = dis.readUTF();
+			assertEquals(string, read);
 		}
 	}
 }

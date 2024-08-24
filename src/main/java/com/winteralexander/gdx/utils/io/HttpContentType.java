@@ -1,5 +1,7 @@
 package com.winteralexander.gdx.utils.io;
 
+import com.winteralexander.gdx.utils.EnumConstantCache;
+
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
@@ -13,6 +15,8 @@ public enum HttpContentType {
 	JSON("application/json"),
 	X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
 	;
+
+	public static final HttpContentType[] values = EnumConstantCache.store(values());
 
 	private final String value;
 
