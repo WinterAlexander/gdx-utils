@@ -3,6 +3,7 @@ package com.winteralexander.gdx.utils.io;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -277,6 +278,57 @@ public class SerializationUtil {
 			throw new IllegalArgumentException("Unknown number type: " + number.getClass());
 	}
 
+	public static Vector2 readVec2(InputStream stream) throws IOException {
+		return readVec2(stream, new Vector2());
+	}
+
+	public static Vector2 readVec2(InputStream stream, Vector2 out) throws IOException {
+		out.x = readFloat(stream);
+		out.y = readFloat(stream);
+		return out;
+	}
+
+	public static Vector3 readVec3(InputStream stream) throws IOException {
+		return readVec3(stream, new Vector3());
+	}
+
+	public static Vector3 readVec3(InputStream stream, Vector3 out) throws IOException {
+		out.x = readFloat(stream);
+		out.y = readFloat(stream);
+		out.z = readFloat(stream);
+		return out;
+	}
+
+	public static Vector4 readVec4(InputStream stream) throws IOException {
+		return readVec4(stream, new Vector4());
+	}
+
+	public static Vector4 readVec4(InputStream stream, Vector4 out) throws IOException {
+		out.x = readFloat(stream);
+		out.y = readFloat(stream);
+		out.z = readFloat(stream);
+		out.w = readFloat(stream);
+		return out;
+	}
+
+	public static void writeVec2(OutputStream stream, Vector2 vector) throws IOException {
+		writeFloat(stream, vector.x);
+		writeFloat(stream, vector.y);
+	}
+
+	public static void writeVec3(OutputStream stream, Vector3 vector) throws IOException {
+		writeFloat(stream, vector.x);
+		writeFloat(stream, vector.y);
+		writeFloat(stream, vector.z);
+	}
+
+	public static void writeVec4(OutputStream stream, Vector4 vector) throws IOException {
+		writeFloat(stream, vector.x);
+		writeFloat(stream, vector.y);
+		writeFloat(stream, vector.z);
+		writeFloat(stream, vector.w);
+	}
+
 	@SuppressWarnings({"unchecked", "RedundantCast"})
 	public static <T> T readAny(InputStream stream, Class<T> type) throws IOException {
 		if(Readable.class.isAssignableFrom(type))
@@ -287,9 +339,11 @@ public class SerializationUtil {
 		else if(type == String.class)
 			return (T)readUTF(stream);
 		else if(type == Vector2.class)
-			return (T)new Vector2(readFloat(stream), readFloat(stream));
+			return (T)readVec2(stream);
 		else if(type == Vector3.class)
-			return (T)new Vector3(readFloat(stream), readFloat(stream), readFloat(stream));
+			return (T)readVec3(stream);
+		else if(type == Vector4.class)
+			return (T)readVec4(stream);
 		else if(type.isEnum())
 			return (T)readEnum(stream, type.asSubclass(Enum.class));
 		else
@@ -303,14 +357,13 @@ public class SerializationUtil {
 			writeInt(stream, rgba8888((Color)thing));
 		else if(thing instanceof String)
 			writeUTF(stream, (String)thing);
-		else if(thing instanceof Vector2) {
-			writeFloat(stream, ((Vector2)thing).x);
-			writeFloat(stream, ((Vector2)thing).y);
-		} else if(thing instanceof Vector3) {
-			writeFloat(stream, ((Vector3)thing).x);
-			writeFloat(stream, ((Vector3)thing).y);
-			writeFloat(stream, ((Vector3)thing).z);
-		} else if(thing instanceof Enum)
+		else if(thing instanceof Vector2)
+			writeVec2(stream, (Vector2)thing);
+		else if(thing instanceof Vector3)
+			writeVec3(stream, (Vector3)thing);
+		else if(thing instanceof Vector4)
+			writeVec4(stream, (Vector4)thing);
+		else if(thing instanceof Enum)
 			writeEnum(stream, (Enum<?>)thing);
 		else
 			writePrimitive(stream, thing);
