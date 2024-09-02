@@ -1,7 +1,6 @@
 package com.winteralexander.gdx.utils.test;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.winteralexander.gdx.utils.BufferUtil;
 import org.junit.Test;
 
