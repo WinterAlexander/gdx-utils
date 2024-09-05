@@ -226,4 +226,9 @@ public class Vector3i implements IntVector<Vector3i> {
 		out.z = (float)z / unitSize;
 		return out;
 	}
+
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ", " + z + ")";
+	}
 }

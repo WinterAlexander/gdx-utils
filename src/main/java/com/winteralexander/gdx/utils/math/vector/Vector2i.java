@@ -202,4 +202,9 @@ public class Vector2i implements IntVector<Vector2i> {
 		out.y = (float)y / unitSize;
 		return out;
 	}
+
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 }
