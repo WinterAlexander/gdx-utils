@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.memory;
+package com.winteralexander.gdx.utils.collection;
 
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Null;
@@ -68,6 +68,18 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 		map.putAll(otherMap.map);
 	}
 
+	public V remove(int x, int y) {
+		return map.remove(key(x, y));
+	}
+
+	public V remove(Vector2i key) {
+		return remove(key.x, key.y);
+	}
+
+	public void clear() {
+		map.clear();
+	}
+
 	public int size() {
 		return map.size;
 	}
@@ -86,7 +98,7 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 	}
 
 	private long key(int x, int y) {
-		return (long)x + (long)y << 32;
+		return (long)x + ((long)y << 32);
 	}
 
 	public static class Entry<V> {
@@ -124,6 +136,10 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 			long key = it.next();
 			return tmpVec2.set((int)key, (int)(key >> 32));
 		}
+
+		public void remove() {
+			it.remove();
+		}
 	}
 
 	public static class EntriesRedirectIterator<V> implements Iterable<Vec2iMap.Entry<V>>, Iterator<Vec2iMap.Entry<V>> {
@@ -154,6 +170,10 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 			tmpEntry.y = (short)((entry.key >> 16) & 0xFFFF);
 			tmpEntry.value = entry.value;
 			return tmpEntry;
+		}
+
+		public void remove() {
+			it.remove();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.memory;
+package com.winteralexander.gdx.utils.collection;
 
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Null;
@@ -9,9 +9,9 @@ import java.util.Iterator;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
- * A fast map that maps 2 shorts to values by converting the 2 shorts to ints,
- * useful to store anything with 2D spatial coordinates. Method signatures accept ints instead of
- * shorts for convenience, but those are truncated.
+ * A fast map that maps 2 shorts to values by converting the 2 shorts to ints, useful to store
+ * anything with 2D spatial coordinates. Method signatures accept ints instead of shorts for
+ * convenience, but those are truncated.
  * <p>
  * Created on 2024-09-05.
  *
@@ -69,6 +69,18 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 		map.putAll(otherMap.map);
 	}
 
+	public V remove(int x, int y) {
+		return map.remove(key((short)x, (short)y));
+	}
+
+	public V remove(Vector2i key) {
+		return remove(key.x, key.y);
+	}
+
+	public void clear() {
+		map.clear();
+	}
+
 	public int size() {
 		return map.size;
 	}
@@ -87,7 +99,7 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 	}
 
 	private int key(short x, short y) {
-		return (int)x + (int)y << 16;
+		return (int)x + ((int)y << 16);
 	}
 
 	public static class Entry<V> {
@@ -123,7 +135,11 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 		@Override
 		public Vector2i next() {
 			int key = it.next();
-			return tmpVec2.set(key & 0xFFFF, (key >> 16) & 0xFFFF);
+			return tmpVec2.set((short)(key & 0xFFFF), (short)((key >> 16) & 0xFFFF));
+		}
+
+		public void remove() {
+			it.remove();
 		}
 	}
 
@@ -155,6 +171,10 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 			tmpEntry.y = (short)((entry.key >> 16) & 0xFFFF);
 			tmpEntry.value = entry.value;
 			return tmpEntry;
+		}
+
+		public void remove() {
+			it.remove();
 		}
 	}
 }
