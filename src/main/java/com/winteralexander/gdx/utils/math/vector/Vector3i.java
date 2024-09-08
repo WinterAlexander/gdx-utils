@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import static com.winteralexander.gdx.utils.io.StreamUtil.readInt;
 import static com.winteralexander.gdx.utils.io.StreamUtil.writeInt;
@@ -230,5 +231,20 @@ public class Vector3i implements IntVector<Vector3i> {
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ", " + z + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o)
+			return true;
+		if(o == null || getClass() != o.getClass())
+			return false;
+		Vector3i vector3i = (Vector3i)o;
+		return x == vector3i.x && y == vector3i.y && z == vector3i.z;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z);
 	}
 }

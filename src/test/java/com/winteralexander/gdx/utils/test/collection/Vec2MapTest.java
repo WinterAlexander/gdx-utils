@@ -5,6 +5,8 @@ import com.winteralexander.gdx.utils.collection.Vec2sMap;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 /**
@@ -51,6 +53,13 @@ public class Vec2MapTest {
 		map.put(1_000_000_000, -1_000_000_000, 17);
 		assertEquals(7, map.get(1_000_000_000, 1_000_000_000).intValue());
 		assertEquals(17, map.get(1_000_000_000, -1_000_000_000).intValue());
+
+		map.clear();
+		map.put(-5, -5, 1);
+		Iterator<Vector2i> keys = map.keys();
+		assertTrue(keys.hasNext());
+		assertEquals(new Vector2i(-5, -5), keys.next());
+		assertFalse(keys.hasNext());
 	}
 
 	@Test
@@ -89,5 +98,12 @@ public class Vec2MapTest {
 		map.put(32_000, -32_000, 17);
 		assertEquals(7, map.get(32_000, 32_000).intValue());
 		assertEquals(17, map.get(32_000, -32_000).intValue());
+
+		map.clear();
+		map.put(-5, -5, 1);
+		Iterator<Vector2i> keys = map.keys();
+		assertTrue(keys.hasNext());
+		assertEquals(new Vector2i(-5, -5), keys.next());
+		assertFalse(keys.hasNext());
 	}
 }

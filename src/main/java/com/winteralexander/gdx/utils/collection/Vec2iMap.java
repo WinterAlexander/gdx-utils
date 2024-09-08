@@ -85,6 +85,7 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 	}
 
 	public KeysRedirectIterator keys() {
+		keysIt.iterator();
 		return keysIt;
 	}
 
@@ -94,11 +95,12 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 
 	@Override
 	public EntriesRedirectIterator<V> iterator() {
+		entriesIt.iterator();
 		return entriesIt;
 	}
 
 	private long key(int x, int y) {
-		return (long)x + ((long)y << 32);
+		return (x & 0xFFFFFFFFL) + ((long)y << 32);
 	}
 
 	public static class Entry<V> {
