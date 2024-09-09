@@ -30,6 +30,8 @@ public class Vec2MapTest {
 		map.put(new Vector2i(-1, 0), 5);
 		map.put(0, -1, 6);
 
+		assertTrue(map.containsKey(0, 0));
+		assertTrue(map.containsValue(10, false));
 		assertEquals(10, map.get(0, 0).intValue());
 		assertEquals(8, map.get(0, 1).intValue());
 		assertEquals(4, map.get(1, 0).intValue());
@@ -75,6 +77,8 @@ public class Vec2MapTest {
 		map.put(new Vector2i(-1, 0), 5);
 		map.put(0, -1, 6);
 
+		assertTrue(map.containsKey(0, 0));
+		assertTrue(map.containsValue(10, false));
 		assertEquals(10, map.get(0, 0).intValue());
 		assertEquals(8, map.get(0, 1).intValue());
 		assertEquals(4, map.get(1, 0).intValue());

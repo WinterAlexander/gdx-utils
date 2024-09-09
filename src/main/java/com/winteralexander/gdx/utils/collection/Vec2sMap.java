@@ -57,6 +57,18 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 		return get(key.x, key.y, defaultValue);
 	}
 
+	public boolean containsKey(int x, int y) {
+		return map.containsKey(key((short)x, (short)y));
+	}
+
+	public boolean containsKey(Vector2i vec) {
+		return containsKey(vec.x, vec.y);
+	}
+
+	public boolean containsValue(Object value, boolean identity) {
+		return map.containsValue(value, identity);
+	}
+
 	public void put(int x, int y, V value) {
 		map.put(key((short)x, (short)y), value);
 	}
