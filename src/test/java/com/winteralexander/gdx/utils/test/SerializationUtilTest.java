@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.LongMap;
 import com.winteralexander.gdx.utils.io.SerializationUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import com.winteralexander.gdx.utils.math.vector.Vector3i;
@@ -123,5 +125,18 @@ public class SerializationUtilTest {
 			assertEquals(vec3i.y, vec3iOut.y);
 			assertEquals(vec3i.z, vec3iOut.z);
 		}
+	}
+
+	@Test
+	public void testMapSerialization() throws IOException {
+		IntMap<Vector2i> vecMap = new IntMap<>();
+		LongMap<Vector2i> vecLongMap = new LongMap<>();
+
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeIntMap(outputStream, vecMap);
+		writeLongMap(outputStream, vecLongMap);
+
+
 	}
 }

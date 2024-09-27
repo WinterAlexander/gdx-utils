@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import java.io.*;
@@ -411,5 +413,56 @@ public class SerializationUtil {
 	public static void writeMany(OutputStream stream, Object... things) throws IOException {
 		for(Object thing : things)
 			writeAny(stream, thing);
+	}
+
+	public static <T extends Readable> IntMap<T> readIntMap(InputStream stream,
+	                                                        Class<T> type) throws IOException {
+		return readIntMap(stream, type, new IntMap<>());
+	}
+
+	public static <T extends Readable> IntMap<T> readIntMap(InputStream stream,
+															Class<T> type,
+	                                                        IntMap<T> out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			int key = readInt(stream);
+			T value = readSerializable(stream, type);
+			out.put(key, value);
+		}
+		return out;
+	}
+
+	public static void writeIntMap(OutputStream stream, IntMap<? extends Writable> map) throws IOException {
+		writeInt(stream, map.size);
+		for(IntMap.Entry<? extends Writable> entry : map) {
+			writeInt(stream, entry.key);
+			entry.value.writeTo(stream);
+		}
+	}
+
+	public static <T extends Readable> LongMap<T> readLongMap(InputStream stream,
+	                                                          Class<T> type) throws IOException {
+		return readLongMap(stream, type, new LongMap<>());
+	}
+
+	public static <T extends Readable> LongMap<T> readLongMap(InputStream stream,
+	                                                          Class<T> type,
+	                                                          LongMap<T> out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			long key = readLong(stream);
+			T value = readSerializable(stream, type);
+			out.put(key, value);
+		}
+		return out;
+	}
+
+	public static void writeLongMap(OutputStream stream, LongMap<? extends Writable> map)
+			throws IOException {
+		writeInt(stream, map.size);
+		for(LongMap.Entry<? extends Writable> entry : map) {
+			writeLong(stream, entry.key);
+			entry.value.writeTo(stream);
+		}
 	}
 }
