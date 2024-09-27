@@ -116,6 +116,10 @@ public class Vec2sMap<V> implements Iterable<Vec2sMap.Entry<V>> {
 		return (x & 0xFFFF) + ((int)y << 16);
 	}
 
+	public IntMap<V> getInnerMap() {
+		return map;
+	}
+
 	public static class Entry<V> {
 		public short x, y;
 		public @Null V value;

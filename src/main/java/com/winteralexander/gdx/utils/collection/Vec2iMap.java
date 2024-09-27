@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.collection;
 
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Null;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
@@ -113,6 +114,10 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 
 	private long key(int x, int y) {
 		return (x & 0xFFFFFFFFL) + ((long)y << 32);
+	}
+
+	public LongMap<V> getInnerMap() {
+		return map;
 	}
 
 	public static class Entry<V> {

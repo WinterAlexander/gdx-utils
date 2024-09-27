@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.utils.*;
+import com.winteralexander.gdx.utils.collection.Vec2iMap;
+import com.winteralexander.gdx.utils.collection.Vec2sMap;
 
 import java.io.*;
 
@@ -552,5 +554,37 @@ public class SerializationUtil {
 			writeInt(stream, entry.key);
 			writeFloat(stream, entry.value);
 		}
+	}
+
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
+	                                           Class<V> type) throws IOException {
+		return readVec2sMap(stream, type, new Vec2sMap<>());
+	}
+
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
+	                                           Class<V> type,
+	                                           Vec2sMap<V> out) throws IOException {
+		readIntMap(stream, type, out.getInnerMap());
+		return out;
+	}
+
+	public static void writeVec2sMap(OutputStream stream, Vec2sMap<?> map) throws IOException {
+		writeIntMap(stream, map.getInnerMap());
+	}
+
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
+	                                           Class<V> type) throws IOException {
+		return readVec2iMap(stream, type, new Vec2iMap<>());
+	}
+
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
+	                                           Class<V> type,
+	                                           Vec2iMap<V> out) throws IOException {
+		readLongMap(stream, type, out.getInnerMap());
+		return out;
+	}
+
+	public static void writeVec2iMap(OutputStream stream, Vec2iMap<?> map) throws IOException {
+		writeLongMap(stream, map.getInnerMap());
 	}
 }
