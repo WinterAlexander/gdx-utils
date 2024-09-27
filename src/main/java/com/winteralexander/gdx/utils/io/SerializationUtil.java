@@ -4,10 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.LongMap;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 
 import java.io.*;
 
@@ -415,54 +412,145 @@ public class SerializationUtil {
 			writeAny(stream, thing);
 	}
 
-	public static <T extends Readable> IntMap<T> readIntMap(InputStream stream,
-	                                                        Class<T> type) throws IOException {
+	public static <T> IntMap<T> readIntMap(InputStream stream,
+	                                       Class<T> type) throws IOException {
 		return readIntMap(stream, type, new IntMap<>());
 	}
 
-	public static <T extends Readable> IntMap<T> readIntMap(InputStream stream,
-															Class<T> type,
-	                                                        IntMap<T> out) throws IOException {
+	public static <T> IntMap<T> readIntMap(InputStream stream,
+	                                       Class<T> type,
+	                                       IntMap<T> out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			int key = readInt(stream);
-			T value = readSerializable(stream, type);
+			T value = readAny(stream, type);
 			out.put(key, value);
 		}
 		return out;
 	}
 
-	public static void writeIntMap(OutputStream stream, IntMap<? extends Writable> map) throws IOException {
+	public static void writeIntMap(OutputStream stream, IntMap<?> map) throws IOException {
 		writeInt(stream, map.size);
-		for(IntMap.Entry<? extends Writable> entry : map) {
+		for(IntMap.Entry<?> entry : map) {
 			writeInt(stream, entry.key);
-			entry.value.writeTo(stream);
+			writeAny(stream, entry.value);
 		}
 	}
 
-	public static <T extends Readable> LongMap<T> readLongMap(InputStream stream,
-	                                                          Class<T> type) throws IOException {
+	public static <T> LongMap<T> readLongMap(InputStream stream,
+	                                         Class<T> type) throws IOException {
 		return readLongMap(stream, type, new LongMap<>());
 	}
 
-	public static <T extends Readable> LongMap<T> readLongMap(InputStream stream,
-	                                                          Class<T> type,
-	                                                          LongMap<T> out) throws IOException {
+	public static <T> LongMap<T> readLongMap(InputStream stream,
+	                                         Class<T> type,
+	                                         LongMap<T> out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			long key = readLong(stream);
-			T value = readSerializable(stream, type);
+			T value = readAny(stream, type);
 			out.put(key, value);
 		}
 		return out;
 	}
 
-	public static void writeLongMap(OutputStream stream, LongMap<? extends Writable> map)
+	public static void writeLongMap(OutputStream stream, LongMap<?> map)
 			throws IOException {
 		writeInt(stream, map.size);
-		for(LongMap.Entry<? extends Writable> entry : map) {
+		for(LongMap.Entry<?> entry : map) {
 			writeLong(stream, entry.key);
-			entry.value.writeTo(stream);
+			writeAny(stream, entry.value);
+		}
+	}
+
+	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
+	                                                   Class<K> keyType,
+	                                                   Class<V> valueType) throws IOException {
+		return readObjectMap(stream, keyType, valueType, new ObjectMap<>());
+	}
+
+	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
+	                                                   Class<K> keyType,
+	                                                   Class<V> valueType,
+	                                                   ObjectMap<K, V> out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			K key = readAny(stream, keyType);
+			V value = readAny(stream, valueType);
+			out.put(key, value);
+		}
+		return out;
+	}
+
+	public static void writeObjectMap(OutputStream stream,
+	                                  ObjectMap<?, ?> map) throws IOException {
+		writeInt(stream, map.size);
+		for(ObjectMap.Entry<?, ?> entry : map) {
+			writeAny(stream, entry.key);
+			writeAny(stream, entry.value);
+		}
+	}
+
+	public static <T> ObjectSet<T> readObjectSet(InputStream stream,
+	                                             Class<T> type) throws IOException {
+		return readObjectSet(stream, type, new ObjectSet<>());
+	}
+
+	public static <T> ObjectSet<T> readObjectSet(InputStream stream,
+	                                             Class<T> type,
+	                                             ObjectSet<T> out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++)
+			out.add(readAny(stream, type));
+		return out;
+	}
+
+	public static void writeObjectSet(OutputStream stream,
+	                                  ObjectSet<?> set) throws IOException {
+		writeInt(stream, set.size);
+		for(Object val : set) {
+			writeAny(stream, val);
+		}
+	}
+
+	public static IntSet readIntSet(InputStream stream) throws IOException {
+		return readIntSet(stream, new IntSet());
+	}
+
+	public static IntSet readIntSet(InputStream stream, IntSet out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++)
+			out.add(readInt(stream));
+		return out;
+	}
+
+	public static void writeIntSet(OutputStream stream, IntSet set) throws IOException {
+		writeInt(stream, set.size);
+		IntSet.IntSetIterator it = set.iterator();
+		while(it.hasNext)
+			writeInt(stream, it.next());
+	}
+
+	public static IntFloatMap readIntFloatMap(InputStream stream) throws IOException {
+		return readIntFloatMap(stream, new IntFloatMap());
+	}
+
+	public static IntFloatMap readIntFloatMap(InputStream stream,
+	                                          IntFloatMap out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			int key = readInt(stream);
+			float val = readFloat(stream);
+			out.put(key, val);
+		}
+		return out;
+	}
+
+	public static void writeIntFloatMap(OutputStream stream, IntFloatMap map) throws IOException {
+		writeInt(stream, map.size);
+		for(IntFloatMap.Entry entry : map) {
+			writeInt(stream, entry.key);
+			writeFloat(stream, entry.value);
 		}
 	}
 }
