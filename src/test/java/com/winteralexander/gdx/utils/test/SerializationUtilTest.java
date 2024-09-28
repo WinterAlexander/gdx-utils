@@ -139,4 +139,14 @@ public class SerializationUtilTest {
 
 
 	}
+
+	public <T> void ensureProperSerialization(IntMap<T> map, Class<T> type) throws IOException {
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeIntMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		IntMap<T> other = readIntMap(inputStream, type);
+		assertEquals(map.size, other.size);
+	}
 }
