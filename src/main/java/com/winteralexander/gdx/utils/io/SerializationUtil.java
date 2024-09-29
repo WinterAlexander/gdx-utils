@@ -364,7 +364,7 @@ public class SerializationUtil {
 			writeVec3(stream, (Vector3)thing);
 		else if(thing instanceof Vector4)
 			writeVec4(stream, (Vector4)thing);
-		else if(thing instanceof Enum)
+		else if(thing instanceof Enum || thing == null)
 			writeEnum(stream, (Enum<?>)thing);
 		else
 			writePrimitive(stream, thing);

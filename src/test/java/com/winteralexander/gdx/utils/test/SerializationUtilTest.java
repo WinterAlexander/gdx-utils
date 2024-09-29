@@ -6,6 +6,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.LongMap;
+import com.winteralexander.gdx.utils.collection.Vec2iMap;
+import com.winteralexander.gdx.utils.collection.Vec2sMap;
+import com.winteralexander.gdx.utils.gfx.UVTransform;
 import com.winteralexander.gdx.utils.io.SerializationUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import com.winteralexander.gdx.utils.math.vector.Vector3i;
@@ -128,25 +131,91 @@ public class SerializationUtilTest {
 	}
 
 	@Test
-	public void testMapSerialization() throws IOException {
+	public void testIntLongMapSerialization() throws IOException {
+		ensureProperSerialization(new IntMap<>(), Vector2i.class);
+		ensureProperSerialization(new LongMap<>(), Vector3i.class);
+		ensureProperSerialization(new Vec2sMap<>(), Void.class);
+		ensureProperSerialization(new Vec2iMap<>(), Boolean.class);
+
 		IntMap<Vector2i> vecMap = new IntMap<>();
-		LongMap<Vector2i> vecLongMap = new LongMap<>();
+		LongMap<Integer> vecLongMap = new LongMap<>();
+		Vec2sMap<UVTransform> vec2sMap = new Vec2sMap<>();
+		Vec2iMap<Color> vec2iMap = new Vec2iMap<>();
 
+		vecMap.put(1, new Vector2i(2, 3));
+		vecMap.put(3, new Vector2i(-2, 3));
+		vecMap.put(10, new Vector2i(-3, 3));
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		writeIntMap(outputStream, vecMap);
-		writeLongMap(outputStream, vecLongMap);
+		vecLongMap.put(-10, 3);
+		vecLongMap.put(-5, 111);
 
+		vec2sMap.put(1, 1, UVTransform.CLOCKWISE);
+		vec2sMap.put(1, -1, UVTransform.COUNTER_CLOCKWISE);
+		vec2sMap.put(1, -11, null);
 
+		vec2iMap.put(0, 0, new Color(1f, 0.5f, 0.5f, 0.2f));
+		vec2iMap.put(0, 0, new Color(1f, 0.6f, 0.5f, 0.1f));
+		vec2iMap.put(0, 0, new Color(0.7f, 0.8f, 0.2f, 0.553f));
+
+		ensureProperSerialization(vecMap, Vector2i.class);
+		ensureProperSerialization(vecLongMap, Integer.class);
+		ensureProperSerialization(vec2sMap, UVTransform.class);
+		ensureProperSerialization(vec2iMap, Color.class);
 	}
 
 	public <T> void ensureProperSerialization(IntMap<T> map, Class<T> type) throws IOException {
-
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeIntMap(outputStream, map);
 
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		IntMap<T> other = readIntMap(inputStream, type);
 		assertEquals(map.size, other.size);
+		IntMap.Keys it = map.keys();
+
+		while(it.hasNext) {
+			int key = it.next();
+			assertEquals(map.get(key), other.get(key));
+		}
+	}
+
+	public <T> void ensureProperSerialization(LongMap<T> map, Class<T> type) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeLongMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		LongMap<T> other = readLongMap(inputStream, type);
+		assertEquals(map.size, other.size);
+		LongMap.Keys it = map.keys();
+
+		while(it.hasNext) {
+			long key = it.next();
+			assertEquals(map.get(key), other.get(key));
+		}
+	}
+
+	public <T> void ensureProperSerialization(Vec2sMap<T> map, Class<T> type) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeVec2sMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		Vec2sMap<T> other = readVec2sMap(inputStream, type);
+		assertEquals(map.size(), other.size());
+
+		for(Vector2i key : map.keys()) {
+			assertEquals(map.get(key), other.get(key));
+		}
+	}
+
+	public <T> void ensureProperSerialization(Vec2iMap<T> map, Class<T> type) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeVec2iMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		Vec2iMap<T> other = readVec2iMap(inputStream, type);
+		assertEquals(map.size(), other.size());
+
+		for(Vector2i key : map.keys()) {
+			assertEquals(map.get(key), other.get(key));
+		}
 	}
 }
