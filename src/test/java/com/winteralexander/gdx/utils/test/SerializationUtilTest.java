@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.utils.*;
 import com.winteralexander.gdx.utils.collection.Vec2iMap;
 import com.winteralexander.gdx.utils.collection.Vec2sMap;
 import com.winteralexander.gdx.utils.gfx.UVTransform;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import static com.winteralexander.gdx.utils.io.SerializationUtil.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests the {@link SerializationUtil} utility class
@@ -131,23 +130,33 @@ public class SerializationUtilTest {
 	}
 
 	@Test
-	public void testIntLongMapSerialization() throws IOException {
+	public void testMapSerialization() throws IOException {
+		ensureProperSerialization(new ObjectMap<>(), Short.class, Vector2.class);
 		ensureProperSerialization(new IntMap<>(), Vector2i.class);
 		ensureProperSerialization(new LongMap<>(), Vector3i.class);
+		ensureProperSerialization(new IntIntMap());
+		ensureProperSerialization(new IntFloatMap());
 		ensureProperSerialization(new Vec2sMap<>(), Void.class);
 		ensureProperSerialization(new Vec2iMap<>(), Boolean.class);
 
-		IntMap<Vector2i> vecMap = new IntMap<>();
-		LongMap<Integer> vecLongMap = new LongMap<>();
+		ObjectMap<Short, Long> objectMap = new ObjectMap<>();
+		IntMap<Vector2i> intMap = new IntMap<>();
+		LongMap<Integer> longMap = new LongMap<>();
 		Vec2sMap<UVTransform> vec2sMap = new Vec2sMap<>();
 		Vec2iMap<Color> vec2iMap = new Vec2iMap<>();
+		IntIntMap intIntMap = new IntIntMap();
+		IntFloatMap intFloatMap = new IntFloatMap();
 
-		vecMap.put(1, new Vector2i(2, 3));
-		vecMap.put(3, new Vector2i(-2, 3));
-		vecMap.put(10, new Vector2i(-3, 3));
+		objectMap.put((short)5, 6L);
+		objectMap.put((short)-3, -13L);
+		objectMap.put((short)32, 32L);
 
-		vecLongMap.put(-10, 3);
-		vecLongMap.put(-5, 111);
+		intMap.put(1, new Vector2i(2, 3));
+		intMap.put(3, new Vector2i(-2, 3));
+		intMap.put(10, new Vector2i(-3, 3));
+
+		longMap.put(-10, 3);
+		longMap.put(-5, 111);
 
 		vec2sMap.put(1, 1, UVTransform.CLOCKWISE);
 		vec2sMap.put(1, -1, UVTransform.COUNTER_CLOCKWISE);
@@ -157,13 +166,39 @@ public class SerializationUtilTest {
 		vec2iMap.put(0, 0, new Color(1f, 0.6f, 0.5f, 0.1f));
 		vec2iMap.put(0, 0, new Color(0.7f, 0.8f, 0.2f, 0.553f));
 
-		ensureProperSerialization(vecMap, Vector2i.class);
-		ensureProperSerialization(vecLongMap, Integer.class);
+		intIntMap.put(3, 5);
+		intIntMap.put(-1, -32);
+		intIntMap.put(-2323, 1231234);
+
+		intFloatMap.put(1, 23f);
+		intFloatMap.put(13, 12309123f);
+		intFloatMap.put(123, -23f);
+
+		ensureProperSerialization(objectMap, Short.class, Long.class);
+		ensureProperSerialization(intMap, Vector2i.class);
+		ensureProperSerialization(longMap, Integer.class);
+		ensureProperSerialization(intIntMap);
+		ensureProperSerialization(intFloatMap);
 		ensureProperSerialization(vec2sMap, UVTransform.class);
 		ensureProperSerialization(vec2iMap, Color.class);
 	}
 
-	public <T> void ensureProperSerialization(IntMap<T> map, Class<T> type) throws IOException {
+	private <K, V> void ensureProperSerialization(ObjectMap<K, V> map,
+	                                              Class<K> keyType,
+	                                              Class<V> valueType) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeObjectMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		ObjectMap<K, V> other = readObjectMap(inputStream, keyType, valueType);
+		assertEquals(map.size, other.size);
+
+		for(K key : map.keys()) {
+			assertEquals(map.get(key), other.get(key));
+		}
+	}
+
+	private <T> void ensureProperSerialization(IntMap<T> map, Class<T> type) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeIntMap(outputStream, map);
 
@@ -178,7 +213,7 @@ public class SerializationUtilTest {
 		}
 	}
 
-	public <T> void ensureProperSerialization(LongMap<T> map, Class<T> type) throws IOException {
+	private <T> void ensureProperSerialization(LongMap<T> map, Class<T> type) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeLongMap(outputStream, map);
 
@@ -193,7 +228,46 @@ public class SerializationUtilTest {
 		}
 	}
 
-	public <T> void ensureProperSerialization(Vec2sMap<T> map, Class<T> type) throws IOException {
+	private void ensureProperSerialization(IntIntMap map) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeIntIntMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		IntIntMap other = readIntIntMap(inputStream);
+		assertEquals(map.size, other.size);
+		IntIntMap.Keys it = map.keys();
+
+		while(it.hasNext) {
+			int key = it.next();
+			int val1 = map.get(key, -1);
+			int val2 = other.get(key, -1);
+			assertNotEquals(-1, val1);
+			assertNotEquals(-1, val2);
+			assertEquals(val1, val2);
+		}
+	}
+
+	private void ensureProperSerialization(IntFloatMap map) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeIntFloatMap(outputStream, map);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		IntFloatMap other = readIntFloatMap(inputStream);
+		assertEquals(map.size, other.size);
+		IntFloatMap.Keys it = map.keys();
+
+		while(it.hasNext) {
+			int key = it.next();
+			float val1 = map.get(key, -1);
+			float val2 = other.get(key, -1);
+
+			assertNotEquals(-1f, val1, 0f);
+			assertNotEquals(-1f, val2, 0f);
+			assertEquals(val1, val2, 0f);
+		}
+	}
+
+	private <T> void ensureProperSerialization(Vec2sMap<T> map, Class<T> type) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeVec2sMap(outputStream, map);
 
@@ -206,7 +280,7 @@ public class SerializationUtilTest {
 		}
 	}
 
-	public <T> void ensureProperSerialization(Vec2iMap<T> map, Class<T> type) throws IOException {
+	private <T> void ensureProperSerialization(Vec2iMap<T> map, Class<T> type) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeVec2iMap(outputStream, map);
 
@@ -216,6 +290,65 @@ public class SerializationUtilTest {
 
 		for(Vector2i key : map.keys()) {
 			assertEquals(map.get(key), other.get(key));
+		}
+	}
+
+	@Test
+	public void testSetSerialization() throws IOException {
+		ensureProperSerialization(new ObjectSet<>(), UVTransform.class);
+		ensureProperSerialization(new IntSet());
+
+		ObjectSet<Vector3> objectSet = new ObjectSet<>();
+		IntSet intSet = new IntSet();
+
+		objectSet.add(new Vector3(3f, -2f, -10f));
+		objectSet.add(new Vector3(3.1f, 2.23f, -0.1f));
+		objectSet.add(new Vector3(-3.1f, -2.2f, -4f));
+
+		intSet.add(2);
+		intSet.add(3);
+		intSet.add(-99);
+
+		ensureProperSerialization(objectSet, Vector3.class);
+		ensureProperSerialization(intSet);
+	}
+
+	private <T> void ensureProperSerialization(ObjectSet<T> set, Class<T> type) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeObjectSet(outputStream, set);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		ObjectSet<T> other = readObjectSet(inputStream, type);
+		assertEquals(set.size, other.size);
+
+		for(T val : set) {
+			assertTrue(other.contains(val));
+		}
+
+		for(T val : other) {
+			assertTrue(set.contains(val));
+		}
+	}
+
+	private void ensureProperSerialization(IntSet set) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeIntSet(outputStream, set);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		IntSet other = readIntSet(inputStream);
+		assertEquals(set.size, other.size);
+
+		IntSet.IntSetIterator it = set.iterator();
+		while(it.hasNext) {
+			int val = it.next();
+			assertTrue(other.contains(val));
+		}
+
+
+		it = other.iterator();
+		while(it.hasNext) {
+			int val = it.next();
+			assertTrue(set.contains(val));
 		}
 	}
 }

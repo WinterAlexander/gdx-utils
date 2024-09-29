@@ -414,6 +414,34 @@ public class SerializationUtil {
 			writeAny(stream, thing);
 	}
 
+	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
+	                                                   Class<K> keyType,
+	                                                   Class<V> valueType) throws IOException {
+		return readObjectMap(stream, keyType, valueType, new ObjectMap<>());
+	}
+
+	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
+	                                                   Class<K> keyType,
+	                                                   Class<V> valueType,
+	                                                   ObjectMap<K, V> out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			K key = readAny(stream, keyType);
+			V value = readAny(stream, valueType);
+			out.put(key, value);
+		}
+		return out;
+	}
+
+	public static void writeObjectMap(OutputStream stream,
+	                                  ObjectMap<?, ?> map) throws IOException {
+		writeInt(stream, map.size);
+		for(ObjectMap.Entry<?, ?> entry : map) {
+			writeAny(stream, entry.key);
+			writeAny(stream, entry.value);
+		}
+	}
+
 	public static <T> IntMap<T> readIntMap(InputStream stream,
 	                                       Class<T> type) throws IOException {
 		return readIntMap(stream, type, new IntMap<>());
@@ -465,32 +493,82 @@ public class SerializationUtil {
 		}
 	}
 
-	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
-	                                                   Class<K> keyType,
-	                                                   Class<V> valueType) throws IOException {
-		return readObjectMap(stream, keyType, valueType, new ObjectMap<>());
+	public static IntFloatMap readIntFloatMap(InputStream stream) throws IOException {
+		return readIntFloatMap(stream, new IntFloatMap());
 	}
 
-	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
-	                                                   Class<K> keyType,
-	                                                   Class<V> valueType,
-	                                                   ObjectMap<K, V> out) throws IOException {
+	public static IntFloatMap readIntFloatMap(InputStream stream,
+	                                          IntFloatMap out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
-			K key = readAny(stream, keyType);
-			V value = readAny(stream, valueType);
-			out.put(key, value);
+			int key = readInt(stream);
+			float val = readFloat(stream);
+			out.put(key, val);
 		}
 		return out;
 	}
 
-	public static void writeObjectMap(OutputStream stream,
-	                                  ObjectMap<?, ?> map) throws IOException {
+	public static void writeIntFloatMap(OutputStream stream, IntFloatMap map) throws IOException {
 		writeInt(stream, map.size);
-		for(ObjectMap.Entry<?, ?> entry : map) {
-			writeAny(stream, entry.key);
-			writeAny(stream, entry.value);
+		for(IntFloatMap.Entry entry : map) {
+			writeInt(stream, entry.key);
+			writeFloat(stream, entry.value);
 		}
+	}
+
+	public static IntIntMap readIntIntMap(InputStream stream) throws IOException {
+		return readIntIntMap(stream, new IntIntMap());
+	}
+
+	public static IntIntMap readIntIntMap(InputStream stream,
+	                                        IntIntMap out) throws IOException {
+		int size = readInt(stream);
+		for(int i = 0; i < size; i++) {
+			int key = readInt(stream);
+			int val = readInt(stream);
+			out.put(key, val);
+		}
+		return out;
+	}
+
+	public static void writeIntIntMap(OutputStream stream, IntIntMap map) throws IOException {
+		writeInt(stream, map.size);
+		for(IntIntMap.Entry entry : map) {
+			writeInt(stream, entry.key);
+			writeInt(stream, entry.value);
+		}
+	}
+
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
+	                                           Class<V> type) throws IOException {
+		return readVec2sMap(stream, type, new Vec2sMap<>());
+	}
+
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
+	                                           Class<V> type,
+	                                           Vec2sMap<V> out) throws IOException {
+		readIntMap(stream, type, out.getInnerMap());
+		return out;
+	}
+
+	public static void writeVec2sMap(OutputStream stream, Vec2sMap<?> map) throws IOException {
+		writeIntMap(stream, map.getInnerMap());
+	}
+
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
+	                                           Class<V> type) throws IOException {
+		return readVec2iMap(stream, type, new Vec2iMap<>());
+	}
+
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
+	                                           Class<V> type,
+	                                           Vec2iMap<V> out) throws IOException {
+		readLongMap(stream, type, out.getInnerMap());
+		return out;
+	}
+
+	public static void writeVec2iMap(OutputStream stream, Vec2iMap<?> map) throws IOException {
+		writeLongMap(stream, map.getInnerMap());
 	}
 
 	public static <T> ObjectSet<T> readObjectSet(InputStream stream,
@@ -531,60 +609,5 @@ public class SerializationUtil {
 		IntSet.IntSetIterator it = set.iterator();
 		while(it.hasNext)
 			writeInt(stream, it.next());
-	}
-
-	public static IntFloatMap readIntFloatMap(InputStream stream) throws IOException {
-		return readIntFloatMap(stream, new IntFloatMap());
-	}
-
-	public static IntFloatMap readIntFloatMap(InputStream stream,
-	                                          IntFloatMap out) throws IOException {
-		int size = readInt(stream);
-		for(int i = 0; i < size; i++) {
-			int key = readInt(stream);
-			float val = readFloat(stream);
-			out.put(key, val);
-		}
-		return out;
-	}
-
-	public static void writeIntFloatMap(OutputStream stream, IntFloatMap map) throws IOException {
-		writeInt(stream, map.size);
-		for(IntFloatMap.Entry entry : map) {
-			writeInt(stream, entry.key);
-			writeFloat(stream, entry.value);
-		}
-	}
-
-	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
-	                                           Class<V> type) throws IOException {
-		return readVec2sMap(stream, type, new Vec2sMap<>());
-	}
-
-	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
-	                                           Class<V> type,
-	                                           Vec2sMap<V> out) throws IOException {
-		readIntMap(stream, type, out.getInnerMap());
-		return out;
-	}
-
-	public static void writeVec2sMap(OutputStream stream, Vec2sMap<?> map) throws IOException {
-		writeIntMap(stream, map.getInnerMap());
-	}
-
-	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
-	                                           Class<V> type) throws IOException {
-		return readVec2iMap(stream, type, new Vec2iMap<>());
-	}
-
-	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
-	                                           Class<V> type,
-	                                           Vec2iMap<V> out) throws IOException {
-		readLongMap(stream, type, out.getInnerMap());
-		return out;
-	}
-
-	public static void writeVec2iMap(OutputStream stream, Vec2iMap<?> map) throws IOException {
-		writeLongMap(stream, map.getInnerMap());
 	}
 }
