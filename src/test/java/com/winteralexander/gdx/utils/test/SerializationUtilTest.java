@@ -183,6 +183,43 @@ public class SerializationUtilTest {
 		ensureProperSerialization(vec2iMap, Color.class);
 	}
 
+	@Test
+	public void testPrimitiveCollectionsSerialization() throws IOException {
+		IntArray intArray = new IntArray();
+		LongArray longArray = new LongArray();
+		IntSet intSet = new IntSet();
+		IntFloatMap intFloatMap = new IntFloatMap();
+		IntIntMap intIntMap = new IntIntMap();
+
+		ensureProperSerialization(intArray);
+		ensureProperSerialization(longArray);
+		ensureProperSerialization(intSet);
+		ensureProperSerialization(intFloatMap);
+		ensureProperSerialization(intIntMap);
+
+		intArray.add(1, 2, 3);
+		intArray.add(4, 21, -190);
+
+		longArray.add(203923L, 130291093L, -1201920912901L);
+		intSet.addAll(1, 1, 2, 3, 4);
+		intFloatMap.put(1, 203.34f);
+		intFloatMap.put(2, 303.34f);
+		intFloatMap.put(-90, -10903.34f);
+		intFloatMap.put(180, 2311203.3234f);
+
+		intIntMap.put(1, 1);
+		intIntMap.put(20, 0);
+		intIntMap.put(21, 0);
+		intIntMap.put(22, 4);
+		intIntMap.put(22, 5);
+
+		ensureProperSerialization(intArray);
+		ensureProperSerialization(longArray);
+		ensureProperSerialization(intSet);
+		ensureProperSerialization(intFloatMap);
+		ensureProperSerialization(intIntMap);
+	}
+
 	private <K, V> void ensureProperSerialization(ObjectMap<K, V> map,
 	                                              Class<K> keyType,
 	                                              Class<V> valueType) throws IOException {
@@ -291,6 +328,14 @@ public class SerializationUtilTest {
 		for(Vector2i key : map.keys()) {
 			assertEquals(map.get(key), other.get(key));
 		}
+	}
+	private void ensureProperSerialization(Object any) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		writeAny(outputStream, any);
+
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		Object other = readAny(inputStream, any.getClass());
+		assertEquals(any, other);
 	}
 
 	@Test

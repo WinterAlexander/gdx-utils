@@ -43,14 +43,20 @@ public class SerializationUtil {
 		return newInstance;
 	}
 
-	public static <T> void readSmallArray(InputStream stream,
-										  Class<T> type,
-										  Array<T> out) throws IOException {
+	public static <T> Array<T> readSmallArray(InputStream stream,
+	                                          Class<T> type) throws IOException {
+		return readSmallArray(stream, type, new Array<>());
+	}
+
+	public static <T> Array<T> readSmallArray(InputStream stream,
+	                                          Class<T> type,
+	                                          Array<T> out) throws IOException {
 		out.clear();
 		int size = readShort(stream);
 		out.ensureCapacity(size);
 		while(size-- > 0)
 			out.add(readAny(stream, type));
+		return out;
 	}
 
 	public static void writeSmallArray(OutputStream stream,
@@ -60,14 +66,20 @@ public class SerializationUtil {
 			writeAny(stream, array.get(i));
 	}
 
-	public static <T> void readArray(InputStream stream,
-									 Class<T> type,
-									 Array<T> out) throws IOException {
+	public static <T> Array<T> readArray(InputStream stream,
+	                                     Class<T> type) throws IOException {
+		return readArray(stream, type, new Array<>());
+	}
+
+	public static <T> Array<T> readArray(InputStream stream,
+	                                     Class<T> type,
+	                                     Array<T> out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
 		while(size-- > 0)
 			out.add(readAny(stream, type));
+		return out;
 	}
 
 	public static void writeArray(OutputStream stream,
@@ -77,15 +89,64 @@ public class SerializationUtil {
 			writeAny(stream, array.get(i));
 	}
 
-	public static <K, V> void readMap(InputStream stream,
-									  Class<K> keyType,
-									  Class<V> valueType,
-									  ObjectMap<K, V> out) throws IOException {
+	public static IntArray readIntArray(InputStream stream) throws IOException {
+		return readIntArray(stream, new IntArray());
+	}
+
+	public static IntArray readIntArray(InputStream stream,
+	                                    IntArray out) throws IOException {
+		out.clear();
+		int size = readInt(stream);
+		out.ensureCapacity(size);
+		while(size-- > 0)
+			out.add(readInt(stream));
+		return out;
+	}
+
+	public static void writeIntArray(OutputStream stream,
+	                                 IntArray array) throws IOException {
+		writeInt(stream, array.size);
+		for(int i = 0; i < array.size; i++)
+			writeInt(stream, array.get(i));
+	}
+
+	public static LongArray readLongArray(InputStream stream) throws IOException {
+		return readLongArray(stream, new LongArray());
+	}
+
+	public static LongArray readLongArray(InputStream stream,
+	                                      LongArray out) throws IOException {
+		out.clear();
+		int size = readInt(stream);
+		out.ensureCapacity(size);
+		while(size-- > 0)
+			out.add(readLong(stream));
+		return out;
+	}
+
+	public static void writeLongArray(OutputStream stream,
+	                                  LongArray array) throws IOException {
+		writeInt(stream, array.size);
+		for(int i = 0; i < array.size; i++)
+			writeLong(stream, array.get(i));
+	}
+
+	public static <K, V> ObjectMap<K, V> readMap(InputStream stream,
+	                                             Class<K> keyType,
+	                                             Class<V> valueType) throws IOException {
+		return readMap(stream, keyType, valueType, new ObjectMap<>());
+	}
+
+	public static <K, V> ObjectMap<K, V> readMap(InputStream stream,
+	                                             Class<K> keyType,
+	                                             Class<V> valueType,
+	                                             ObjectMap<K, V> out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
 		while(size-- > 0)
 			out.put(readAny(stream, keyType), readAny(stream, valueType));
+		return out;
 	}
 
 	public static void writeMap(OutputStream stream,
@@ -97,9 +158,14 @@ public class SerializationUtil {
 		}
 	}
 
-	public static void readColor(InputStream stream,
-								 Color out) throws IOException {
+	public static Color readColor(InputStream stream) throws IOException {
+		return readColor(stream, new Color());
+	}
+
+	public static Color readColor(InputStream stream,
+	                              Color out) throws IOException {
 		Color.argb8888ToColor(out, readInt(stream));
+		return out;
 	}
 
 	public static void writeColor(OutputStream stream,
@@ -107,11 +173,16 @@ public class SerializationUtil {
 		writeInt(stream, Color.argb8888(color));
 	}
 
-	public static void readRGB(InputStream stream,
-							   Color out) throws IOException {
+	public static Color readRGB(InputStream stream) throws IOException {
+		return readRGB(stream, new Color());
+	}
+
+	public static Color readRGB(InputStream stream,
+	                            Color out) throws IOException {
 		float prevA = out.a;
 		Color.argb8888ToColor(out, readInt24(stream));
 		out.a = prevA;
+		return out;
 	}
 
 	public static void writeRGB(OutputStream stream,
@@ -345,6 +416,16 @@ public class SerializationUtil {
 			return (T)readVec3(stream);
 		else if(type == Vector4.class)
 			return (T)readVec4(stream);
+		else if(type == IntArray.class)
+			return (T)readIntArray(stream);
+		else if(type == LongArray.class)
+			return (T)readLongArray(stream);
+		else if(type == IntSet.class)
+			return (T)readIntSet(stream);
+		else if(type == IntFloatMap.class)
+			return (T)readIntFloatMap(stream);
+		else if(type == IntIntMap.class)
+			return (T)readIntIntMap(stream);
 		else if(type.isEnum())
 			return (T)readEnum(stream, type.asSubclass(Enum.class));
 		else
@@ -364,6 +445,16 @@ public class SerializationUtil {
 			writeVec3(stream, (Vector3)thing);
 		else if(thing instanceof Vector4)
 			writeVec4(stream, (Vector4)thing);
+		else if(thing instanceof IntArray)
+			writeIntArray(stream, (IntArray)thing);
+		else if(thing instanceof LongArray)
+			writeLongArray(stream, (LongArray)thing);
+		else if(thing instanceof IntSet)
+			writeIntSet(stream, (IntSet)thing);
+		else if(thing instanceof IntFloatMap)
+			writeIntFloatMap(stream, (IntFloatMap)thing);
+		else if(thing instanceof IntIntMap)
+			writeIntIntMap(stream, (IntIntMap)thing);
 		else if(thing instanceof Enum || thing == null)
 			writeEnum(stream, (Enum<?>)thing);
 		else
