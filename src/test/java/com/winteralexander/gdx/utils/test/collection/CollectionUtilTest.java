@@ -50,4 +50,21 @@ public class CollectionUtilTest {
 		objs.add(new Object());
 		assertFalse(CollectionUtil.allInstanceOf(objs, String.class));
 	}
+
+	@Test
+	public void testEmptyArray() {
+		Array<Integer> empty = CollectionUtil.emptyArray();
+		Array<CollectionUtil> empty2 = CollectionUtil.emptyArray();
+
+		assertEquals(0, empty.size);
+		assertEquals(0, empty2.size);
+
+		for(Integer inte : empty) {
+			fail("Stuff in the empty array");
+		}
+		
+		for(CollectionUtil inte : empty2) {
+			fail("Stuff in the empty array");
+		}
+	}
 }

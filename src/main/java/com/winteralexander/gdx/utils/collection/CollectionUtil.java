@@ -17,6 +17,8 @@ import java.util.function.Function;
 public class CollectionUtil {
 	private static final Random DEFAULT_RANDOM = new Random();
 
+	private static final Array<?> EMPTY_ARRAY = new Array<>(0);
+
 	/**
 	 * Counts the number of element in an iterable by iterating through it
 	 *
@@ -429,5 +431,10 @@ public class CollectionUtil {
 
 	public static boolean allInstanceOf(Iterable<?> iterable, Class<?> type) {
 		return all(iterable, type::isInstance);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Array<T> emptyArray() {
+		return (Array<T>)EMPTY_ARRAY;
 	}
 }
