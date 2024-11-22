@@ -10,9 +10,9 @@ import com.winteralexander.gdx.utils.EnumConstantCache;
  * @author Alexander Winter
  */
 public enum GridDirection8 {
-	TOP_LEFT, TOP, TOP_RIGHT,
+	UP_LEFT, UP, UP_RIGHT,
 	LEFT, RIGHT,
-	BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT;
+	DOWN_LEFT, DOWN, DOWN_RIGHT;
 
 	public static final GridDirection8[] values = EnumConstantCache.store(values());
 
@@ -22,28 +22,28 @@ public enum GridDirection8 {
 
 	public GridDirection8 clockwiseOrthogonal() {
 		switch(this) {
-			case TOP_LEFT: return TOP;
-			case TOP: return TOP_RIGHT;
-			case TOP_RIGHT: return RIGHT;
-			case LEFT: return TOP_LEFT;
-			case RIGHT: return BOTTOM_RIGHT;
-			case BOTTOM_LEFT: return LEFT;
-			case BOTTOM: return BOTTOM_LEFT;
-			case BOTTOM_RIGHT: return BOTTOM;
+			case UP_LEFT: return UP;
+			case UP: return UP_RIGHT;
+			case UP_RIGHT: return RIGHT;
+			case LEFT: return UP_LEFT;
+			case RIGHT: return DOWN_RIGHT;
+			case DOWN_LEFT: return LEFT;
+			case DOWN: return DOWN_LEFT;
+			case DOWN_RIGHT: return DOWN;
 			default: throw new IllegalStateException();
 		}
 	}
 
 	public GridDirection8 counterClockwiseOrthogonal() {
 		switch(this) {
-			case TOP_LEFT: return LEFT;
-			case TOP: return TOP_LEFT;
-			case TOP_RIGHT: return TOP;
-			case LEFT: return BOTTOM_LEFT;
-			case RIGHT: return TOP_RIGHT;
-			case BOTTOM_LEFT: return BOTTOM;
-			case BOTTOM: return BOTTOM_RIGHT;
-			case BOTTOM_RIGHT: return RIGHT;
+			case UP_LEFT: return LEFT;
+			case UP: return UP_LEFT;
+			case UP_RIGHT: return UP;
+			case LEFT: return DOWN_LEFT;
+			case RIGHT: return UP_RIGHT;
+			case DOWN_LEFT: return DOWN;
+			case DOWN: return DOWN_RIGHT;
+			case DOWN_RIGHT: return RIGHT;
 			default: throw new IllegalStateException();
 		}
 	}
