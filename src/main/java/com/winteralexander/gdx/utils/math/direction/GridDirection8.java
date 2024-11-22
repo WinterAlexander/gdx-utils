@@ -48,6 +48,17 @@ public enum GridDirection8 {
 		return normal;
 	}
 
+	public boolean isDiagonal() {
+		switch(this) {
+			case UP_LEFT:
+			case UP_RIGHT:
+			case DOWN_LEFT:
+			case DOWN_RIGHT:
+				return true;
+		}
+		return false;
+	}
+
 	public GridDirection4 asGridDirection4() {
 		switch(this) {
 			case UP: return GridDirection4.UP;
