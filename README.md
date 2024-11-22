@@ -8,6 +8,7 @@ Add it to your project using JitPack.io: [https://jitpack.io/#WinterAlexander/gd
 
 Main features:
   - AsyncExecutor with convenient Promise-like syntax
+  - Benchmark utility
   - Collection utility
   - StackTrace tracker to extend exception traces through multiple threads
   - Listener / Listenable with priority for easy Listener event sytems
