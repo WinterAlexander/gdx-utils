@@ -1,6 +1,8 @@
 package com.winteralexander.gdx.utils;
 
 import com.winteralexander.gdx.utils.io.TransferObject;
+import com.winteralexander.gdx.utils.math.direction.GridCorner;
+import com.winteralexander.gdx.utils.math.direction.GridDirection4;
 import com.winteralexander.gdx.utils.math.direction.GridDirection8;
 
 import java.io.IOException;
@@ -36,6 +38,22 @@ public class AdjacentTileMap<T> implements TransferObject<AdjacentTileMap<T>> {
 
 	public void set(GridDirection8 tile, T value) {
 		data[tile.ordinal()] = value;
+	}
+
+	public T get(GridDirection4 tile) {
+		return get(tile.asGridDirection8());
+	}
+
+	public void set(GridDirection4 tile, T value) {
+		set(tile.asGridDirection8(), value);
+	}
+
+	public T get(GridCorner tile) {
+		return get(tile.asGridDirection8());
+	}
+
+	public void set(GridCorner tile, T value) {
+		set(tile.asGridDirection8(), value);
 	}
 
 	@Override
