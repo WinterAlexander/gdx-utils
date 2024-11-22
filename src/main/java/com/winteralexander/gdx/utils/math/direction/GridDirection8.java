@@ -24,12 +24,12 @@ public enum GridDirection8 {
 		this.normal = direction.cpy().nor();
 	}
 
-	public float x() {
-		return asVector().x;
+	public int x() {
+		return (int)asVector().x;
 	}
 
-	public float y() {
-		return asVector().y;
+	public int y() {
+		return (int)asVector().y;
 	}
 
 	public float normalX() {
@@ -46,6 +46,26 @@ public enum GridDirection8 {
 
 	public Vector2 asNormal() {
 		return normal;
+	}
+
+	public GridDirection4 asGridDirection4() {
+		switch(this) {
+			case UP: return GridDirection4.UP;
+			case LEFT: return GridDirection4.LEFT;
+			case RIGHT: return GridDirection4.RIGHT;
+			case DOWN: return GridDirection4.DOWN;
+			default: throw new IllegalStateException("Not a GridDirection4: " + this);
+		}
+	}
+
+	public GridCorner asGridCorner() {
+		switch(this) {
+			case UP_LEFT: return GridCorner.UP_LEFT;
+			case UP_RIGHT: return GridCorner.UP_RIGHT;
+			case DOWN_LEFT: return GridCorner.DOWN_LEFT;
+			case DOWN_RIGHT: return GridCorner.DOWN_RIGHT;
+			default: throw new IllegalStateException("Not a GridCorner: " + this);
+		}
 	}
 
 	public GridDirection8 opposite() {

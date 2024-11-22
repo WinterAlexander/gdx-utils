@@ -49,16 +49,26 @@ public enum GridDirection4 {
 		}
 	}
 
-	public float x() {
-		return asVector().x;
+	public int x() {
+		return (int)asVector().x;
 	}
 
-	public float y() {
-		return asVector().y;
+	public int y() {
+		return (int)asVector().y;
 	}
 
 	public Vector2 asVector() {
 		return direction;
+	}
+
+	public GridDirection8 asGridDirection8() {
+		switch(this) {
+			case UP: return GridDirection8.UP;
+			case LEFT: return GridDirection8.LEFT;
+			case RIGHT: return GridDirection8.RIGHT;
+			case DOWN: return GridDirection8.DOWN;
+			default: throw new IllegalStateException();
+		}
 	}
 
 	public float getSidePosition(Rectangle rectangle) {
