@@ -63,7 +63,7 @@ public enum GridCorner {
 		return values[values.length - ordinal() - 1];
 	}
 
-	public GridCorner clockwiseOrthogonal() {
+	public GridCorner nextClockwise() {
 		switch(this) {
 			case DOWN_LEFT: return UP_LEFT;
 			case UP_LEFT: return UP_RIGHT;
@@ -73,7 +73,7 @@ public enum GridCorner {
 		}
 	}
 
-	public GridCorner counterClockwiseOrthogonal() {
+	public GridCorner nextCounterClockwise() {
 		switch(this) {
 			case UP_LEFT: return DOWN_LEFT;
 			case UP_RIGHT: return UP_LEFT;

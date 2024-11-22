@@ -29,7 +29,7 @@ public enum GridDirection4 {
 		return values[values.length - ordinal() - 1];
 	}
 
-	public GridDirection4 clockwiseOrthogonal() {
+	public GridDirection4 nextClockwise() {
 		switch(this) {
 			case RIGHT: return DOWN;
 			case UP: return RIGHT;
@@ -39,7 +39,7 @@ public enum GridDirection4 {
 		}
 	}
 
-	public GridDirection4 counterClockwiseOrthogonal() {
+	public GridDirection4 nextCounterClockwise() {
 		switch(this) {
 			case RIGHT: return UP;
 			case UP: return LEFT;
