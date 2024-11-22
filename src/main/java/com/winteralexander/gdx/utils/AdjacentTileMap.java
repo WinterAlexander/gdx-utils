@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils;
 
 import com.winteralexander.gdx.utils.io.TransferObject;
+import com.winteralexander.gdx.utils.math.direction.GridDirection8;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,11 +30,11 @@ public class AdjacentTileMap<T> implements TransferObject<AdjacentTileMap<T>> {
 		this.data = (T[])Array.newInstance(type, 8);
 	}
 
-	public T get(AdjacentTile tile) {
+	public T get(GridDirection8 tile) {
 		return data[tile.ordinal()];
 	}
 
-	public void set(AdjacentTile tile, T value) {
+	public void set(GridDirection8 tile, T value) {
 		data[tile.ordinal()] = value;
 	}
 
@@ -52,18 +53,5 @@ public class AdjacentTileMap<T> implements TransferObject<AdjacentTileMap<T>> {
 	public void writeTo(OutputStream output) throws IOException {
 		for(int i = 0; i < 8; i++)
 			writeAny(output, data[i]);
-	}
-
-	public enum AdjacentTile {
-		LEFT,
-		RIGHT,
-		TOP,
-		BOTTOM,
-		TOP_LEFT,
-		TOP_RIGHT,
-		BOTTOM_LEFT,
-		BOTTOM_RIGHT;
-
-		public static final AdjacentTile[] values = EnumConstantCache.store(values());
 	}
 }
