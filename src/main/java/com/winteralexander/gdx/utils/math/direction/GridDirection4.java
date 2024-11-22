@@ -49,6 +49,14 @@ public enum GridDirection4 {
 		}
 	}
 
+	public float x() {
+		return asVector().x;
+	}
+
+	public float y() {
+		return asVector().y;
+	}
+
 	public Vector2 asVector() {
 		return direction;
 	}

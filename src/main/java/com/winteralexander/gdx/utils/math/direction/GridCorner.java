@@ -25,6 +25,22 @@ public enum GridCorner {
 		this.normal = direction.cpy().nor();
 	}
 
+	public float x() {
+		return asVector().x;
+	}
+
+	public float y() {
+		return asVector().y;
+	}
+
+	public float normalX() {
+		return asNormal().x;
+	}
+
+	public float normalY() {
+		return asNormal().y;
+	}
+
 	public Vector2 asVector() {
 		return direction;
 	}
