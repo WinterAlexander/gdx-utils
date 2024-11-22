@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.math;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,8 +10,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Alexander Winter
  */
 public class TestVec2 extends Vector2 {
-	public TestVec2() {
-	}
+	public TestVec2() {}
 
 	public TestVec2(float x, float y) {
 		super(x, y);

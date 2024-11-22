@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.math;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;

@@ -1,7 +1,6 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.math;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.math.shape.*;
 import com.winteralexander.gdx.utils.math.shape.Annulus;
 import com.winteralexander.gdx.utils.math.shape.Circle;
 import com.winteralexander.gdx.utils.math.shape.Polygon;

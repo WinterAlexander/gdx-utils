@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.math;
 
 import com.winteralexander.gdx.utils.math.interval.Interval;
 import com.winteralexander.gdx.utils.math.interval.SimpleInterval;

@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.math.direction;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.EnumConstantCache;
 
 /**
@@ -11,9 +12,18 @@ import com.winteralexander.gdx.utils.EnumConstantCache;
  * @author Alexander Winter
  */
 public enum GridDirection4 {
-	UP, LEFT, RIGHT, DOWN;
+	UP(0f, 1f),
+	LEFT(-1f, 0f),
+	RIGHT(1f, 0f),
+	DOWN(0f, -1f);
 
 	public static final GridDirection4[] values = EnumConstantCache.store(values());
+
+	private final Vector2 direction;
+
+	GridDirection4(float x, float y) {
+		this.direction = new Vector2(x, y);
+	}
 
 	public GridDirection4 opposite() {
 		return values[values.length - ordinal() - 1];
@@ -39,6 +49,9 @@ public enum GridDirection4 {
 		}
 	}
 
+	public Vector2 asVector() {
+		return direction;
+	}
 
 	public float getSidePosition(Rectangle rectangle) {
 		switch(this) {
