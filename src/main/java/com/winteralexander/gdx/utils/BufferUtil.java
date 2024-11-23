@@ -3,6 +3,7 @@ package com.winteralexander.gdx.utils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
+import com.badlogic.gdx.utils.FloatArray;
 
 import java.nio.FloatBuffer;
 
@@ -116,5 +117,56 @@ public class BufferUtil {
 		buffer.put(offset + 1, vec.y);
 		buffer.put(offset + 2, vec.z);
 		buffer.put(offset + 3, vec.w);
+	}
+
+	public static Vector2 getVector2(FloatArray buffer, int offset) {
+		return getVector2(buffer, offset, new Vector2());
+	}
+
+	public static Vector2 getVector2(FloatArray buffer, int offset, Vector2 out) {
+		out.x = buffer.get(offset);
+		out.y = buffer.get(offset + 1);
+		return out;
+	}
+
+	public static Vector3 getVector3(FloatArray buffer, int offset) {
+		return getVector3(buffer, offset, new Vector3());
+	}
+
+	public static Vector3 getVector3(FloatArray buffer, int offset, Vector3 out) {
+		out.x = buffer.get(offset);
+		out.y = buffer.get(offset + 1);
+		out.z = buffer.get(offset + 2);
+		return out;
+	}
+
+	public static Vector4 getVector4(FloatArray buffer, int offset) {
+		return getVector4(buffer, offset, new Vector4());
+	}
+
+	public static Vector4 getVector4(FloatArray buffer, int offset, Vector4 out) {
+		out.x = buffer.get(offset);
+		out.y = buffer.get(offset + 1);
+		out.z = buffer.get(offset + 2);
+		out.w = buffer.get(offset + 3);
+		return out;
+	}
+
+	public static void putVector2(FloatArray buffer, int offset, Vector2 vec) {
+		buffer.set(offset, vec.x);
+		buffer.set(offset + 1, vec.y);
+	}
+
+	public static void putVector3(FloatArray buffer, int offset, Vector3 vec) {
+		buffer.set(offset, vec.x);
+		buffer.set(offset + 1, vec.y);
+		buffer.set(offset + 2, vec.z);
+	}
+
+	public static void putVector4(FloatArray buffer, int offset, Vector4 vec) {
+		buffer.set(offset, vec.x);
+		buffer.set(offset + 1, vec.y);
+		buffer.set(offset + 2, vec.z);
+		buffer.set(offset + 3, vec.w);
 	}
 }
