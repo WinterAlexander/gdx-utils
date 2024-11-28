@@ -10,6 +10,7 @@ Main features:
   - AsyncExecutor with convenient Promise-like syntax
   - Benchmark utility
   - Collection utility
+  - Debugging utilities
   - StackTrace tracker to extend exception traces through multiple threads
   - Listener / Listenable with priority for easy Listener event sytems
   - Reflection utility (e.g. `ReflectionUtil.get(object, "field")`)
