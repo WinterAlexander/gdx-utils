@@ -4,9 +4,11 @@ package com.winteralexander.gdx.utils;
 import com.badlogic.gdx.utils.Array;
 
 import java.lang.reflect.*;
+import java.util.regex.Pattern;
 
 import static com.winteralexander.gdx.utils.TypeUtil.isPrimitiveBox;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
+import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
 
 /**
  * Utility class to use reflection on objects
@@ -476,5 +478,28 @@ public class ReflectionUtil {
 			Long offset = (Long)staticFieldOffset.invoke(unsafe, loggerField);
 			putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
 		} catch(Exception ignored) {}
+	}
+
+
+	public static String getParentStackLocation() {
+		return getParentStackLocation(3);
+	}
+
+	public static String getParentStackLocation(int parent) {
+		Thread thread = Thread.currentThread();
+		StackTraceElement[] elements = thread.getStackTrace();
+
+		if(elements.length == 0)
+			throw new IllegalStateException("Thread not started");
+
+		int index = 1 + parent;
+
+		if(elements.length <= index)
+			throw new IllegalStateException("Thread stack not big enough to retrieve the parent " +
+					"with depth " + parent);
+
+		return last(elements[index].getClassName().split(Pattern.quote("."))) +
+				"#" + elements[index].getMethodName() + "() " +
+				"(" + elements[index].getFileName() + ":" + elements[index].getLineNumber() + ")";
 	}
 }

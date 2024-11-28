@@ -61,4 +61,14 @@ public class ReflectionUtilTest {
 		assertTrue(all.contains("innerObjectDDDDD"));
 		assertTrue(all.contains("innerValueEEEEE"));
  	}
+
+	@Test
+	public void testParentStackLocation() {
+		childMethod();
+	}
+
+	private void childMethod() {
+		assertTrue(ReflectionUtil.getParentStackLocation()
+				.startsWith("ReflectionUtilTest#testParentStackLocation"));
+	}
 }
