@@ -356,6 +356,16 @@ public class MathUtil {
 		return s == 0.0f ? 1 : (int)s;
 	}
 
+	public static double signOf(double number) {
+		double s = Math.signum(number);
+		return s == 0.0f ? 1f : s;
+	}
+
+	public static long signOf(long number) {
+		float s = Math.signum(number);
+		return s == 0.0f ? 1 : (long)s;
+	}
+
 	public static Vector2 push(Vector2 input, Vector2 direction, float scale, float cap) {
 		return push(input, direction, scale, cap, input);
 	}
