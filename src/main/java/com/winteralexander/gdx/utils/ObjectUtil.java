@@ -86,4 +86,44 @@ public class ObjectUtil {
 				return i;
 		return -1;
 	}
+
+	/**
+	 * Returns the first non-negative integer of the specified parameters, in order
+	 *
+	 * @param i1 long integer 1
+	 * @param i2 long integer 2
+	 * @return first non-negative integer of parameters or -1 if none is non-negative
+	 */
+	public static long firstNonNegative(long i1, long i2) {
+		return i1 >= 0 ? i1 :
+				i2 >= 0 ? i2 : -1;
+	}
+
+	/**
+	 * Returns the first non-negative object of the specified parameters, in order
+	 *
+	 * @param i1 long integer 1
+	 * @param i2 long integer 2
+	 * @param i3 long integer 3
+	 * @return first non-negative object of parameters or -1 if none non-negative
+	 */
+	public static long firstNonNegative(long i1, long i2, long i3) {
+		return i1 > 0 ? i1 :
+				i2 > 0 ? i2 :
+						i3 > 0 ? i3 : -1;
+	}
+
+	/**
+	 * Returns the first non-negative integer of the specified integers
+	 *
+	 * @param ints long integers to find non-negative in
+	 * @return first non-negative integer of specified integers or -1 if none
+	 * is non-negative
+	 */
+	public static long firstNonNegative(long... ints) {
+		for(long i : ints)
+			if(i > 0)
+				return i;
+		return -1;
+	}
 }
