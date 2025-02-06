@@ -45,6 +45,70 @@ public class CollectionUtil {
 		return count;
 	}
 
+
+	/**
+	 * Retrieves the last element of an array of integers
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static int last(int[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of floats
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static float last(float[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of longs
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static long last(long[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of doubles
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static double last(double[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of shorts
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static short last(short[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of bytes
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static byte last(byte[] array) {
+		return array[array.length - 1];
+	}
+
+	/**
+	 * Retrieves the last element of an array of booleans
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static boolean last(boolean[] array) {
+		return array[array.length - 1];
+	}
+
 	/**
 	 * Retrieves the last element of an array
 	 * @param array array to get the last element of
