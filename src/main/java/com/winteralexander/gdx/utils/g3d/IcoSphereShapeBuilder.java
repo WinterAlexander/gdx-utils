@@ -2,11 +2,16 @@ package com.winteralexander.gdx.utils.g3d;
 
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BaseShapeBuilder;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
 
 /**
- * Shape builder for IcoSpheres
+ * Helper class with static methods to build sphere shapes using {@link MeshPartBuilder}.
+ * Spheres built are IcoSpheres, spheres with triangles equally spread on the surface. See
+ * <a href="http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html">
+ * Creating an icosphere mesh in code</a> for details on the algorithm and difference between
+ * IcoSphere and UVSphere.
  * <p>
  * Created on 2025-02-07.
  *
@@ -17,6 +22,21 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	private static final ShortArray tmpIndices = new ShortArray();
 	private static final ShortArray tmpNewIndices = new ShortArray();
 
+	/**
+	 * Builds an ico sphere on the provided builder, with given radius and subdivisions. The radius
+	 * is the radius for the sphere in every axis. If a spheroid is needed, a scale transformation
+	 * can be applied with {@link MeshPartBuilder#setVertexTransform(Matrix4)}. The subdivisions
+	 * parameter determines the number of time the IcoSphere triangles are subdivided for a smoother
+	 * sphere. When the value is 0, the IcoSphere is composed of 12 vertices and 20 faces, which is
+	 * the minimal possible IcoSphere. Any further subdivision subdivides each face into 4 triangles
+	 * which are then projected onto the sphere to make it rounder.
+	 * <p>
+	 * This function is not thread safe.
+	 *
+	 * @param builder builder to build the IcoSphere into
+	 * @param radius radius of the sphere
+	 * @param subdivisions number of subdivisions to apply to the IcoSphere
+	 */
 	public static void build(MeshPartBuilder builder, float radius, int subdivisions) {
 		tmpVertices.clear();
 		tmpIndices.clear();
@@ -45,8 +65,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	}
 
 	private static void createIcosahedron(FloatArray vertices, ShortArray indices) {
-		// Create the 12 vertices of the icosahedron
-		float t = (1.0f + (float) Math.sqrt(5.0f)) / 2.0f;
+		float t = (1.0f + (float)Math.sqrt(5.0f)) / 2.0f;
 
 		tmpV0.set(-1f, t, 0);
 		tmpV1.set(1f, t, 0);
@@ -69,7 +88,6 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		vertices.add(tmpV2.y, tmpV2.z, tmpV2.x);
 		vertices.add(tmpV3.y, tmpV3.z, tmpV3.x);
 
-		// Create the 20 faces of the icosahedron
 		indices.ensureCapacity(60);
 		indices.add((short)0, (short)11, (short)5);
 		indices.add((short)0, (short)5, (short)1);
@@ -97,7 +115,6 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	}
 
 	private static void subdivide(FloatArray vertices, ShortArray indices) {
-		// Subdivide each triangle into 4 smaller triangles
 		tmpNewIndices.clear();
 		int numTriangles = indices.size / 3;
 
