@@ -2,9 +2,13 @@ package com.winteralexander.gdx.utils.g3d;
 
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BaseShapeBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
+
+import static com.badlogic.gdx.math.MathUtils.atan2;
+import static com.badlogic.gdx.math.MathUtils.asin;
 
 /**
  * Helper class with static methods to build sphere shapes using {@link MeshPartBuilder}.
@@ -41,20 +45,19 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpVertices.clear();
 		tmpIndices.clear();
 
-		// Create the initial icosahedron vertices and indices
 		createIcosahedron(tmpVertices, tmpIndices);
 
-		// Subdivide the icosahedron
 		for(int i = 0; i < subdivisions; i++)
 			subdivide(tmpVertices, tmpIndices);
 
-		// Normalize vertices to create a sphere
 		for(int i = 0; i < tmpVertices.size; i += 3) {
 			vertTmp0.setPos(tmpVertices.get(i), tmpVertices.get(i + 1), tmpVertices.get(i + 2));
 			vertTmp0.position.nor();
 			vertTmp0.setNor(vertTmp0.position);
 			vertTmp0.position.scl(radius);
-			vertTmp0.setUV(0f, 0f);
+			float theta = (atan2(vertTmp0.normal.x, vertTmp0.normal.z) / MathUtils.PI) / 2.f + 0.5f;
+			float phi = (asin(-vertTmp0.normal.y) / (MathUtils.PI / 2.f)) / 2.f + 0.5f;
+			vertTmp0.setUV(theta, phi);
 			builder.vertex(vertTmp0);
 		}
 
