@@ -55,8 +55,8 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 			vertTmp0.position.nor();
 			vertTmp0.setNor(vertTmp0.position);
 			vertTmp0.position.scl(radius);
-			float theta = (atan2(vertTmp0.normal.x, vertTmp0.normal.z) / MathUtils.PI) / 2.f + 0.5f;
-			float phi = (asin(-vertTmp0.normal.y) / (MathUtils.PI / 2.f)) / 2.f + 0.5f;
+			float theta = atan2(vertTmp0.normal.x, vertTmp0.normal.z) / MathUtils.PI / 2f;
+			float phi = asin(-vertTmp0.normal.y) / MathUtils.PI + 0.5f;
 			vertTmp0.setUV(theta, phi);
 			builder.vertex(vertTmp0);
 		}
