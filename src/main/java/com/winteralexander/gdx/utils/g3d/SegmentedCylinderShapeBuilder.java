@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Matrix4;
  * @author Alexander Winter
  */
 public class SegmentedCylinderShapeBuilder {
+	private static final Matrix4 prevVertexTransform = new Matrix4();
 	private static final Matrix4 vertexTransform = new Matrix4();
 
 	public static void build(MeshPartBuilder builder,
@@ -21,12 +22,18 @@ public class SegmentedCylinderShapeBuilder {
 
 		float segmentHeight = height / segments;
 
+		boolean transform = builder.isVertexTransformationEnabled();
+		builder.getVertexTransform(prevVertexTransform);
+
 		for(int i = 0; i < segments; i++) {
 			vertexTransform.setToTranslation(0f, segmentHeight * i + segmentHeight / 2f - height / 2f, 0f);
+			vertexTransform.mul(prevVertexTransform);
 			builder.setVertexTransform(vertexTransform);
+			builder.setUVRange(0f, (float)i / segments, 1f, (i + 1f) / segments);
 			CylinderShapeBuilder.build(builder, width, segmentHeight, depth, divisions, 0, 360, false);
 		}
-		builder.setVertexTransformationEnabled(false);
+		builder.setVertexTransform(prevVertexTransform);
+		builder.setVertexTransformationEnabled(transform);
 
 		EllipseShapeBuilder.build(builder,
 				width, depth,
