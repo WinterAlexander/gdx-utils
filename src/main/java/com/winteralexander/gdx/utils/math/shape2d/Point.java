@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.math.shape;
+package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.ConstSupplier;

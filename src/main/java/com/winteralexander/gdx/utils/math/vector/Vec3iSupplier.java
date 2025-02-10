@@ -1,6 +1,7 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.math.vector;
 
-import com.winteralexander.gdx.utils.math.vector.Vector3i;
+import com.winteralexander.gdx.utils.ConstSupplier;
+import com.winteralexander.gdx.utils.MutableSupplier;
 
 import java.util.function.Consumer;
 

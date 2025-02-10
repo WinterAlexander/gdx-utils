@@ -1,9 +1,10 @@
-package com.winteralexander.gdx.utils.math;
+package com.winteralexander.gdx.utils.math.vector;
 
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
+import com.winteralexander.gdx.utils.math.MathUtil;
 
 import static com.winteralexander.gdx.utils.Validation.ensureInRange;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;

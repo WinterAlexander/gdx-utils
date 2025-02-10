@@ -3,14 +3,14 @@ package com.winteralexander.gdx.utils.math.quadtree;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.winteralexander.gdx.utils.math.OriginUtil;
+import com.winteralexander.gdx.utils.math.vector.OriginUtil;
 
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
-import static com.winteralexander.gdx.utils.math.OriginUtil.ALIGN_BOTTOM;
-import static com.winteralexander.gdx.utils.math.OriginUtil.ALIGN_CENTER;
-import static com.winteralexander.gdx.utils.math.OriginUtil.ALIGN_LEFT;
-import static com.winteralexander.gdx.utils.math.OriginUtil.ALIGN_RIGHT;
-import static com.winteralexander.gdx.utils.math.OriginUtil.ALIGN_TOP;
+import static com.winteralexander.gdx.utils.math.vector.OriginUtil.ALIGN_BOTTOM;
+import static com.winteralexander.gdx.utils.math.vector.OriginUtil.ALIGN_CENTER;
+import static com.winteralexander.gdx.utils.math.vector.OriginUtil.ALIGN_LEFT;
+import static com.winteralexander.gdx.utils.math.vector.OriginUtil.ALIGN_RIGHT;
+import static com.winteralexander.gdx.utils.math.vector.OriginUtil.ALIGN_TOP;
 
 /**
  * Node of a {@link QuadTree}

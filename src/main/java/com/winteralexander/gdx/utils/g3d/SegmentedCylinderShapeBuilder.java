@@ -26,7 +26,7 @@ public class SegmentedCylinderShapeBuilder {
 		builder.getVertexTransform(prevVertexTransform);
 
 		for(int i = 0; i < segments; i++) {
-			vertexTransform.setToTranslation(0f, segmentHeight * i + segmentHeight / 2f - height / 2f, 0f);
+			vertexTransform.setToTranslation(0f, height / 2f - segmentHeight * (i + 1f) + segmentHeight / 2f, 0f);
 			vertexTransform.mul(prevVertexTransform);
 			builder.setVertexTransform(vertexTransform);
 			builder.setUVRange(0f, (float)i / segments, 1f, (i + 1f) / segments);

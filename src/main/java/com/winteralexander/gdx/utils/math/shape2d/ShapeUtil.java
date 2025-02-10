@@ -1,8 +1,6 @@
-package com.winteralexander.gdx.utils.math;
+package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.utils.Array;
-import com.winteralexander.gdx.utils.math.shape.MultiShape;
-import com.winteralexander.gdx.utils.math.shape.Shape;
 
 /**
  * Utility class for shapes

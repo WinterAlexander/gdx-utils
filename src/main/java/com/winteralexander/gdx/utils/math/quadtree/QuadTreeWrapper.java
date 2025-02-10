@@ -3,7 +3,7 @@ package com.winteralexander.gdx.utils.math.quadtree;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.winteralexander.gdx.utils.math.shape.Shape;
+import com.winteralexander.gdx.utils.math.shape2d.Shape;
 
 import java.util.function.BiConsumer;
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.winteralexander.gdx.utils.math.shape.Shape;
+import com.winteralexander.gdx.utils.math.shape2d.Shape;
 
 import static com.winteralexander.gdx.utils.Validation.ensureStrictlyPositive;
 

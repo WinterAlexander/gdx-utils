@@ -3,7 +3,7 @@ package com.winteralexander.gdx.utils.test.math;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
-import com.winteralexander.gdx.utils.math.VectorUtil;
+import com.winteralexander.gdx.utils.math.vector.VectorUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

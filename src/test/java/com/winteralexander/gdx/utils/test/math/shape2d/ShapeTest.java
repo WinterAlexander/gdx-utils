@@ -1,11 +1,11 @@
-package com.winteralexander.gdx.utils.test.math;
+package com.winteralexander.gdx.utils.test.math.shape2d;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.math.shape.Annulus;
-import com.winteralexander.gdx.utils.math.shape.Circle;
-import com.winteralexander.gdx.utils.math.shape.Polygon;
-import com.winteralexander.gdx.utils.math.shape.Rectangle;
-import com.winteralexander.gdx.utils.math.shape.Shape;
+import com.winteralexander.gdx.utils.math.shape2d.Annulus;
+import com.winteralexander.gdx.utils.math.shape2d.Circle;
+import com.winteralexander.gdx.utils.math.shape2d.Polygon;
+import com.winteralexander.gdx.utils.math.shape2d.Rectangle;
+import com.winteralexander.gdx.utils.math.shape2d.Shape;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
