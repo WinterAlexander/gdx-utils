@@ -4,7 +4,10 @@ import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.collection.CollectionUtil;
 import org.junit.Test;
 
+import java.util.Comparator;
+
 import static com.winteralexander.gdx.utils.collection.CollectionUtil.except;
+import static com.winteralexander.gdx.utils.collection.CollectionUtil.greatest;
 import static org.junit.Assert.*;
 
 /**
@@ -66,5 +69,17 @@ public class CollectionUtilTest {
 		for(CollectionUtil inte : empty2) {
 			fail("Stuff in the empty array");
 		}
+	}
+
+	@Test
+	public void testGreatest() {
+		String[] obs = new String[] {
+				"22",
+				"213",
+				"23424"
+		};
+
+		String greatest = greatest(obs, Comparator.comparingInt(Integer::parseInt));
+		assertEquals("23424", greatest);
 	}
 }

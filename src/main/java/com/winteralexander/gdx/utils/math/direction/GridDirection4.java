@@ -89,4 +89,16 @@ public enum GridDirection4 {
 				throw new IllegalStateException("Invalid navigation direction");
 		}
 	}
+
+	public static GridDirection4 closestDirection(float x, float y) {
+		GridDirection4 closest = values[0];
+		for(int i = 1; i < values.length; i++)
+			if(values[i].direction.dot(x, y) > closest.direction.dot(x, y))
+				closest = values[i];
+		return closest;
+	}
+
+	public static GridDirection4 closestDirection(Vector2 vector) {
+		return closestDirection(vector.x, vector.y);
+	}
 }

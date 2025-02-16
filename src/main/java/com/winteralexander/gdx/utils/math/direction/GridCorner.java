@@ -82,4 +82,16 @@ public enum GridCorner {
 			default: throw new IllegalStateException();
 		}
 	}
+
+	public static GridCorner closestDirection(float x, float y) {
+		GridCorner closest = values[0];
+		for(int i = 1; i < values.length; i++)
+			if(values[i].normal.dot(x, y) > closest.normal.dot(x, y))
+				closest = values[i];
+		return closest;
+	}
+
+	public static GridCorner closestDirection(Vector2 vector) {
+		return closestDirection(vector.x, vector.y);
+	}
 }

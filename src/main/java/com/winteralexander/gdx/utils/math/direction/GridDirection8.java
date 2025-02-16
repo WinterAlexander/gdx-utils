@@ -3,6 +3,11 @@ package com.winteralexander.gdx.utils.math.direction;
 import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.EnumConstantCache;
 
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.ToDoubleFunction;
+
 /**
  * One of 8 finite directions on a grid
  * <p>
@@ -137,5 +142,17 @@ public enum GridDirection8 {
 			case DOWN_LEFT: return DOWN_RIGHT;
 			default: throw new IllegalStateException();
 		}
+	}
+
+	public static GridDirection8 closestDirection(float x, float y) {
+		GridDirection8 closest = values[0];
+		for(int i = 1; i < values.length; i++)
+			if(values[i].normal.dot(x, y) > closest.normal.dot(x, y))
+				closest = values[i];
+		return closest;
+	}
+
+	public static GridDirection8 closestDirection(Vector2 vector) {
+		return closestDirection(vector.x, vector.y);
 	}
 }

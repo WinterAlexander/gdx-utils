@@ -45,7 +45,6 @@ public class CollectionUtil {
 		return count;
 	}
 
-
 	/**
 	 * Retrieves the last element of an array of integers
 	 * @param array array to get the last element of
@@ -130,6 +129,25 @@ public class CollectionUtil {
 			throw new IllegalArgumentException("Array is empty");
 
 		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Selects the element of the array that is of greatest value according to the comparator. In
+	 * case of equality, it returns the first one encountered in the array
+	 * @param array array to select greatest element
+	 * @param comparator to determine greatest element
+	 * @return greatest element in array
+	 * @param <T> type of array elements
+	 */
+	public static <T> T greatest(T[] array, Comparator<T> comparator) {
+		if(array.length == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		T greatest = array[0];
+		for(int i = 1; i < array.length; i++)
+			if(comparator.compare(array[i], greatest) > 0)
+				greatest = array[i];
+		return greatest;
 	}
 
 	/**

@@ -116,4 +116,29 @@ public class GridDirectionTest {
 		assertEquals(1, GridDirection8.DOWN_RIGHT.x());
 		assertEquals(-1, GridDirection8.DOWN_RIGHT.y());
 	}
+
+	@Test
+	public void testClosestDirection() {
+		assertEquals(GridDirection4.RIGHT, GridDirection4.closestDirection(10f, 0f));
+		assertEquals(GridDirection4.RIGHT, GridDirection4.closestDirection(10f, 1f));
+		assertEquals(GridDirection4.RIGHT, GridDirection4.closestDirection(10f, 4f));
+		assertEquals(GridDirection4.RIGHT, GridDirection4.closestDirection(10f, 9f));
+		assertEquals(GridDirection4.RIGHT, GridDirection4.closestDirection(10f, -9f));
+
+		assertEquals(GridDirection4.UP, GridDirection4.closestDirection(10f, 11f));
+		assertEquals(GridDirection4.DOWN, GridDirection4.closestDirection(10f, -11f));
+
+		assertEquals(GridDirection4.LEFT, GridDirection4.closestDirection(-10f, 1f));
+
+		assertEquals(GridDirection8.RIGHT, GridDirection8.closestDirection(10f, 0f));
+		assertEquals(GridDirection8.RIGHT, GridDirection8.closestDirection(10f, 1f));
+		assertEquals(GridDirection8.RIGHT, GridDirection8.closestDirection(10f, 4f));
+		assertEquals(GridDirection8.UP_RIGHT, GridDirection8.closestDirection(10f, 9f));
+		assertEquals(GridDirection8.DOWN_RIGHT, GridDirection8.closestDirection(10f, -9f));
+
+		assertEquals(GridDirection8.UP_RIGHT, GridDirection8.closestDirection(10f, 11f));
+		assertEquals(GridDirection8.DOWN_RIGHT, GridDirection8.closestDirection(10f, -11f));
+
+		assertEquals(GridDirection8.LEFT, GridDirection8.closestDirection(-10f, 1f));
+	}
 }
