@@ -120,7 +120,7 @@ public class FileUtil {
 	 * @param file file or directory to check for last modification recursively
 	 * @return last modification of the file or any children
 	 */
-	public static long getLastModificationRecursively(File file) {
+	public static long getLastModifiedRecursively(File file) {
 		if(file.isFile())
 			return file.lastModified();
 		File[] children = file.listFiles();
@@ -129,7 +129,7 @@ public class FileUtil {
 
 		long lastModification = file.lastModified();
 		for(File child : children)
-			lastModification = Math.max(lastModification, getLastModificationRecursively(child));
+			lastModification = Math.max(lastModification, getLastModifiedRecursively(child));
 		return lastModification;
 	}
 
