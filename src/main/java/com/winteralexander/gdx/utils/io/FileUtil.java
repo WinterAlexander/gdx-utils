@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -114,6 +113,24 @@ public class FileUtil {
 				deleteRecursively(child);
 
 		deleteFile(file);
+	}
+
+	/**
+	 * Finds the most recent modification of a file or any of its children to any depth
+	 * @param file file or directory to check for last modification recursively
+	 * @return last modification of the file or any children
+	 */
+	public static long getLastModificationRecursively(File file) {
+		if(file.isFile())
+			return file.lastModified();
+		File[] children = file.listFiles();
+		if(children == null)
+			throw new IllegalArgumentException("File does not exist " + file.toString());
+
+		long lastModification = file.lastModified();
+		for(File child : children)
+			lastModification = Math.max(lastModification, getLastModificationRecursively(child));
+		return lastModification;
 	}
 
 	/**
