@@ -40,8 +40,8 @@ public class RasterizationUtil {
 		int x0 = MathUtils.floor(startX);
 		int y0 = MathUtils.floor(startY);
 
-		int x1 = MathUtils.ceil(endX);
-		int y1 = MathUtils.ceil(endY);
+		int x1 = MathUtils.ceil(endX) - 1;
+		int y1 = MathUtils.ceil(endY) - 1;
 
 		int sx = x0 < x1 ? 1 : -1;
 		int sy = y0 < y1 ? 1 : -1;

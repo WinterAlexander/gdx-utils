@@ -1,7 +1,6 @@
 package com.winteralexander.gdx.utils.test.math;
 
 import com.badlogic.gdx.utils.Array;
-import com.winteralexander.gdx.utils.ReflectionUtil;
 import com.winteralexander.gdx.utils.math.RasterizationUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import org.junit.Test;
@@ -18,6 +17,11 @@ public class RasterizationUtilTest {
 	public void testLineRasterization2D() {
 		Array<Vector2i> out = new Array<>();
 		RasterizationUtil.rasterizeLine2D(0.111f, 0.3123f, 100.123f, 35.213f, out);
+		//System.out.println(ReflectionUtil.toPrettyString(out));
+		printRaster(out);
+
+		out.clear();
+		RasterizationUtil.rasterizeLine2D(0.5f, 0.5f, 1.5f, 2.5f, out);
 		//System.out.println(ReflectionUtil.toPrettyString(out));
 		printRaster(out);
 	}
