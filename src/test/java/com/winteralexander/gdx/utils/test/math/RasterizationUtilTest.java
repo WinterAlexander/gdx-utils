@@ -5,6 +5,9 @@ import com.winteralexander.gdx.utils.math.RasterizationUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import org.junit.Test;
 
+import static com.winteralexander.gdx.utils.math.RasterizationUtil.LineRasterizationMode.ALL_INTERSECTING;
+import static com.winteralexander.gdx.utils.math.RasterizationUtil.LineRasterizationMode.SIMPLE;
+
 /**
  * Unit tests for {@link RasterizationUtil}
  * <p>
@@ -16,12 +19,17 @@ public class RasterizationUtilTest {
 	@Test
 	public void testLineRasterization2D() {
 		Array<Vector2i> out = new Array<>();
-		RasterizationUtil.rasterizeLine2D(0.111f, 0.3123f, 100.123f, 35.213f, out);
+
+		RasterizationUtil.rasterizeLine2D(0f, 1f, 6f, 4f, SIMPLE, out);
+		printRaster(out);
+
+
+		RasterizationUtil.rasterizeLine2D(0.111f, 0.3123f, 100.123f, 35.213f, ALL_INTERSECTING, out);
 		//System.out.println(ReflectionUtil.toPrettyString(out));
 		printRaster(out);
 
 		out.clear();
-		RasterizationUtil.rasterizeLine2D(0.5f, 0.5f, 1.5f, 2.5f, out);
+		RasterizationUtil.rasterizeLine2D(0.5f, 0.5f, 1.5f, 2.5f, ALL_INTERSECTING, out);
 		//System.out.println(ReflectionUtil.toPrettyString(out));
 		printRaster(out);
 	}
