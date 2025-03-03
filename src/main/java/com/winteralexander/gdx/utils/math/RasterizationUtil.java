@@ -7,7 +7,6 @@ import com.winteralexander.gdx.utils.math.vector.Vector2i;
 
 import java.util.function.Consumer;
 
-import static com.winteralexander.gdx.utils.math.RasterizationUtil.LineRasterizationMode.ALL_INTERSECTING;
 import static java.lang.Math.abs;
 
 /**
@@ -18,81 +17,148 @@ import static java.lang.Math.abs;
  * @author Alexander Winter
  */
 public class RasterizationUtil {
-	public static void rasterizeLine2D(float startX, float startY,
+	public static void bresenhamLine2D(float startX, float startY,
 	                                   float endX, float endY,
-	                                   LineRasterizationMode mode,
 	                                   Array<Vector2i> tilesOut) {
-		rasterizeLine2D(startX, startY, endX, endY, mode, vector2i -> tilesOut.add(vector2i.cpy()));
+		bresenhamLine2D(startX, startY, endX, endY, vector2i -> tilesOut.add(vector2i.cpy()));
 	}
 
-	public static void rasterizeLine2D(float startX, float startY,
+	public static void bresenhamLine2D(float startX, float startY,
 	                                   float endX, float endY,
-	                                   LineRasterizationMode mode,
 	                                   Consumer<Vector2i> tileConsumer) {
-		rasterizeLine2D(startX, startY, endX, endY, mode, tileConsumer, new Vector2i());
+		bresenhamLine2D(startX, startY, endX, endY, tileConsumer, new Vector2i());
 	}
 
-	public static void rasterizeLine2D(float startX, float startY,
+	public static void bresenhamLine2D(float startX, float startY,
 	                                   float endX, float endY,
-	                                   LineRasterizationMode mode,
 	                                   Consumer<Vector2i> tileConsumer,
 	                                   Vector2i tmpTile) {
-		float dx = abs(endX - startX);
-		float dy = -abs(endY - startY);
-		float error = dx + dy;
-
 		int x0 = MathUtils.floor(startX);
 		int y0 = MathUtils.floor(startY);
 
 		int x1 = MathUtils.floor(endX);
 		int y1 = MathUtils.floor(endY);
 
+		int dx = abs(x1 - x0);
+		int dy = -abs(y1 - y0);
+		int error = dx + dy;
 		int sx = x0 < x1 ? 1 : -1;
 		int sy = y0 < y1 ? 1 : -1;
 
 		while(true) {
 			tileConsumer.accept(tmpTile.set(x0, y0));
-			if(error * 2f >= dy && (mode != ALL_INTERSECTING || error * 2f - dy > dx - error * 2f)) {
-				if(x0 == x1)
-					break;
+
+			if(x0 == x1 && y0 == y1)
+				break;
+
+			int e2 = error * 2;
+			if(e2 >= dy) {
 				error += dy;
 				x0 += sx;
-				if(mode == ALL_INTERSECTING)
-					continue;
 			}
-			if(error * 2f <= dx) {
-				if(y0 == y1)
-					break;
+
+			if(e2 <= dx) {
 				error += dx;
 				y0 += sy;
 			}
 		}
 	}
 
-	public static void rasterizeLine2D(Vector2 start,
+	public static void bresenhamLine2D(Vector2 start,
 	                                   Vector2 end,
-	                                   LineRasterizationMode mode,
 	                                   Array<Vector2i> tilesOut) {
-		rasterizeLine2D(start.x, start.y, end.x, end.y, mode, tilesOut);
+		bresenhamLine2D(start.x, start.y, end.x, end.y, tilesOut);
 	}
 
-	public static void rasterizeLine2D(Vector2 start,
+	public static void bresenhamLine2D(Vector2 start,
 	                                   Vector2 end,
-	                                   LineRasterizationMode mode,
 	                                   Consumer<Vector2i> tileConsumer) {
-		rasterizeLine2D(start.x, start.y, end.x, end.y, mode, tileConsumer, new Vector2i());
+		bresenhamLine2D(start.x, start.y, end.x, end.y, tileConsumer, new Vector2i());
 	}
 
-	public static void rasterizeLine2D(Vector2 start,
+	public static void bresenhamLine2D(Vector2 start,
 	                                   Vector2 end,
-	                                   LineRasterizationMode mode,
 	                                   Consumer<Vector2i> tileConsumer,
 	                                   Vector2i tmpTile) {
-		rasterizeLine2D(start.x, start.y, end.x, end.y, mode, tileConsumer, tmpTile);
+		bresenhamLine2D(start.x, start.y, end.x, end.y, tileConsumer, tmpTile);
 	}
 
-	public enum LineRasterizationMode {
-		SIMPLE,
-		ALL_INTERSECTING
+	public static void allIntersectingLine2D(float startX, float startY,
+	                                         float endX, float endY,
+	                                         Array<Vector2i> tilesOut) {
+		allIntersectingLine2D(startX, startY, endX, endY, vector2i -> tilesOut.add(vector2i.cpy()));
+	}
+
+	public static void allIntersectingLine2D(float startX, float startY,
+	                                         float endX, float endY,
+	                                         Consumer<Vector2i> tileConsumer) {
+		allIntersectingLine2D(startX, startY, endX, endY, tileConsumer, new Vector2i());
+	}
+
+	public static void allIntersectingLine2D(float startX, float startY,
+	                                         float endX, float endY,
+	                                         Consumer<Vector2i> tileConsumer,
+	                                         Vector2i tmpTile) {
+		int x0 = MathUtils.floor(startX);
+		int y0 = MathUtils.floor(startY);
+
+		int x1 = MathUtils.floor(endX);
+		int y1 = MathUtils.floor(endY);
+
+		int dx = abs(x1 - x0);
+		int dy = -abs(y1 - y0);
+		int error = dx + dy;
+		int sx = x0 < x1 ? 1 : -1;
+		int sy = y0 < y1 ? 1 : -1;
+
+		tileConsumer.accept(tmpTile.set(x0, y0));
+
+		while(true) {
+			if(x0 == x1 && y0 == y1)
+				break;
+
+			int e2 = error * 2;
+
+			if(e2 - dy == dx - e2) {
+				error += dy;
+				x0 += sx;
+				error += dx;
+				y0 += sy;
+				tileConsumer.accept(tmpTile.set(x0, y0));
+				continue;
+			}
+
+			if(e2 - dy >= 0 && e2 - dy >= dx - e2) {
+				error += dy;
+				x0 += sx;
+				tileConsumer.accept(tmpTile.set(x0, y0));
+				continue;
+			}
+
+			if(e2 - dx <= 0) {
+				error += dx;
+				y0 += sy;
+				tileConsumer.accept(tmpTile.set(x0, y0));
+			}
+		}
+	}
+
+	public static void allIntersectingLine2D(Vector2 start,
+	                                         Vector2 end,
+	                                         Array<Vector2i> tilesOut) {
+		allIntersectingLine2D(start.x, start.y, end.x, end.y, tilesOut);
+	}
+
+	public static void allIntersectingLine2D(Vector2 start,
+	                                         Vector2 end,
+	                                         Consumer<Vector2i> tileConsumer) {
+		allIntersectingLine2D(start.x, start.y, end.x, end.y, tileConsumer, new Vector2i());
+	}
+
+	public static void allIntersectingLine2D(Vector2 start,
+	                                         Vector2 end,
+	                                         Consumer<Vector2i> tileConsumer,
+	                                         Vector2i tmpTile) {
+		allIntersectingLine2D(start.x, start.y, end.x, end.y, tileConsumer, tmpTile);
 	}
 }
