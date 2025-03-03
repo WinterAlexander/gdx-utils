@@ -99,46 +99,35 @@ public class RasterizationUtil {
 	                                         float endX, float endY,
 	                                         Consumer<Vector2i> tileConsumer,
 	                                         Vector2i tmpTile) {
-		int x0 = MathUtils.floor(startX);
-		int y0 = MathUtils.floor(startY);
+		int x = MathUtils.floor(startX);
+		int y = MathUtils.floor(startY);
 
 		int x1 = MathUtils.floor(endX);
 		int y1 = MathUtils.floor(endY);
 
-		int dx = abs(x1 - x0);
-		int dy = -abs(y1 - y0);
-		int error = dx + dy;
-		int sx = x0 < x1 ? 1 : -1;
-		int sy = y0 < y1 ? 1 : -1;
+		int sx = x < x1 ? 1 : -1;
+		int sy = y < y1 ? 1 : -1;
 
-		tileConsumer.accept(tmpTile.set(x0, y0));
+		int dx = sx == 1 ? 1 : 0;
+		int dy = sy == 1 ? 1 : 0;
+
+		float m = (endY - startY) / (endX - startX);
 
 		while(true) {
-			if(x0 == x1 && y0 == y1)
+			tileConsumer.accept(tmpTile.set(x, y));
+
+			if(x == x1 && y == y1)
 				break;
 
-			int e2 = error * 2;
+			float intersectY = m * (x + dx - startX) + startY;
 
-			if(e2 - dy == dx - e2) {
-				error += dy;
-				x0 += sx;
-				error += dx;
-				y0 += sy;
-				tileConsumer.accept(tmpTile.set(x0, y0));
-				continue;
-			}
-
-			if(e2 - dy >= 0 && e2 - dy >= dx - e2) {
-				error += dy;
-				x0 += sx;
-				tileConsumer.accept(tmpTile.set(x0, y0));
-				continue;
-			}
-
-			if(e2 - dx <= 0) {
-				error += dx;
-				y0 += sy;
-				tileConsumer.accept(tmpTile.set(x0, y0));
+			if(intersectY * sy < (y + dy) * sy) {
+				x += sx;
+			} else if(intersectY * sy > (y + dy) * sy) {
+				y += sy;
+			} else {
+				x += sx;
+				y += sy;
 			}
 		}
 	}
