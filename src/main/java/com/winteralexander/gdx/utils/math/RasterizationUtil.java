@@ -105,8 +105,8 @@ public class RasterizationUtil {
 		int x1 = MathUtils.floor(endX);
 		int y1 = MathUtils.floor(endY);
 
-		int sx = x < x1 ? 1 : -1;
-		int sy = y < y1 ? 1 : -1;
+		int sx = startX < endX ? 1 : -1;
+		int sy = startY < endY ? 1 : -1;
 
 		int dx = sx == 1 ? 1 : 0;
 		int dy = sy == 1 ? 1 : 0;
