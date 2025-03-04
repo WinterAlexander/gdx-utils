@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.math.RasterizationUtil;
-import com.winteralexander.gdx.utils.math.shape2d.ShapeUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class RasterizationUtilTest {
 			float endX = startX + random.nextFloat() * 100f - 50f;
 			float endY = startY + random.nextFloat() * 100f - 50f;
 
-			RasterizationUtil.allIntersectingLine2D(startX, startY, endX, endY, actual);
+			RasterizationUtil.completeLine2D(startX, startY, endX, endY, actual);
 			allIntersectingLine2DBruteforce(startX, startY, endX, endY, expected);
 			assertSameTiles(expected, actual);
 			actual.clear();
@@ -41,14 +40,10 @@ public class RasterizationUtilTest {
 		}
 	}
 
-	private void assertSameTiles(Array<Vector2i> vec2iA, Array<Vector2i> vec2iB) {
-		//for(Vector2i tile : vec2iA)
-		//	if(!vec2iB.contains(tile, false))
-		//		fail("Tile " + tile + " not in second array");
-
-		for(Vector2i tile : vec2iB)
-			if(!vec2iA.contains(tile, false))
-				fail("Tile " + tile + " not in first array");
+	private void assertSameTiles(Array<Vector2i> expected, Array<Vector2i> actual) {
+		for(Vector2i tile : actual)
+			if(!expected.contains(tile, false))
+				fail("Tile " + tile + " not in expected array");
 	}
 
 	private void allIntersectingLine2DBruteforce(float startX, float startY,
