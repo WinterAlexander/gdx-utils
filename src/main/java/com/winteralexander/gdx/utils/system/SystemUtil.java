@@ -167,7 +167,7 @@ public class SystemUtil {
 	 * @throws UnsupportedOperationException if the current system is not supported
 	 */
 	public static String[] getCPUs() throws IOException, InterruptedException {
-		if(isLinux() || isMac()) {
+		if(isLinux()) {
 			return Stream.of(ProcessUtil.execute("cat", "/proc/cpuinfo").split("\n\n"))
 					.map(page -> Arrays.stream(page.split("\n"))
 							.filter(line -> line.startsWith("model name"))
@@ -180,11 +180,24 @@ public class SystemUtil {
 					.toArray(String[]::new);
 		}
 
+		if(isWindows()) {
+			return Stream.of(ProcessUtil.execute("wmic", "cpu", "get", "name").split("\n"))
+					.skip(1)
+					.map(String::trim)
+					.filter(l -> !l.isEmpty())
+					.toArray(String[]::new);
+		}
+
+		if(isMac()) {
+			return ProcessUtil.execute("sysctl", "-n", "machdep.cpu.brand_string")
+					.split("\n");
+		}
+
 		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
 
 	public static String[] getGPUs() throws IOException, InterruptedException {
-		if(isLinux() || isMac()) {
+		if(isLinux()) {
 			return Stream.of(ProcessUtil.execute("lspci").split("\n"))
 					.filter(line -> line.contains(" VGA "))
 					.map(line -> line.split(" ")[0])
@@ -200,11 +213,19 @@ public class SystemUtil {
 
 		}
 
+		if(isWindows()) {
+			return Stream.of(ProcessUtil.execute("wmic", "path", "win32_VideoController", "get", "name").split("\n"))
+					.skip(1)
+					.map(String::trim)
+					.filter(l -> !l.isEmpty())
+					.toArray(String[]::new);
+		}
+
 		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
 
 	public static SystemMemory getRAM() throws IOException, InterruptedException {
-		if(isLinux() || isMac()) {
+		if(isLinux()) {
 			String[] memInfo = ProcessUtil.execute("cat", "/proc/meminfo").split("\n");
 			long memTotal = Stream.of(memInfo)
 					.filter(line -> line.startsWith("MemTotal:"))
@@ -232,6 +253,27 @@ public class SystemUtil {
 				throw new IOException("Failed to parse output of /proc/meminfo");
 
 			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memAvailable * 1024L);
+		}
+
+		if(isWindows()) {
+			long memTotal = Stream.of(ProcessUtil.execute("wmic", "OS", "get", "TotalVisibleMemorySize", "/Value").split("\n"))
+					.filter(l -> l.startsWith("TotalVisibleMemorySize="))
+					.map(l -> l.substring(l.indexOf('=') + 1))
+					.map(String::trim)
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			long memFree = Stream.of(ProcessUtil.execute("wmic", "OS", "get", "FreePhysicalMemory", "/Value").split("\n"))
+					.filter(l -> l.startsWith("FreePhysicalMemory="))
+					.map(l -> l.substring(l.indexOf('=') + 1))
+					.map(String::trim)
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			if(memTotal < 0L || memFree < 0L)
+				throw new IOException("Failed to parse output of wmic for RAM");
+
+			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memFree * 1024L);
 		}
 		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
