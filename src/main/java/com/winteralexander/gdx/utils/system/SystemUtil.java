@@ -290,8 +290,10 @@ public class SystemUtil {
 		}
 
 		if(isMac()) {
+			String test = ProcessUtil.execute("sysctl", "-n", "hw.memsize");
+			System.out.println(" DEBUG : " + test);
 			long totalMemory = NumberUtil.tryParseLong(
-					ProcessUtil.execute("sysctl", "-n", "hw.memsize"), -1L);
+					test, -1L);
 
 			if(totalMemory < 0L)
 				throw new IOException("Failed to retrieve total memory from sysctl");
