@@ -221,6 +221,10 @@ public class SystemUtil {
 					.toArray(String[]::new);
 		}
 
+		if(isMac()) {
+			return new String[0];
+		}
+
 		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
 
@@ -275,6 +279,11 @@ public class SystemUtil {
 
 			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memFree * 1024L);
 		}
+
+		if(isMac()) {
+			return new SystemMemory(0L, 0L, 0L);
+		}
+
 		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
 
