@@ -1,13 +1,20 @@
 package com.winteralexander.gdx.utils.system;
 
+import com.winteralexander.gdx.utils.error.ExceptionUtil;
 import com.winteralexander.gdx.utils.io.PortChecker;
+import com.winteralexander.gdx.utils.math.NumberUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static com.winteralexander.gdx.utils.error.ExceptionUtil.unchecked;
 
 /**
  * Utility class for system related methods
@@ -150,27 +157,95 @@ public class SystemUtil {
 	}
 
 	/**
-	 * Retrieves system specs for the current machine. This will spawn child processes in order to
-	 * fetch it's data using system dependent commands. The data returned may be incomplete if part
-	 * of the operation failed.
+	 * Retrieves a list of CPU model installed on this system, using platform dependent techniques.
+	 * This may spawn child process to retrieve information.
 	 *
-	 * @return specs of this machine
+	 * @return cpus of this machine
+	 * @throws ProcessErrorException if a process spawned to get the information encoutered an error
+	 * @throws IOException if an I/O error occurs from launching a process
+	 * @throws InterruptedException if the thread was interrupted while waiting for the process
+	 * @throws UnsupportedOperationException if the current system is not supported
 	 */
-	public static SystemSpecs getSpecs() {
-		if(isLinux()) {
-			String[] cpus;
-			try {
-				cpus = ProcessUtil.execute("cat", "/proc/cpuinfo")
-						.split("\n\n");
-			} catch(ProcessErrorException | IOException ex) {
-				cpus = new String[0];
-			} catch(InterruptedException ex) {
-				throw new RuntimeException(ex);
-			}
-
-			return new SystemSpecs(cpus, new String[0], 0, 0);
+	public static String[] getCPUs() throws IOException, InterruptedException {
+		if(isLinux() || isMac()) {
+			return Stream.of(ProcessUtil.execute("cat", "/proc/cpuinfo").split("\n\n"))
+					.map(page -> Arrays.stream(page.split("\n"))
+							.filter(line -> line.startsWith("model name"))
+							.findFirst())
+					.filter(Optional::isPresent)
+					.map(Optional::get)
+					.map(s -> s.substring(s.indexOf(":") + 1))
+					.map(String::trim)
+					.distinct()
+					.toArray(String[]::new);
 		}
 
 		throw new UnsupportedOperationException("Operation not supported on this system");
+	}
+
+	public static String[] getGPUs() throws IOException, InterruptedException {
+		if(isLinux() || isMac()) {
+			return Stream.of(ProcessUtil.execute("lspci").split("\n"))
+					.filter(line -> line.contains(" VGA "))
+					.map(line -> line.split(" ")[0])
+					.map(id -> unchecked(() -> ProcessUtil.execute("lspci", "-v", "-s", id)))
+					.map(page -> Arrays.stream(page.split("\n"))
+							.filter(line -> line.contains("Subsystem:"))
+							.findFirst())
+					.filter(Optional::isPresent)
+					.map(Optional::get)
+					.map(s -> s.substring(s.indexOf(":") + 1))
+					.map(String::trim)
+					.toArray(String[]::new);
+
+		}
+
+		throw new UnsupportedOperationException("Operation not supported on this system");
+	}
+
+	public static SystemMemory getRAM() throws IOException, InterruptedException {
+		if(isLinux() || isMac()) {
+			String[] memInfo = ProcessUtil.execute("cat", "/proc/meminfo").split("\n");
+			long memTotal = Stream.of(memInfo)
+					.filter(line -> line.startsWith("MemTotal:"))
+					.map(l -> l.substring(l.indexOf(":") + 1))
+					.map(String::trim)
+					.map(l -> l.split(" ")[0])
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+			long memFree = Stream.of(memInfo)
+					.filter(line -> line.startsWith("MemFree:"))
+					.map(l -> l.substring(l.indexOf(":") + 1))
+					.map(String::trim)
+					.map(l -> l.split(" ")[0])
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+			long memAvailable = Stream.of(memInfo)
+					.filter(line -> line.startsWith("MemAvailable:"))
+					.map(l -> l.substring(l.indexOf(":") + 1))
+					.map(String::trim)
+					.map(l -> l.split(" ")[0])
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			if(memTotal < 0L || memFree < 0L || memAvailable < 0L)
+				throw new IOException("Failed to parse output of /proc/meminfo");
+
+			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memAvailable * 1024L);
+		}
+		throw new UnsupportedOperationException("Operation not supported on this system");
+	}
+
+	public static class SystemMemory {
+		/**
+		 * Total, free and available system memory as bytes
+		 */
+		public final long total, free, available;
+
+		public SystemMemory(long total, long free, long available) {
+			this.total = total;
+			this.free = free;
+			this.available = available;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.winteralexander.gdx.utils.system;
 
+import java.io.IOException;
+
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
@@ -9,7 +11,7 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
  *
  * @author Alexander Winter
  */
-public class ProcessErrorException extends Exception {
+public class ProcessErrorException extends IOException {
 	private final String command;
 	private final int exitCode;
 	private final String output, error;
