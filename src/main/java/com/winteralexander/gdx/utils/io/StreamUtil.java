@@ -370,7 +370,7 @@ public class StreamUtil {
 	 * From Java 9
 	 * @link <a href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
 	 */
-	public byte[] readNBytes(InputStream stream, int len) throws IOException {
+	public static byte[] readNBytes(InputStream stream, int len) throws IOException {
 		if (len < 0) {
 			throw new IllegalArgumentException("len < 0");
 		}
@@ -435,7 +435,7 @@ public class StreamUtil {
 	 * From Java 9
 	 * @link <a href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
 	 */
-	public byte[] readAllBytes(InputStream stream) throws IOException {
+	public static byte[] readAllBytes(InputStream stream) throws IOException {
 		return readNBytes(stream, Integer.MAX_VALUE);
 	}
 }

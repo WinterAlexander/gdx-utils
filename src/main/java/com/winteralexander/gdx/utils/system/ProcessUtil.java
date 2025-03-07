@@ -1,11 +1,9 @@
 package com.winteralexander.gdx.utils.system;
 
-import com.winteralexander.gdx.utils.StringUtil;
-
 import java.io.IOException;
 
 import static com.winteralexander.gdx.utils.StringUtil.join;
-import static sun.misc.IOUtils.readAllBytes;
+import static com.winteralexander.gdx.utils.io.StreamUtil.readAllBytes;
 
 /**
  * Utility class to manipulate or launch system processes
