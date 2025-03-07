@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
 import static com.winteralexander.gdx.utils.error.ExceptionUtil.unchecked;
 
 /**
@@ -214,7 +215,8 @@ public class SystemUtil {
 		}
 
 		if(isWindows()) {
-			return Stream.of(ProcessUtil.execute("wmic", "path", "win32_VideoController", "get", "name").split("\n"))
+			return Stream.of(ProcessUtil.execute("wmic", "path",
+							"win32_VideoController", "get", "name").split("\n"))
 					.skip(1)
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
@@ -222,7 +224,12 @@ public class SystemUtil {
 		}
 
 		if(isMac()) {
-			return new String[0];
+			return Stream.of(ProcessUtil.execute("system_profiler", "SPDisplaysDataType")
+							.split("\n"))
+					.filter(l -> l.startsWith("Chipset Model:"))
+					.map(l -> l.substring(l.indexOf(':') + 1))
+					.map(String::trim)
+					.toArray(String[]::new);
 		}
 
 		throw new UnsupportedOperationException("Operation not supported on this system");
@@ -260,14 +267,16 @@ public class SystemUtil {
 		}
 
 		if(isWindows()) {
-			long memTotal = Stream.of(ProcessUtil.execute("wmic", "OS", "get", "TotalVisibleMemorySize", "/Value").split("\n"))
+			long memTotal = Stream.of(ProcessUtil.execute("wmic", "OS", "get",
+							"TotalVisibleMemorySize", "/Value").split("\n"))
 					.filter(l -> l.startsWith("TotalVisibleMemorySize="))
 					.map(l -> l.substring(l.indexOf('=') + 1))
 					.map(String::trim)
 					.map(s -> NumberUtil.tryParseLong(s, -1L))
 					.findFirst().orElse(-1L);
 
-			long memFree = Stream.of(ProcessUtil.execute("wmic", "OS", "get", "FreePhysicalMemory", "/Value").split("\n"))
+			long memFree = Stream.of(ProcessUtil.execute("wmic", "OS", "get",
+							"FreePhysicalMemory", "/Value").split("\n"))
 					.filter(l -> l.startsWith("FreePhysicalMemory="))
 					.map(l -> l.substring(l.indexOf('=') + 1))
 					.map(String::trim)
@@ -281,7 +290,50 @@ public class SystemUtil {
 		}
 
 		if(isMac()) {
-			return new SystemMemory(0L, 0L, 0L);
+			long totalMemory = NumberUtil.tryParseLong(
+					last(ProcessUtil.execute("sysctl hw.memsize").split(" ")), -1L);
+
+			if(totalMemory < 0L)
+				throw new IOException("Failed to retrieve total memory from sysctl");
+
+			String[] vmStat = ProcessUtil.execute("vm_stat").split("\n");
+			String pageSizeStr = "page size of";
+			long pageSize = Stream.of(vmStat)
+					.filter(l -> l.contains(pageSizeStr))
+					.map(l -> l.substring(l.indexOf(pageSizeStr) + pageSizeStr.length()))
+					.map(String::trim)
+					.map(l -> l.split(" ")[0])
+					.map(String::trim)
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			if(pageSize < 0L)
+				throw new IOException("Failed to retrieve page size of vm_stat");
+			long pagesFree = Stream.of(vmStat)
+					.filter(l -> l.contains("Pages free:"))
+					.map(l -> l.substring(l.indexOf(':') + 1))
+					.map(l -> l.split("\\.")[0])
+					.map(String::trim)
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			if(pagesFree < 0L)
+				throw new IOException("Failed to retrieve free pages of vm_stat");
+
+			long pagesSpeculative = Stream.of(vmStat)
+					.filter(l -> l.contains("Pages speculative:"))
+					.map(l -> l.substring(l.indexOf(':') + 1))
+					.map(l -> l.split("\\.")[0])
+					.map(String::trim)
+					.map(s -> NumberUtil.tryParseLong(s, -1L))
+					.findFirst().orElse(-1L);
+
+			long freeMem = pagesFree * pageSize;
+			long availableMem = freeMem;
+			if(pagesSpeculative > 0L)
+				availableMem += pagesSpeculative * pageSize;
+
+			return new SystemMemory(totalMemory, freeMem, availableMem);
 		}
 
 		throw new UnsupportedOperationException("Operation not supported on this system");
