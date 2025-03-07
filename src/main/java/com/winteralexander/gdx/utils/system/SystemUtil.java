@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.system;
 
 import com.winteralexander.gdx.utils.io.PortChecker;
 
@@ -147,5 +147,30 @@ public class SystemUtil {
 			sb.append(String.format("%02X%s", macAddress[i], (i < macAddress.length - 1) ? "-" : ""));
 
 		return sb.toString();
+	}
+
+	/**
+	 * Retrieves system specs for the current machine. This will spawn child processes in order to
+	 * fetch it's data using system dependent commands. The data returned may be incomplete if part
+	 * of the operation failed.
+	 *
+	 * @return specs of this machine
+	 */
+	public static SystemSpecs getSpecs() {
+		if(isLinux()) {
+			String[] cpus;
+			try {
+				cpus = ProcessUtil.execute("cat", "/proc/cpuinfo")
+						.split("\n\n");
+			} catch(ProcessErrorException | IOException ex) {
+				cpus = new String[0];
+			} catch(InterruptedException ex) {
+				throw new RuntimeException(ex);
+			}
+
+			return new SystemSpecs(cpus, new String[0], 0, 0);
+		}
+
+		throw new UnsupportedOperationException("Operation not supported on this system");
 	}
 }

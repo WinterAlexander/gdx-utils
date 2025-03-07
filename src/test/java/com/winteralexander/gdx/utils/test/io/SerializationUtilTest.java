@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.io;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
