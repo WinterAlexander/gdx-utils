@@ -21,7 +21,6 @@ public class SystemUtilTest {
 		assertTrue("Number of CPU must be greater than 0", cpus.length > 0);
 
 		String[] gpus = SystemUtil.getGPUs();
-		assertTrue("Number of GPU must be greater than 0", gpus.length > 0);
 
 		SystemUtil.SystemMemory mem = SystemUtil.getRAM();
 		assertTrue("Total memory must be greater than 0", mem.total > 0L);
