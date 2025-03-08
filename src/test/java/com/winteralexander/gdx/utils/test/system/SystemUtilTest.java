@@ -17,16 +17,16 @@ public class SystemUtilTest {
 	@Test
 	public void testSystemSpecs() throws Exception {
 		String[] cpus = SystemUtil.getCPUs();
-		assertTrue("Number of CPU must be greater than 0", cpus.length > 0);
-
 		String[] gpus = SystemUtil.getGPUs();
-
 		SystemUtil.SystemMemory mem = SystemUtil.getRAM();
 
 		System.out.println("CPUs: " + StringUtil.join(cpus, ", "));
 		System.out.println("GPUs: " + StringUtil.join(gpus, ", "));
-		System.out.println("Memory: " + mem.total + "b total, " + mem.free + "b free, " + mem.available + "b available");
+		System.out.println("Memory: " + mem.total + "b total, " +
+				mem.free + "b free, " +
+				mem.available + "b available");
 
+		assertTrue("Number of CPU must be greater than 0", cpus.length > 0);
 		assertTrue("Total memory must be greater than 0", mem.total > 0L);
 		assertTrue("Available memory must be greater than 0", mem.available > 0L);
 		assertTrue("Free memory must be greater than 0", mem.free > 0L);
