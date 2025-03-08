@@ -1,6 +1,5 @@
 package com.winteralexander.gdx.utils.system;
 
-import com.winteralexander.gdx.utils.error.ExceptionUtil;
 import com.winteralexander.gdx.utils.io.PortChecker;
 import com.winteralexander.gdx.utils.math.NumberUtil;
 
@@ -14,7 +13,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
 import static com.winteralexander.gdx.utils.error.ExceptionUtil.unchecked;
 
 /**
@@ -293,7 +291,6 @@ public class SystemUtil {
 			String test = ProcessUtil.execute("sysctl", "-n", "hw.memsize")
 					.replaceAll("\n", "")
 					.trim();
-			System.out.println(" DEBUG : '" + test + "'");
 			long totalMemory = NumberUtil.tryParseLong(
 					test, -1L);
 
