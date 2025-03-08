@@ -75,17 +75,48 @@ public class ExceptionUtil {
 	 * Throws the specified exception while bypassing Java's checked system. Allows for throwing
 	 * checked exceptions in a function that is not marked as throwing those exceptions.
 	 *
-	 * @param ex exception to throw
+	 * @param ex throwable to throw
 	 * @param <E> implementation detail needed for bypass to work
 	 * @throws E implementation detail needed for bypass to work
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void bypassThrow(Exception ex) throws E {
-		throw (E) ex;
+	public static <E extends Throwable> void bypassThrow(Throwable ex) throws E {
+		throw (E)ex;
+	}
+
+	/**
+	 * Runs the provided {@link ThrowingRunnable} bypassing any exception check to make it unchecked
+	 * @param runnable runnable to run
+	 */
+	public static void unchecked(ThrowingRunnable runnable) {
+		try {
+			runnable.run();
+		} catch(Throwable ex) {
+			bypassThrow(ex);
+			throw new Error("Dead code");
+		}
+	}
+
+	/**
+	 * Runs the provided {@link ThrowingSupplier} bypassing any exception check to make it unchecked
+	 * @param supplier supplier to run
+	 */
+	public static <T> T unchecked(ThrowingSupplier<T> supplier) {
+		try {
+			return supplier.get();
+		} catch(Throwable ex) {
+			bypassThrow(ex);
+			throw new Error("Dead code");
+		}
 	}
 
 	@FunctionalInterface
 	public interface ThrowingRunnable {
 		void run() throws Throwable;
+	}
+
+	@FunctionalInterface
+	public interface ThrowingSupplier<T> {
+		T get() throws Throwable;
 	}
 }

@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.io;
 
 import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.io.FileUtil;
@@ -6,9 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.winteralexander.gdx.utils.io.FileUtil.ensureFile;
 import static org.junit.Assert.assertEquals;

@@ -41,11 +41,11 @@ public class StringUtil {
 	}
 
 	public static String join(String[] strings, int startIndex, int endIndex, String separator) {
-		if(startIndex >= endIndex || endIndex > strings.length)
-			throw new IndexOutOfBoundsException();
-
-		if(strings.length == 0)
+		if(strings.length == 0 || startIndex == endIndex)
 			return "";
+
+		if(startIndex > endIndex || endIndex > strings.length)
+			throw new IndexOutOfBoundsException();
 
 		StringBuilder sb = new StringBuilder(strings[startIndex]);
 

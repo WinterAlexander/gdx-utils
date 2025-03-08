@@ -2,6 +2,7 @@ package com.winteralexander.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.winteralexander.gdx.utils.io.NullPrintStream;
+import com.winteralexander.gdx.utils.system.SystemUtil;
 
 import java.io.PrintStream;
 
