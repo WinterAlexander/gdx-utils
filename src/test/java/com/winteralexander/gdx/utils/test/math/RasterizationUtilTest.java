@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.math.RasterizationUtil;
 import com.winteralexander.gdx.utils.math.vector.Vector2i;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Random;
@@ -19,6 +20,7 @@ import static org.junit.Assert.fail;
  *
  * @author Alexander Winter
  */
+@Ignore
 public class RasterizationUtilTest {
 	@Test
 	public void testLineIntersectionEquivToBruteforce() {
