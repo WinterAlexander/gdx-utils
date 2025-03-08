@@ -290,8 +290,10 @@ public class SystemUtil {
 		}
 
 		if(isMac()) {
-			String test = ProcessUtil.execute("sysctl", "-n", "hw.memsize");
-			System.out.println(" DEBUG : " + test);
+			String test = ProcessUtil.execute("sysctl", "-n", "hw.memsize")
+					.replaceAll("\n", "")
+					.trim();
+			System.out.println(" DEBUG : '" + test + "'");
 			long totalMemory = NumberUtil.tryParseLong(
 					test, -1L);
 
