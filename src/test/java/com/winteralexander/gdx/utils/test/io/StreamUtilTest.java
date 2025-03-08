@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.io;
 
 import com.winteralexander.gdx.utils.io.StreamUtil;
 import org.junit.Assert;

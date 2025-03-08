@@ -42,8 +42,10 @@ public class MathUtil {
 		return greatestCommonDivisor(b, a % b);
 	}
 
-	public static boolean lineIntersectsLine(float l1StartX, float l1StartY, float l1EndX, float l1EndY,
-	                                         float l2StartX, float l2StartY, float l2EndX, float l2EndY) {
+	public static boolean lineIntersectsLine(float l1StartX, float l1StartY,
+	                                         float l1EndX, float l1EndY,
+	                                         float l2StartX, float l2StartY,
+	                                         float l2EndX, float l2EndY) {
 		tmpVec2.set(l1StartX, l1StartY).sub(l1EndX, l1EndY).rotate90(1);
 
 		float dot1 = tmpVec2.dot(l1StartX - l2StartX, l1StartY - l2StartY);
@@ -60,8 +62,26 @@ public class MathUtil {
 		return dot1 > 0 != dot2 > 0;
 	}
 
-	public static boolean doOBBCollideWithOBB(float r1X, float r1Y, float r1Width, float r1Height, float r1Angle,
-	                                          float r2X, float r2Y, float r2Width, float r2Height, float r2Angle) {
+	/**
+	 * Checks if the two provided Oriented Bounding Boxes (OBB) intersect with each other.
+	 * @param r1X x position of the center of the first rectangle
+	 * @param r1Y y position of the center of the first rectangle
+	 * @param r1Width width of the first rectangle
+	 * @param r1Height height of the first rectangle
+	 * @param r1Angle angle of the first rectangle
+	 * @param r2X x position of the center of the second rectangle
+	 * @param r2Y y position of the center of the second rectangle
+	 * @param r2Width width of the second rectangle
+	 * @param r2Height height of the second rectangle
+	 * @param r2Angle angle of the second rectangle
+	 * @return true if the OBBs intersect, otherwise false
+	 */
+	public static boolean doOBBIntersectWithOBB(float r1X, float r1Y,
+	                                            float r1Width, float r1Height,
+	                                            float r1Angle,
+	                                            float r2X, float r2Y,
+	                                            float r2Width, float r2Height,
+	                                            float r2Angle) {
 		tmpVec2.set(r1Width, r1Height).scl(-0.5f, -0.5f).rotateDeg(r1Angle).add(r1X, r1Y);
 		float r1X1 = tmpVec2.x;
 		float r1Y1 = tmpVec2.y;
@@ -266,6 +286,19 @@ public class MathUtil {
 				size2.x, size2.y);
 	}
 
+	/**
+	 * Checks if the first provided Axis Aligned Bounding Box (AABB) intersects with the second one.
+	 * Edge touching does not count as intersection.
+	 * @param x1 x of bottom left point of the first AABB
+	 * @param y1 y of bottom left point of the first AABB
+	 * @param w1 width of the first AABB
+	 * @param h1 height of the first AABB
+	 * @param x2 x of bottom left point of the second AABB
+	 * @param y2 y of bottom left point of the second AABB
+	 * @param w2 width of the second AABB
+	 * @param h2 height of the second AABB
+	 * @return true if there is intersection, otherwise false
+	 */
 	public static boolean doAABBIntersectWithAABB(float x1, float y1,
 	                                              float w1, float h1,
 	                                              float x2, float y2,
@@ -280,18 +313,6 @@ public class MathUtil {
 			return false;
 
 		return y1 < y2 + h2;
-	}
-
-	/**
-	 * @deprecated Will be removed in a future release, use
-	 * {@link #doAABBIntersectWithAABB(float, float, float, float, float, float, float, float)}
-	 */
-	@Deprecated
-	public static boolean doAABBCollideWithAABB(float x1, float y1,
-	                                            float w1, float h1,
-	                                            float x2, float y2,
-	                                            float w2, float h2) {
-		return doAABBIntersectWithAABB(x1, y1, w1, h1, x2, y2, w2, h2);
 	}
 
 	/**

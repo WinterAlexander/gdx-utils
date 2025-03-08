@@ -2,7 +2,7 @@ package com.winteralexander.gdx.utils.async;
 
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.OrderedMap;
-import com.winteralexander.gdx.utils.SystemUtil;
+import com.winteralexander.gdx.utils.system.SystemUtil;
 import com.winteralexander.gdx.utils.error.StackTracker;
 import com.winteralexander.gdx.utils.error.Tracker;
 import com.winteralexander.gdx.utils.log.Logger;

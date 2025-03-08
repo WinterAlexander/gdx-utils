@@ -1,7 +1,7 @@
 package com.winteralexander.gdx.utils.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.winteralexander.gdx.utils.SystemUtil;
+import com.winteralexander.gdx.utils.system.SystemUtil;
 import com.winteralexander.gdx.utils.Validation;
 
 import java.io.*;

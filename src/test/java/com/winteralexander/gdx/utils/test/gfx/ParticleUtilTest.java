@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test;
+package com.winteralexander.gdx.utils.test.gfx;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -9,13 +9,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests the rotation done to ParticleEffects in ParticleUtil
+ * Tests ParticleUtil
  * <p>
  * Created on 2018-02-13.
  *
  * @author Alexander Winter
  */
-public class ParticleRotationTest {
+public class ParticleUtilTest {
 	private static final float ERROR = 0.1f;
 
 	@Test

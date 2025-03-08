@@ -82,7 +82,7 @@ public class Rectangle implements Shape {
 	@Override
 	public boolean overlaps(Shape shape) {
 		if(shape instanceof Rectangle)
-			return doOBBCollideWithOBB(getPosition().x,
+			return doOBBIntersectWithOBB(getPosition().x,
 					getPosition().y,
 					getSize().x,
 					getSize().y,
