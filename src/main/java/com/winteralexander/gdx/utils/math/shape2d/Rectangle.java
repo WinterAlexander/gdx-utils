@@ -55,8 +55,8 @@ public class Rectangle implements Shape {
 
 	public Rectangle(Supplier<com.badlogic.gdx.math.Rectangle> gdxRect) {
 		this(new Vec2Supplier(v -> v.set(
-						gdxRect.get().x - gdxRect.get().width / 2f,
-						gdxRect.get().y - gdxRect.get().height / 2f)),
+						gdxRect.get().x + gdxRect.get().width / 2f,
+						gdxRect.get().y + gdxRect.get().height / 2f)),
 				new Vec2Supplier(v -> v.set(gdxRect.get().width, gdxRect.get().height)));
 	}
 

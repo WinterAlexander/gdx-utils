@@ -30,6 +30,22 @@ public class ShapeTest {
 	}
 
 	@Test
+	public void testRectangleToGdxConversion() {
+		Rectangle first = new Rectangle(new Vector2(10f, 40f), new Vector2(20f, 30f));
+		com.badlogic.gdx.math.Rectangle gdxRect = first.asGdxRect();
+		Rectangle second = new Rectangle(gdxRect);
+		assertTrue(first.fullyContains(second) && second.fullyContains(first));
+	}
+
+	@Test
+	public void testRectangleToGdxConversionSupplier() {
+		Rectangle first = new Rectangle(new Vector2(10f, 40f), new Vector2(20f, 30f));
+		com.badlogic.gdx.math.Rectangle gdxRect = first.asGdxRect();
+		Rectangle second = new Rectangle(() -> gdxRect);
+		assertTrue(first.fullyContains(second) && second.fullyContains(first));
+	}
+
+	@Test
 	public void testCirclePolyOverlap() {
 		Vector2 polyPos = new Vector2();
 		Vector2 circlePos = new Vector2();
