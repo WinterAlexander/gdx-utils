@@ -53,6 +53,14 @@ public enum GridDirection8 {
 		return normal;
 	}
 
+	public boolean isHorizontal() {
+		return this == LEFT || this == RIGHT;
+	}
+
+	public boolean isVertical() {
+		return this == UP || this == DOWN;
+	}
+
 	public boolean isDiagonal() {
 		switch(this) {
 			case UP_LEFT:

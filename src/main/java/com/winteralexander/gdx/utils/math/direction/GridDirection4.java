@@ -61,6 +61,14 @@ public enum GridDirection4 {
 		return direction;
 	}
 
+	public boolean isHorizontal() {
+		return this == LEFT || this == RIGHT;
+	}
+
+	public boolean isVertical() {
+		return this == UP || this == DOWN;
+	}
+
 	public GridDirection8 asGridDirection8() {
 		switch(this) {
 			case UP: return GridDirection8.UP;
