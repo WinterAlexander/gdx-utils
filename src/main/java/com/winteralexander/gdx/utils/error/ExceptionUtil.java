@@ -33,13 +33,14 @@ public class ExceptionUtil {
 		Throwable emptyCause = exception;
 
 		while(true) {
+			if(emptyCause == cause)
+				return; // don't append a cause that's already in the linked list
 			synchronized(emptyCause) {
 				if(emptyCause.getCause() != null)
 					emptyCause = emptyCause.getCause();
 				else {
 					try {
-						if(emptyCause != cause)
-							emptyCause.initCause(cause);
+						emptyCause.initCause(cause);
 					} catch(IllegalStateException illegalState) {
 						// this means we've got an exception with a null cause
 						// but with a cause it's tedious and the only way to fix
