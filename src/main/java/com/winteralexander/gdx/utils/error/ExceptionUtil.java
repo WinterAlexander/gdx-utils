@@ -38,7 +38,8 @@ public class ExceptionUtil {
 					emptyCause = emptyCause.getCause();
 				else {
 					try {
-						emptyCause.initCause(cause);
+						if(emptyCause != cause)
+							emptyCause.initCause(cause);
 					} catch(IllegalStateException illegalState) {
 						// this means we've got an exception with a null cause
 						// but with a cause it's tedious and the only way to fix
