@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.io;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.system.SystemUtil;
 import com.winteralexander.gdx.utils.Validation;
 
@@ -8,6 +9,7 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -87,6 +89,40 @@ public class FileUtil {
 
 		if(!file.createNewFile() && (!file.isFile()))
 			throw new IOException("Can't create file " + file.getAbsolutePath());
+	}
+
+	/**
+	 * Recurses on a directory, calling a consumer everytime a file is found in the directory
+	 * structure. If a file is provided instead, simply calls the consumer once
+	 *
+	 * @param file file or directory to recurse
+	 * @param consumer consumer to call for files found
+	 */
+	public static void recurse(File file, Consumer<File> consumer) {
+		if(file.isFile()) {
+			consumer.accept(file);
+			return;
+		}
+		File[] children = file.listFiles();
+
+		if(children == null)
+			return;
+
+		for(File child : children)
+			recurse(child, consumer);
+	}
+
+	/**
+	 * Recurses on a directory, collecting all files (non directories) encountered in the directory
+	 * structure.
+	 *
+	 * @param file file or directory to recurse
+	 * @return array that contains all files in subdirectories
+	 */
+	public static Array<File> recurse(File file) {
+		Array<File> array = new Array<>();
+		recurse(file, array::add);
+		return array;
 	}
 
 	/**
