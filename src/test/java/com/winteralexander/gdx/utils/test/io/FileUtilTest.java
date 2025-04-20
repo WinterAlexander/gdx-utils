@@ -54,6 +54,32 @@ public class FileUtilTest {
 	}
 
 	@Test
+	public void testRecurse() throws Throwable {
+		File testTmp = new File("test-tmp-recurse");
+		if(testTmp.exists())
+			FileUtil.deleteRecursively(testTmp);
+
+		FileUtil.ensureDirectory(new File(testTmp, "test/1/2/3"));
+		FileUtil.ensureDirectory(new File(testTmp, "test/1/4"));
+
+		new File(testTmp, "test/1/2/3/1.txt").createNewFile();
+		new File(testTmp, "test/1/4/2.txt").createNewFile();
+		new File(testTmp, "test/1/4/3.txt").createNewFile();
+		new File(testTmp, "test/4.txt").createNewFile();
+		new File(testTmp, "5.txt").createNewFile();
+
+		Array<File> files = FileUtil.recurse(testTmp);
+		assertEquals(5, files.size);
+		assertTrue(files.contains(new File(testTmp, "test/1/2/3/1.txt"), false));
+		assertTrue(files.contains(new File(testTmp, "test/1/4/2.txt"), false));
+		assertTrue(files.contains(new File(testTmp, "test/1/4/3.txt"), false));
+		assertTrue(files.contains(new File(testTmp, "test/4.txt"), false));
+		assertTrue(files.contains(new File(testTmp, "5.txt"), false));
+
+		FileUtil.deleteRecursively(testTmp);
+	}
+
+	@Test
 	public void testGetResources() throws IOException {
 		List<String> resources = FileUtil.listResources(fileName ->
 				fileName.startsWith("test_resources" + File.separatorChar));
