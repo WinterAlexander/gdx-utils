@@ -5,10 +5,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.ShortArray;
-import com.winteralexander.gdx.utils.BufferUtil;
 import com.winteralexander.gdx.utils.g3d.IcoSphereShapeBuilder;
 import com.winteralexander.gdx.utils.test.g3d.debugviewer.ModelViewer;
 import org.junit.BeforeClass;
@@ -16,9 +12,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
-import static com.winteralexander.gdx.utils.BufferUtil.getVector3;
-import static com.winteralexander.gdx.utils.BufferUtil.putVector2;
-import static com.winteralexander.gdx.utils.g3d.IcoSphereShapeBuilder.getVertexUV;
 
 /**
  * Not an unit test but allows debugging {@link IcoSphereShapeBuilder} and testing it visually
