@@ -42,7 +42,7 @@ import static com.badlogic.gdx.graphics.VertexAttributes.Usage.*;
  * @author Alexander Winter
  */
 public class ModelViewer implements ApplicationListener {
-	private static final Queue<Consumer<ShapeRenderer>> __debugOnlyRenderables = new Queue<>();
+	public static final Queue<Consumer<ShapeRenderer>> __debugOnlyRenderables = new Queue<>();
 
 	private ModelBatch modelBatch;
 	private Viewport viewport;
@@ -92,6 +92,7 @@ public class ModelViewer implements ApplicationListener {
 		Texture tex2 = new Texture(blue);
 		Texture loadedTex = new Texture(Gdx.files.internal("badlogic.png"), true);
 		loadedTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
+		loadedTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		int j = 0;
 		for(ModelInstance instance : instances) {
