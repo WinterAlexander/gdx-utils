@@ -36,44 +36,6 @@ public class IcoSphereShapeBuilderTest {
 	}
 
 	@Test
-	public void testTriangleFixupVisualization() {
-
-		int subdivisions = 0;
-		FloatArray tmpVertices = new FloatArray();
-		ShortArray tmpIndices = new ShortArray();
-		ShortArray tmpNewIndices = new ShortArray();
-
-		IcoSphereShapeBuilder.createIcosahedron(tmpVertices, tmpIndices);
-
-		for(int i = 0; i < subdivisions; i++)
-			IcoSphereShapeBuilder.subdivide(tmpVertices, tmpIndices);
-
-		for(int i = 0; i < tmpVertices.size; i += 5)
-			putVector2(tmpVertices, i + 3, getVertexUV(getVector3(tmpVertices, i)));
-
-		tmpNewIndices.clear();
-		IcoSphereShapeBuilder.detectWrappedTriangles(tmpVertices, tmpIndices, tmpNewIndices);
-
-		ModelViewer.__debugOnlyRenderables.addFirst(r -> {
-			for(int i = 0; i < tmpNewIndices.size; i++) {
-				int triangle = tmpNewIndices.get(i);
-				int v1 = tmpIndices.get(triangle * 3);
-				int v2 = tmpIndices.get(triangle * 3 + 1);
-				int v3 = tmpIndices.get(triangle * 3 + 2);
-
-				Vector3 p1 = BufferUtil.getVector3(tmpVertices, v1 * 5);
-				Vector3 p2 = BufferUtil.getVector3(tmpVertices, v2 * 5);
-				Vector3 p3 = BufferUtil.getVector3(tmpVertices, v3 * 5);
-
-				r.line(p1, p2);
-				r.line(p2, p3);
-				r.line(p3, p1);
-			}
-		});
-		ModelViewer.start();
-	}
-
-	@Test
 	public void testIcoSphere() {
 		ModelBuilder builder = new ModelBuilder();
 		int attrs = VertexAttributes.Usage.Position

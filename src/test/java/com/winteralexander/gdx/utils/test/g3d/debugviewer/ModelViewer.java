@@ -90,7 +90,7 @@ public class ModelViewer implements ApplicationListener {
 
 		Texture tex1 = new Texture(red);
 		Texture tex2 = new Texture(blue);
-		Texture loadedTex = new Texture(Gdx.files.internal("badlogic.png"), true);
+		Texture loadedTex = new Texture(Gdx.files.internal("test_texture.png"), true);
 		loadedTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
 		loadedTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 

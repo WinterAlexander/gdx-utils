@@ -2,18 +2,17 @@ package com.winteralexander.gdx.utils.g3d;
 
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BaseShapeBuilder;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ShortArray;
 
-import static com.badlogic.gdx.math.MathUtils.asin;
-import static com.badlogic.gdx.math.MathUtils.atan2;
+import static com.badlogic.gdx.math.MathUtils.*;
 import static com.winteralexander.gdx.utils.BufferUtil.*;
+import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
+import static java.lang.Math.sqrt;
 
 /**
  * Helper class with static methods to build sphere shapes using {@link MeshPartBuilder}.
@@ -28,6 +27,12 @@ import static com.winteralexander.gdx.utils.BufferUtil.*;
  */
 public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	private static final int FLOAT_PER_TRIANGLE = 5;
+	private static final float ISOSPHERE_EXTENT_Y = (1.0f + (float)sqrt(5.0f)) / 2.0f;
+	/**
+	 * Missing vertical uv of the undivided icosphere compared to a normal sphere
+	 */
+	private static final float UNDIVIDED_ICOSPHERE_UV_GAP =
+			asin(-(ISOSPHERE_EXTENT_Y / (float)sqrt(1f + pow2(ISOSPHERE_EXTENT_Y)))) / PI + 0.5f;
 
 	private static final FloatArray tmpVertices = new FloatArray();
 	private static final ShortArray tmpIndices = new ShortArray();
@@ -68,18 +73,18 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		fixWrappedTriangles(tmpNewIndices, tmpVertices, tmpIndices);
 		tmpNewIndices.clear();
 
-		float maxU = 0f;
 		for(int i = 0; i < tmpVertices.size; i += FLOAT_PER_TRIANGLE) {
 			vertTmp0.setPos(tmpVertices.get(i), tmpVertices.get(i + 1), tmpVertices.get(i + 2));
 			vertTmp0.position.nor();
 			vertTmp0.setNor(vertTmp0.position);
 			vertTmp0.position.scl(radius);
 			vertTmp0.setUV(tmpVertices.get(i + 3), tmpVertices.get(i + 4));
-			maxU = Math.max(maxU, vertTmp0.uv.x);
+			if(subdivisions == 0) {
+				vertTmp0.uv.y -= UNDIVIDED_ICOSPHERE_UV_GAP;
+				vertTmp0.uv.y /= 1f - UNDIVIDED_ICOSPHERE_UV_GAP * 2f;
+			}
 			builder.vertex(vertTmp0);
 		}
-
-		System.out.println("Divisions=" + subdivisions + ", maxU " + maxU);
 
 		for(int i = 0; i < tmpIndices.size; i += 3)
 			builder.triangle(tmpIndices.get(i), tmpIndices.get(i + 1), tmpIndices.get(i + 2));
@@ -87,13 +92,11 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpIndices.clear();
 	}
 
-	public static void createIcosahedron(FloatArray vertices, ShortArray indices) {
-		float t = (1.0f + (float)Math.sqrt(5.0f)) / 2.0f;
-
-		tmpV0.set(-1f, t, 0f);
-		tmpV1.set(1f, t, 0f);
-		tmpV2.set(-1f, -t, 0f);
-		tmpV3.set(1f, -t, 0f);
+	private static void createIcosahedron(FloatArray vertices, ShortArray indices) {
+		tmpV0.set(-1f, ISOSPHERE_EXTENT_Y, 0f);
+		tmpV1.set(1f, ISOSPHERE_EXTENT_Y, 0f);
+		tmpV2.set(-1f, -ISOSPHERE_EXTENT_Y, 0f);
+		tmpV3.set(1f, -ISOSPHERE_EXTENT_Y, 0f);
 
 		vertices.ensureCapacity(36);
 		vertices.add(tmpV0.x, tmpV0.y, tmpV0.z);
@@ -149,7 +152,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		indices.add((short)9, (short)8, (short)1);
 	}
 
-	public static void subdivide(FloatArray vertices, ShortArray indices) {
+	private static void subdivide(FloatArray vertices, ShortArray indices) {
 		tmpNewIndices.clear();
 		int numTriangles = indices.size / 3;
 
@@ -193,7 +196,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpNewIndices.clear();
 	}
 
-	public static void detectWrappedTriangles(FloatArray vertices, ShortArray indices, ShortArray out) {
+	private static void detectWrappedTriangles(FloatArray vertices, ShortArray indices, ShortArray out) {
 		int numTriangles = indices.size / 3;
 		for(int triangle = 0; triangle < numTriangles; triangle++) {
 			int v1 = indices.get(triangle * 3);
@@ -219,7 +222,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 			int v2 = indices.get(triangle * 3 + 1);
 			int v3 = indices.get(triangle * 3 + 2);
 
-			if(vertices.get(v1 * FLOAT_PER_TRIANGLE + 3) < 0.25f) {
+			if(vertices.get(v1 * FLOAT_PER_TRIANGLE + 3) < 0.5f) {
 				if(!tmpAlreadyVisited.containsKey(v1)) {
 					int newIdx = vertices.size / FLOAT_PER_TRIANGLE;
 					vertices.add(vertices.get(v1 * FLOAT_PER_TRIANGLE),
@@ -233,7 +236,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 				v1 = tmpAlreadyVisited.get(v1, -1);
 			}
 
-			if(vertices.get(v2 * FLOAT_PER_TRIANGLE + 3) < 0.25f) {
+			if(vertices.get(v2 * FLOAT_PER_TRIANGLE + 3) < 0.5f) {
 				if(!tmpAlreadyVisited.containsKey(v2)) {
 					int newIdx = vertices.size / FLOAT_PER_TRIANGLE;
 					vertices.add(vertices.get(v2 * FLOAT_PER_TRIANGLE),
@@ -247,7 +250,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 				v2 = tmpAlreadyVisited.get(v2, -1);
 			}
 
-			if(vertices.get(v3 * FLOAT_PER_TRIANGLE + 3) < 0.25f) {
+			if(vertices.get(v3 * FLOAT_PER_TRIANGLE + 3) < 0.5f) {
 				if(!tmpAlreadyVisited.containsKey(v3)) {
 					int newIdx = vertices.size / FLOAT_PER_TRIANGLE;
 					vertices.add(vertices.get(v3 * FLOAT_PER_TRIANGLE),
@@ -269,10 +272,10 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpAlreadyVisited.clear();
 	}
 
-	public static Vector2 getVertexUV(Vector3 pos) {
+	private static Vector2 getVertexUV(Vector3 pos) {
 		Vector3 normal = pos.nor();
-		float theta = atan2(normal.x, normal.z) / MathUtils.PI / 2f + 0.5f;
-		float phi = asin(-normal.y) / MathUtils.PI + 0.5f;
+		float theta = atan2(normal.x, normal.z) / PI / 2f + 0.5f;
+		float phi = asin(-normal.y) / PI + 0.5f;
 		return tmpUV.set(theta, phi);
 	}
 }
