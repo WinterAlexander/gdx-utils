@@ -19,6 +19,13 @@ public class SegmentedCylinderShapeBuilder {
 	public static void build(MeshPartBuilder builder,
 	                         float width, float height, float depth,
 	                         int segments, int divisions) {
+		build(builder, width, height, depth, segments, divisions, true);
+	}
+
+	public static void build(MeshPartBuilder builder,
+	                         float width, float height, float depth,
+	                         int segments, int divisions,
+	                         boolean closed) {
 
 		float segmentHeight = height / segments;
 
@@ -34,6 +41,9 @@ public class SegmentedCylinderShapeBuilder {
 		}
 		builder.setVertexTransform(prevVertexTransform);
 		builder.setVertexTransformationEnabled(transform);
+
+		if(!closed)
+			return;
 
 		EllipseShapeBuilder.build(builder,
 				width, depth,
