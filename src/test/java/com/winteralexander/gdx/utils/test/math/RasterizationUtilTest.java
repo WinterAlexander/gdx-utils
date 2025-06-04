@@ -42,6 +42,16 @@ public class RasterizationUtilTest {
 		}
 	}
 
+	@Test(timeout = 10_000L)
+	public void testProblematicCase() {
+		float startX = -5.3646145f;
+		float startY = 2.9959738f;
+		float endX = -5.3646145f;
+		float endY = 3.0091796f;
+
+		RasterizationUtil.completeLine2D(startX, startY, endX, endY, t -> {}, new Vector2i());
+	}
+
 	private void assertSameTiles(Array<Vector2i> expected, Array<Vector2i> actual) {
 		for(Vector2i tile : actual)
 			if(!expected.contains(tile, false))

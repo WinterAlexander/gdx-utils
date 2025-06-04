@@ -151,15 +151,21 @@ public class RasterizationUtil {
 			if(x == x1 && y == y1)
 				break;
 
-			float intersectY = m * (x + dx - startX) + startY;
-
-			if(intersectY * sy < (y + dy) * sy) {
-				x += sx;
-			} else if(intersectY * sy > (y + dy) * sy) {
+			if(x == x1) {
 				y += sy;
+			} else if(y == y1) {
+				x += sx;
 			} else {
-				x += sx;
-				y += sy;
+				float intersectY = m * (x + dx - startX) + startY;
+
+				if(intersectY * sy < (y + dy) * sy) {
+					x += sx;
+				} else if(intersectY * sy > (y + dy) * sy) {
+					y += sy;
+				} else {
+					x += sx;
+					y += sy;
+				}
 			}
 		}
 	}
