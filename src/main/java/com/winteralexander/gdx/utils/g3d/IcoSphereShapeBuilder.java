@@ -73,6 +73,8 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		fixWrappedTriangles(tmpNewIndices, tmpVertices, tmpIndices);
 		tmpNewIndices.clear();
 
+		int indexOffset = builder.lastIndex() + 1;
+
 		for(int i = 0; i < tmpVertices.size; i += FLOAT_PER_TRIANGLE) {
 			vertTmp0.setPos(tmpVertices.get(i), tmpVertices.get(i + 1), tmpVertices.get(i + 2));
 			vertTmp0.position.nor();
@@ -87,7 +89,9 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		}
 
 		for(int i = 0; i < tmpIndices.size; i += 3)
-			builder.triangle(tmpIndices.get(i), tmpIndices.get(i + 1), tmpIndices.get(i + 2));
+			builder.triangle((short)(indexOffset + tmpIndices.get(i)),
+					(short)(indexOffset + tmpIndices.get(i + 1)),
+					(short)(indexOffset + tmpIndices.get(i + 2)));
 		tmpVertices.clear();
 		tmpIndices.clear();
 	}
