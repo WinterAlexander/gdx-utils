@@ -6,6 +6,7 @@ import com.winteralexander.gdx.utils.math.direction.GridDirection8;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for {@link GridDirection4}
@@ -140,5 +141,46 @@ public class GridDirectionTest {
 		assertEquals(GridDirection8.DOWN_RIGHT, GridDirection8.closestDirection(10f, -11f));
 
 		assertEquals(GridDirection8.LEFT, GridDirection8.closestDirection(-10f, 1f));
+	}
+
+	@Test
+	public void testOppositesAreOpposites() {
+		for(GridDirection4 dir : GridDirection4.values)
+			assertEquals("GridDirection4." + dir + " is not opposite to GridDirection4." + dir.opposite(),
+					-1f,
+					dir.opposite().asVector().dot(dir.asVector()),
+					0.0001f);
+
+		for(GridDirection8 dir : GridDirection8.values)
+			assertEquals("GridDirection8." + dir + " is not opposite to GridDirection8." + dir.opposite(),
+					-1f,
+					dir.opposite().asNormal().dot(dir.asNormal()),
+					0.0001f);
+
+		for(GridCorner dir : GridCorner.values)
+			assertEquals("GridCorner." + dir + " is not opposite to GridCorner." + dir.opposite(),
+					-1f,
+					dir.opposite().asNormal().dot(dir.asNormal()),
+					0.0001f);
+	}
+
+	@Test
+	public void test90RotationAreOrthogonal() {
+		for(GridDirection4 dir : GridDirection4.values) {
+			assertEquals(0f, dir.nextClockwise().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f, dir.nextCounterClockwise().asVector().dot(dir.asVector()), 0.0001f);
+		}
+
+		for(GridDirection8 dir : GridDirection8.values) {
+			assertEquals(0f, dir.nextClockwiseOrthogonal().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f, dir.nextCounterClockwiseOrthogonal().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f, dir.nextClockwise().nextClockwise().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f, dir.nextCounterClockwise().nextCounterClockwise().asVector().dot(dir.asVector()), 0.0001f);
+		}
+
+		for(GridCorner dir : GridCorner.values) {
+			assertEquals(0f, dir.nextClockwise().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f, dir.nextCounterClockwise().asVector().dot(dir.asVector()), 0.0001f);
+		}
 	}
 }
