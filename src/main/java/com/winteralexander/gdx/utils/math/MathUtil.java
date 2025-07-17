@@ -644,4 +644,22 @@ public class MathUtil {
 		vector.y = 1f / vector.y;
 		return vector;
 	}
+
+	/**
+	 * Maps value from the source range to the destination range
+	 *
+	 * @param value value to map
+	 * @param sourceStart start of the source range
+	 * @param sourceEnd end of the source range
+	 * @param destStart start of the destination range
+	 * @param destEnd end of the destination range
+	 * @return value mapped from source to destination range
+	 */
+	public static float map(float value,
+	                        float sourceStart,
+	                        float sourceEnd,
+	                        float destStart,
+	                        float destEnd) {
+		return (value - sourceStart) / (sourceEnd - sourceStart) * (destEnd - destStart) + destStart;
+	}
 }

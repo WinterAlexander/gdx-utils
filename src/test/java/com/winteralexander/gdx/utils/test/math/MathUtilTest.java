@@ -81,4 +81,11 @@ public class MathUtilTest {
 		assertEquals(13.123f, MathUtil.round(13.123234f, 3), 1e-10f);
 		assertEquals(13.1232f, MathUtil.round(13.123234f, 4), 1e-10f);
 	}
+
+	@Test
+	public void testMap() {
+		assertEquals(5f, MathUtil.map(2f, 0f, 4f, 0f, 10f), 1e-10f);
+		assertEquals(0.5f, MathUtil.map(0.75f, 0f, 1f, -1f, 1f), 1e-10f);
+		assertEquals(-0.5f, MathUtil.map(0.75f, 0f, 1f, 1f, -1f), 1e-10f);
+	}
 }
