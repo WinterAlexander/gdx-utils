@@ -662,4 +662,18 @@ public class MathUtil {
 	                        float destEnd) {
 		return (value - sourceStart) / (sourceEnd - sourceStart) * (destEnd - destStart) + destStart;
 	}
+
+	/**
+	 * Maps the value from the source range to the destination range and clamps to ensure value is 
+	 * destination within destination range
+	 * @see MathUtil#map(float, float, float, float, float)
+	 */
+	public static float clampMap(float value,
+	                             float sourceStart,
+	                             float sourceEnd,
+	                             float destStart,
+	                             float destEnd) {
+		return MathUtils.clamp(MathUtil.map(value, sourceStart, sourceEnd, destStart, destEnd), 
+				Math.min(destStart, destEnd), Math.max(destStart, destEnd));
+	}
 }
