@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.winteralexander.gdx.utils.math.shape2d.Rectangle;
 
 /**
  * Utility class to draw in a Batch
@@ -34,6 +35,23 @@ public class BatchUtil {
 
 	public static void draw(Batch batch, TextureRegion region, Vector2 position, Vector2 origin, Vector2 size) {
 		batch.draw(region, position.x + origin.x, position.y + origin.y, size.x, size.y);
+	}
+
+	public static void draw(Batch batch, TextureRegion region, Rectangle rectangle) {
+		Vector2 pos = rectangle.getPosition();
+		Vector2 size = rectangle.getSize();
+		batch.draw(region,
+				pos.x - size.x / 2f,
+				pos.y - size.y / 2f,
+				size.x / 2f,
+				size.y / 2f,
+				size.x, size.y,
+				1f, 1f,
+				rectangle.getAngle());
+	}
+
+	public static void draw(Batch batch, TextureRegion region, com.badlogic.gdx.math.Rectangle rectangle) {
+		batch.draw(region, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 	}
 
 	public static void draw(Batch batch, TextureRegion region, Vector2 position, Vector2 origin, Vector2 size, float rotation) {
