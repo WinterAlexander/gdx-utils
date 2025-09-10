@@ -1,5 +1,7 @@
 package com.winteralexander.gdx.utils.test.math;
 
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.winteralexander.gdx.utils.math.MathUtil;
 import org.junit.Test;
 
@@ -87,5 +89,39 @@ public class MathUtilTest {
 		assertEquals(5f, MathUtil.map(2f, 0f, 4f, 0f, 10f), 1e-10f);
 		assertEquals(0.5f, MathUtil.map(0.75f, 0f, 1f, -1f, 1f), 1e-10f);
 		assertEquals(-0.5f, MathUtil.map(0.75f, 0f, 1f, 1f, -1f), 1e-10f);
+	}
+
+	@Test
+	public void computeOverlapTest() {
+		Rectangle rect1 = new Rectangle(0f, 0f, 10f, 10f);
+		Rectangle rect2 = new Rectangle(5f, 5f, 10f, 10f);
+		Vector2 overlap = new Vector2();
+
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(5f, overlap.x, 1e-10f);
+		assertEquals(5f, overlap.y, 1e-10f);
+
+		MathUtil.computeOverlap(rect2, rect1, overlap);
+		assertEquals(5f, overlap.x, 1e-10f);
+		assertEquals(5f, overlap.y, 1e-10f);
+
+		rect2.set(9f, 8f, 2f, 1f);
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(1f, overlap.x, 1e-10f);
+		assertEquals(1f, overlap.y, 1e-10f);
+
+		MathUtil.computeOverlap(rect2, rect1, overlap);
+		assertEquals(1f, overlap.x, 1e-10f);
+		assertEquals(1f, overlap.y, 1e-10f);
+
+		rect1.set(-2f, 1f, 4f, 4f);
+		rect2.set(1f, -3f, 4f, 8f);
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(1f, overlap.x, 1e-10f);
+		assertEquals(4f, overlap.y, 1e-10f);
+
+		MathUtil.computeOverlap(rect2, rect1, overlap);
+		assertEquals(1f, overlap.x, 1e-10f);
+		assertEquals(4f, overlap.y, 1e-10f);
 	}
 }

@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.math;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -148,9 +149,20 @@ public class MathUtil {
 				&& tmpVec2.y >= -height / 2f;
 	}
 
-	public static boolean lineCrossesAABB(float lineX1, float lineY1, float lineX2, float lineY2, // line
-	                                      float rectX, float rectY, float width, float height) // rect
-	{
+	/**
+	 * Checks if the provided a 2D segment crosses a provided 2D Axis-Aligned Bounding Box
+	 * @param lineX1 x coordinate of the first point of the segment
+	 * @param lineY1 y coordinate of the first point of the segment
+	 * @param lineX2 x coordinate of the second point of the segment
+	 * @param lineY2 y coordinate of the second point of the segment
+	 * @param rectX x coordinate of the position of the rectangle (left side)
+	 * @param rectY y coordinate of the position of the rectangle (bottom side)
+	 * @param width width of the rectangle
+	 * @param height height of the rectangle
+	 * @return true if the segment crosses the rectangle, otherwise false
+	 */
+	public static boolean lineCrossesAABB(float lineX1, float lineY1, float lineX2, float lineY2,
+	                                      float rectX, float rectY, float width, float height) {
 		float rectX1 = min(rectX, rectX + width);
 		float rectX2 = max(rectX, rectX + width);
 
@@ -675,5 +687,21 @@ public class MathUtil {
 	                             float destEnd) {
 		return MathUtils.clamp(MathUtil.map(value, sourceStart, sourceEnd, destStart, destEnd), 
 				Math.min(destStart, destEnd), Math.max(destStart, destEnd));
+	}
+
+	/**
+	 * Computes the overlap between two rectangles and return it as a vector containing the overlap
+	 * in X and Y
+	 * @param rect1 first rectangle to compute overlap
+	 * @param rect2 second rectangle to compute overlap
+	 * @param outOverlap overlap amount in two dimension
+	 */
+	public static void computeOverlap(Rectangle rect1, Rectangle rect2, Vector2 outOverlap) {
+		outOverlap.x = Math.min(Math.min(Math.max(0f, rect2.x + rect2.width - rect1.x),
+										 Math.max(0f, rect1.x + rect1.width - rect2.x)),
+								Math.min(rect1.width, rect2.width));
+		outOverlap.y = Math.min(Math.min(Math.max(0f, rect2.y + rect2.height - rect1.y),
+										 Math.max(0f, rect1.y + rect1.height - rect2.y)),
+								Math.min(rect1.height, rect2.height));
 	}
 }
