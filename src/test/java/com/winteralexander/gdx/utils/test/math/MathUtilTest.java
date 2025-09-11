@@ -123,5 +123,25 @@ public class MathUtilTest {
 		MathUtil.computeOverlap(rect2, rect1, overlap);
 		assertEquals(1f, overlap.x, 1e-10f);
 		assertEquals(4f, overlap.y, 1e-10f);
+
+		rect1.set(0f, 0f, 4f, 4f);
+		rect2.set(10f, -2f, 4f, 4f);
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(0f, overlap.x, 1e-10f);
+		assertEquals(0f, overlap.y, 1e-10f);
+
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(0f, overlap.x, 1e-10f);
+		assertEquals(0f, overlap.y, 1e-10f);
+
+		rect1.set(0f, 0f, 4f, 4f);
+		rect2.set(0f, -20f, 4f, 4f);
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(0f, overlap.x, 1e-10f);
+		assertEquals(0f, overlap.y, 1e-10f);
+
+		MathUtil.computeOverlap(rect1, rect2, overlap);
+		assertEquals(0f, overlap.x, 1e-10f);
+		assertEquals(0f, overlap.y, 1e-10f);
 	}
 }

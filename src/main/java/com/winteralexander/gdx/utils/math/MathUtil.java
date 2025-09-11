@@ -703,5 +703,7 @@ public class MathUtil {
 		outOverlap.y = Math.min(Math.min(Math.max(0f, rect2.y + rect2.height - rect1.y),
 										 Math.max(0f, rect1.y + rect1.height - rect2.y)),
 								Math.min(rect1.height, rect2.height));
+		outOverlap.x *= Math.signum(outOverlap.y);
+		outOverlap.y *= Math.signum(outOverlap.x);
 	}
 }
