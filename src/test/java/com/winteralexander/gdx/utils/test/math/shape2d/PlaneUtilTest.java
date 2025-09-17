@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link PlaneUtil}
@@ -67,5 +68,23 @@ public class PlaneUtilTest {
 				assertEquals(sides[j], newSide);
 			}
 		}
+	}
+
+	@Test
+	public void testPlaneMulSpecificCase() {
+		Plane plane1 = new Plane(new Vector3(0f, 1f, 0f), 0.4f);
+		Plane plane2 = new Plane(new Vector3(0f, 1f, 0f), -5.6f);
+		Matrix4 matrix4 = new Matrix4();
+		matrix4.set(new float[] {
+				0.84984475f, 0.0f, 0.0f, 0.0f,
+				0.0f, 0.8380602f, 0.8337162f, 0.83205044f,
+				0.0f, 1.257091f, -0.55581045f, -0.55469996f,
+				0.0f, -9.386282f, 6.724224f, 8.708791f
+		});
+
+		PlaneUtil.mul(plane1, matrix4);
+		PlaneUtil.mul(plane2, matrix4);
+
+		assertTrue(plane1.normal.epsilonEquals(plane2.normal, 0.01f));
 	}
 }
