@@ -5,10 +5,10 @@ import com.winteralexander.gdx.utils.ConstFloatSupplier;
 import com.winteralexander.gdx.utils.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.math.vector.Vec2Supplier;
-import com.winteralexander.gdx.utils.math.MathUtil;
 
 import java.util.function.Supplier;
 
+import static com.winteralexander.gdx.utils.math.shape2d.Intersector2D.*;
 import static com.winteralexander.gdx.utils.math.MathUtil.*;
 
 /**
@@ -72,7 +72,7 @@ public class Rectangle implements Shape {
 		y = tmpVec2.y;
 		tmpVec2.set(x2, y2).sub(getPosition()).rotateDeg(-getAngle());
 
-		return MathUtil.lineCrossesAABB(x, y, tmpVec2.x, tmpVec2.y,
+		return lineCrossesAABB(x, y, tmpVec2.x, tmpVec2.y,
 				-getSize().x / 2f,
 				-getSize().y / 2f,
 				getSize().x,
