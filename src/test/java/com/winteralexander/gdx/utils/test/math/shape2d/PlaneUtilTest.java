@@ -25,31 +25,44 @@ public class PlaneUtilTest {
 		Random random = new Random();
 		Vector3[] points = new Vector3[1000];
 		Plane.PlaneSide[] sides = new Plane.PlaneSide[points.length];
-		float spaceScale = 1000f;
+		float spaceScale = 100f;
+		float epsilon = 0.001f;
+		Vector3 randDir = new Vector3();
 
 		for(int j = 0; j < points.length; j++)
 			points[j] = new Vector3();
 
-		for(int i = 0; i < 10; i++) {
-			plane.set(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() * spaceScale - spaceScale / 2f);
+		for(int i = 0; i < 10_000; i++) {
+			plane.set(random.nextFloat(), random.nextFloat(), random.nextFloat(),
+					random.nextFloat() * spaceScale - spaceScale / 2f);
 			plane.normal.nor();
+			randDir.set(random.nextFloat(), random.nextFloat(), random.nextFloat());
+			randDir.nor();
+			if(randDir.len2() == 0f)
+				randDir.set(1f, 0f, 0f);
 			transform.idt().translate(random.nextFloat() * spaceScale - spaceScale / 2f,
 							random.nextFloat() * spaceScale - spaceScale / 2f,
 							random.nextFloat() * spaceScale - spaceScale / 2f)
-					.scl(random.nextFloat(), random.nextFloat(), random.nextFloat())
-					.rotateRad(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() * (float)Math.PI * 2f);
+					.scl(random.nextFloat() + 1f, random.nextFloat() + 1f, random.nextFloat() + 1f)
+					.rotateRad(randDir.x, randDir.y, randDir.z,
+							random.nextFloat() * (float)Math.PI * 2f);
 
 			for(int j = 0; j < points.length; j++) {
 				points[j].set(random.nextFloat() * spaceScale - spaceScale / 2f,
 						random.nextFloat() * spaceScale - spaceScale / 2f,
 						random.nextFloat() * spaceScale - spaceScale / 2f);
-				sides[j] = plane.testPoint(points[j]);
+				float dst = plane.distance(points[j]);
+				sides[j] = dst < epsilon ? Plane.PlaneSide.OnPlane : plane.testPoint(points[j]);
 			}
 
 			PlaneUtil.mul(plane, transform);
 
 			for(int j = 0; j < points.length; j++) {
 				points[j].mul(transform);
+
+				if(sides[j] == Plane.PlaneSide.OnPlane)
+					continue;
+
 				Plane.PlaneSide newSide = plane.testPoint(points[j]);
 				assertEquals(sides[j], newSide);
 			}
