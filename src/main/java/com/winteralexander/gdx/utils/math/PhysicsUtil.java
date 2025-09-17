@@ -6,7 +6,7 @@ import static java.lang.Math.signum;
 
 /**
  * Utility class for physics computation for momentum, velocity or forces. Does not deal with
- * collision detection or resolution.
+ * collision detection or resolution. Thread safe
  * <p>
  * Created on 2025-09-16.
  *

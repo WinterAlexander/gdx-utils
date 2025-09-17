@@ -10,16 +10,16 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 /**
- * Utility class for 2D intersection between 2D shapes
+ * Utility class for 2D intersection between 2D shapes, not thread safe.
  * <p>
  * Created on 2025-09-16.
  *
  * @author Alexander Winter
  */
 public class Intersector2D {
-	private Intersector2D() {}
-
 	private static final Vector2 tmpVec2 = new Vector2();
+
+	private Intersector2D() {}
 
 	public static boolean lineIntersectsLine(float l1StartX, float l1StartY,
 	                                         float l1EndX, float l1EndY,

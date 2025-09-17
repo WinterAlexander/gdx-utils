@@ -11,7 +11,7 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 import static java.lang.Math.abs;
 
 /**
- * Offers useful methods and constants for LibGDX vectors
+ * Offers useful methods and constants for LibGDX vectors. Thread safe
  * <p>
  * Created by on 2017-04-13.
  *

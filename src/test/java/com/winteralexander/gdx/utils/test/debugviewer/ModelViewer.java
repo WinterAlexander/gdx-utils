@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils.test.g3d.debugviewer;
+package com.winteralexander.gdx.utils.test.debugviewer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

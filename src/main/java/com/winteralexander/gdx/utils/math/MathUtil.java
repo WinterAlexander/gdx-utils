@@ -6,7 +6,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 
 /**
- * Utility class for pure math functions, deals with numerical values.
+ * Utility class for pure math functions, deals with numerical values. Thread safe
  * <p>
  * Created on 2016-12-07.
  *
