@@ -1,0 +1,11 @@
+---
+BasedOnStyle: LLVM
+AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: 100
+IndentCaseBlocks: true
+IndentCaseLabels: true
+IndentWidth: 4
+SortIncludes: Never
+SpaceBeforeParens: Never
+TabWidth: 4
+UseTab: Always

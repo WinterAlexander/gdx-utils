@@ -226,7 +226,8 @@ public class MathUtil {
 	                             float sourceStart,
 	                             float sourceEnd,
 	                             float destStart,
-	                             float destEnd) {
+	                             float destEnd)
+	{
 		return MathUtils.clamp(MathUtil.map(value, sourceStart, sourceEnd, destStart, destEnd), 
 				Math.min(destStart, destEnd), Math.max(destStart, destEnd));
 	}
