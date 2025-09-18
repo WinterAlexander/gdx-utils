@@ -1,11 +1,11 @@
 package com.winteralexander.gdx.utils.math.vector;
 
-import com.badlogic.gdx.math.Vector;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Vector4;
+import com.badlogic.gdx.math.*;
 import com.winteralexander.gdx.utils.math.MathUtil;
 
+import static com.badlogic.gdx.math.Matrix4.*;
+import static com.badlogic.gdx.math.Matrix4.M10;
+import static com.badlogic.gdx.math.Matrix4.M20;
 import static com.winteralexander.gdx.utils.Validation.ensureInRange;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 import static java.lang.Math.abs;
@@ -210,5 +210,37 @@ public class VectorUtil {
 			return vec.scl(-1f);
 
 		return vec.set(vec.y, -vec.x);
+	}
+
+	/**
+	 * Left-multiplies the Vector4 by the given matrix
+	 *
+	 * @param vec4 vector to multiply
+	 * @param matrix The matrix
+	 * @return vector for chaining
+	 */
+	public Vector4 mul(Vector4 vec4, Matrix4 matrix) {
+		float[] mat = matrix.val;
+		return vec4.set(
+				vec4.x * mat[M00] + vec4.y * mat[M01] + vec4.z * mat[M02] + vec4.w * mat[M03],
+				vec4.x * mat[M10] + vec4.y * mat[M11] + vec4.z * mat[M12] + vec4.w * mat[M13],
+				vec4.x * mat[M20] + vec4.y * mat[M21] + vec4.z * mat[M22] + vec4.w * mat[M23],
+				vec4.x * mat[M30] + vec4.y * mat[M31] + vec4.z * mat[M32] + vec4.w * mat[M33]);
+	}
+
+	/**
+	 * Left-multiplies the Vector4 by the transpose of the given matrix
+	 *
+	 * @param vec4 vector to multiply
+	 * @param matrix The matrix
+	 * @return vector for chaining
+	 */
+	public Vector4 traMul(Vector4 vec4, Matrix4 matrix) {
+		float[] mat = matrix.val;
+		return vec4.set(
+				vec4.x * mat[M00] + vec4.y * mat[M10] + vec4.z * mat[M20] + vec4.w * mat[M30],
+				vec4.x * mat[M01] + vec4.y * mat[M11] + vec4.z * mat[M21] + vec4.w * mat[M31],
+				vec4.x * mat[M02] + vec4.y * mat[M12] + vec4.z * mat[M22] + vec4.w * mat[M32],
+				vec4.x * mat[M03] + vec4.y * mat[M13] + vec4.z * mat[M23] + vec4.w * mat[M33]);
 	}
 }
