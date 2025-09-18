@@ -22,7 +22,7 @@ public class PlaneUtilTest {
 	@Test
 	public void testPlaneMul() {
 		Plane plane = new Plane();
-		Matrix4 transform = new Matrix4();
+		Matrix4 transform = new Matrix4(), inv = new Matrix4();
 		Random random = new Random();
 		Vector3[] points = new Vector3[1000];
 		Plane.PlaneSide[] sides = new Plane.PlaneSide[points.length];
@@ -47,6 +47,7 @@ public class PlaneUtilTest {
 					.scl(random.nextFloat() + 1f, random.nextFloat() + 1f, random.nextFloat() + 1f)
 					.rotateRad(randDir.x, randDir.y, randDir.z,
 							random.nextFloat() * (float)Math.PI * 2f);
+			inv.set(transform).inv();
 
 			for(int j = 0; j < points.length; j++) {
 				points[j].set(random.nextFloat() * spaceScale - spaceScale / 2f,
@@ -56,7 +57,7 @@ public class PlaneUtilTest {
 				sides[j] = dst < epsilon ? Plane.PlaneSide.OnPlane : plane.testPoint(points[j]);
 			}
 
-			PlaneUtil.mul(plane, transform);
+			PlaneUtil.traMul(plane, inv);
 
 			for(int j = 0; j < points.length; j++) {
 				points[j].mul(transform);
@@ -82,6 +83,7 @@ public class PlaneUtilTest {
 				0.0f, -9.386282f, 6.724224f, 8.708791f
 		});
 
+		matrix4.inv().tra();
 		PlaneUtil.mul(plane1, matrix4);
 		PlaneUtil.mul(plane2, matrix4);
 
