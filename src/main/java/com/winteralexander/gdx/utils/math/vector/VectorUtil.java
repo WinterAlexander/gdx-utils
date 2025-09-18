@@ -219,7 +219,7 @@ public class VectorUtil {
 	 * @param matrix The matrix
 	 * @return vector for chaining
 	 */
-	public Vector4 mul(Vector4 vec4, Matrix4 matrix) {
+	public static Vector4 mul(Vector4 vec4, Matrix4 matrix) {
 		float[] mat = matrix.val;
 		return vec4.set(
 				vec4.x * mat[M00] + vec4.y * mat[M01] + vec4.z * mat[M02] + vec4.w * mat[M03],
@@ -235,7 +235,7 @@ public class VectorUtil {
 	 * @param matrix The matrix
 	 * @return vector for chaining
 	 */
-	public Vector4 traMul(Vector4 vec4, Matrix4 matrix) {
+	public static Vector4 traMul(Vector4 vec4, Matrix4 matrix) {
 		float[] mat = matrix.val;
 		return vec4.set(
 				vec4.x * mat[M00] + vec4.y * mat[M10] + vec4.z * mat[M20] + vec4.w * mat[M30],
