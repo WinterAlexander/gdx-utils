@@ -22,3 +22,4 @@ Main features:
   - Quad trees
   - Task scheduler
   - Validation utility
+  - 2D and 3D shape intersection
