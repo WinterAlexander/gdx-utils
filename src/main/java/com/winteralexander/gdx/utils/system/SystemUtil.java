@@ -213,8 +213,8 @@ public class SystemUtil {
 		}
 
 		if(isWindows()) {
-			return Stream.of(ProcessUtil.execute("wmic", "path",
-							"win32_VideoController", "get", "name").split("\n"))
+			return Stream.of(ProcessUtil.execute("powershell",
+							"(Get-WmiObject Win32_VideoController).Name").split("\n"))
 					.skip(1)
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
