@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.test.math.shape3d;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import org.junit.Test;
@@ -76,6 +77,47 @@ public class TriangleTest {
 			point.set(triangle.p1).scl(alpha).mulAdd(triangle.p2, beta).mulAdd(triangle.p3, gamma);
 			expected.set(alpha, beta, gamma);
 			assertTrue(expected.epsilonEquals(triangle.getBarycentricCoordinates(point), 1e-5f));
+		}
+	}
+
+	@Test
+	public void testArea() {
+		Triangle triangle = new Triangle();
+
+		triangle.p1.set(0f, 0f, 0f);
+		triangle.p2.set(2f, 0f, 0f);
+		triangle.p3.set(0f, 2f, 0f);
+
+		assertEquals(2f, triangle.getArea(), 0.01f);
+
+		triangle.p1.set(-1f, 0f, 0f);
+		triangle.p2.set(2f, 0f, 0f);
+		triangle.p3.set(0f, 2f, 0f);
+
+		assertEquals(3f, triangle.getArea(), 0.01f);
+	}
+
+	@Test
+	public void testAreaRotationTranslationInvariant() {
+
+		Triangle triangle = new Triangle();
+		Random random = new Random();
+		Matrix4 transform = new Matrix4();
+
+		for(int i = 0; i < 1000; i++) {
+			triangle.p1.set(0f, 0f, 0f);
+			triangle.p2.set(0f, 0f, 6f);
+			triangle.p3.set(0f, 8f, 0f);
+			transform.idt().translate(random.nextFloat() * 100f - 50f,
+					random.nextFloat() * 100f - 50f,
+					random.nextFloat() * 100f - 50f)
+					.rotate(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() * 360f);
+
+			triangle.p1.mul(transform);
+			triangle.p2.mul(transform);
+			triangle.p3.mul(transform);
+
+			assertEquals(24f, triangle.getArea(), 0.01f);
 		}
 	}
 }
