@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.test.math.shape3d;
 
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import org.junit.Test;
@@ -95,6 +96,25 @@ public class TriangleTest {
 		triangle.p3.set(0f, 2f, 0f);
 
 		assertEquals(3f, triangle.getArea(), 0.01f);
+	}
+
+	@Test
+	public void testAreaPlane() {
+		Triangle triangle = new Triangle();
+		Plane plane = new Plane();
+
+		triangle.p1.set(0f, 0f, 1f);
+		triangle.p2.set(2f, 0f, 2f);
+		triangle.p3.set(0f, 2f, 3f);
+		plane.set(0f, 0f, 1f, 5f);
+
+		assertEquals(2f, triangle.getArea(plane), 0.01f);
+
+		triangle.p1.set(-1f, 0f, -1000f);
+		triangle.p2.set(2f, 0f, 10f);
+		triangle.p3.set(0f, 2f, 0f);
+
+		assertEquals(3f, triangle.getArea(plane), 0.01f);
 	}
 
 	@Test
