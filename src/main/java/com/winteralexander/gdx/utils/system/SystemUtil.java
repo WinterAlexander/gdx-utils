@@ -180,8 +180,8 @@ public class SystemUtil {
 		}
 
 		if(isWindows()) {
-			return Stream.of(ProcessUtil.execute("wmic", "cpu", "get", "name").split("\n"))
-					.skip(1)
+			return Stream.of(ProcessUtil.execute("powershell",
+							"(Get-WmiObject Win32_Processor).Name").split("\n"))
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
 					.toArray(String[]::new);
@@ -215,7 +215,6 @@ public class SystemUtil {
 		if(isWindows()) {
 			return Stream.of(ProcessUtil.execute("powershell",
 							"(Get-WmiObject Win32_VideoController).Name").split("\n"))
-					.skip(1)
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
 					.toArray(String[]::new);
@@ -265,24 +264,14 @@ public class SystemUtil {
 		}
 
 		if(isWindows()) {
-			long memTotal = Stream.of(ProcessUtil.execute("wmic", "OS", "get",
-							"TotalVisibleMemorySize", "/Value").split("\n"))
-					.filter(l -> l.startsWith("TotalVisibleMemorySize="))
-					.map(l -> l.substring(l.indexOf('=') + 1))
-					.map(String::trim)
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+			long memTotal = NumberUtil.tryParseLong(ProcessUtil.execute("powershell",
+					"(Get-WmiObject Win32_OperatingSystem).TotalVisibleMemorySize").trim(), -1L);
 
-			long memFree = Stream.of(ProcessUtil.execute("wmic", "OS", "get",
-							"FreePhysicalMemory", "/Value").split("\n"))
-					.filter(l -> l.startsWith("FreePhysicalMemory="))
-					.map(l -> l.substring(l.indexOf('=') + 1))
-					.map(String::trim)
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+			long memFree = NumberUtil.tryParseLong(ProcessUtil.execute("powershell",
+					"(Get-WmiObject Win32_OperatingSystem).FreePhysicalMemory").trim(), -1L);
 
 			if(memTotal < 0L || memFree < 0L)
-				throw new IOException("Failed to parse output of wmic for RAM");
+				throw new IOException("Failed to parse output of Get-WmiObject for RAM");
 
 			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memFree * 1024L);
 		}
