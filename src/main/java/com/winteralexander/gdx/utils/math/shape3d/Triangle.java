@@ -154,9 +154,18 @@ public class Triangle {
 		tmpRay1.set(p1, plane.normal);
 		tmpRay2.set(p2, plane.normal);
 		tmpRay3.set(p3, plane.normal);
-		Intersector.intersectRayPlane(tmpRay1, plane, tmpRay1.origin);
-		Intersector.intersectRayPlane(tmpRay2, plane, tmpRay2.origin);
-		Intersector.intersectRayPlane(tmpRay3, plane, tmpRay3.origin);
+		if(!Intersector.intersectRayPlane(tmpRay1, plane, tmpRay1.origin)) {
+			tmpRay1.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay1, plane, tmpRay1.origin);
+		}
+		if(!Intersector.intersectRayPlane(tmpRay2, plane, tmpRay2.origin)) {
+			tmpRay2.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay2, plane, tmpRay2.origin);
+		}
+		if(!Intersector.intersectRayPlane(tmpRay3, plane, tmpRay3.origin)) {
+			tmpRay3.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay3, plane, tmpRay3.origin);
+		}
 
 		tmpDir1.set(tmpRay2.origin).sub(tmpRay1.origin);
 		tmpDir2.set(tmpDir1).crs(plane.normal).nor();
