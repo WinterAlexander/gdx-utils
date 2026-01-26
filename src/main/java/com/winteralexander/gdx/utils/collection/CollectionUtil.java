@@ -453,6 +453,24 @@ public class CollectionUtil {
 	}
 
 	@SafeVarargs
+	public static <T> ObjectSet<T> toGdxSet(T... elements) {
+		ObjectSet<T> set = new ObjectSet<>();
+		set.addAll(elements);
+		return set;
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterable<T> iterable) {
+		return toGdxSet(iterable.iterator());
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterator<T> iterator) {
+		ObjectSet<T> set = new ObjectSet<>();
+		while(iterator.hasNext())
+			set.add(iterator.next());
+		return set;
+	}
+
+	@SafeVarargs
 	public static <T> T[] toArray(T... values) {
 		return values;
 	}
