@@ -596,6 +596,13 @@ public class CollectionUtil {
 		return res;
 	}
 
+	public static <K, V> ObjectMap<K, V> toGdxMap(Function<V, K> keyFromValue, V... values) {
+		ObjectMap<K, V> map = new ObjectMap<>(values.length);
+		for(V value : values)
+			map.put(keyFromValue.apply(value), value);
+		return map;
+	}
+
 	public static <K, V> ObjectMap<K, V> buildMap(K[] keys, Function<K, V> builder) {
 		ObjectMap<K, V> map = new ObjectMap<>(keys.length);
 		for(K key : keys)
