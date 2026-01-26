@@ -596,6 +596,7 @@ public class CollectionUtil {
 		return res;
 	}
 
+	@SafeVarargs
 	public static <K, V> ObjectMap<K, V> toGdxMap(Function<V, K> keyFromValue, V... values) {
 		ObjectMap<K, V> map = new ObjectMap<>(values.length);
 		for(V value : values) {
