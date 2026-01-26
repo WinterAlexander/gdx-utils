@@ -453,6 +453,24 @@ public class CollectionUtil {
 	}
 
 	@SafeVarargs
+	public static <T> ObjectSet<T> toGdxSet(T... elements) {
+		ObjectSet<T> set = new ObjectSet<>();
+		set.addAll(elements);
+		return set;
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterable<T> iterable) {
+		return toGdxSet(iterable.iterator());
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterator<T> iterator) {
+		ObjectSet<T> set = new ObjectSet<>();
+		while(iterator.hasNext())
+			set.add(iterator.next());
+		return set;
+	}
+
+	@SafeVarargs
 	public static <T> T[] toArray(T... values) {
 		return values;
 	}
@@ -576,6 +594,18 @@ public class CollectionUtil {
 			res[i] = intArray[i];
 
 		return res;
+	}
+
+	@SafeVarargs
+	public static <K, V> ObjectMap<K, V> toGdxMap(Function<V, K> keyFromValue, V... values) {
+		ObjectMap<K, V> map = new ObjectMap<>(values.length);
+		for(V value : values) {
+			K key = keyFromValue.apply(value);
+			if(map.containsKey(key))
+				throw new IllegalArgumentException("Two values with the same key in call to toGdxMap");
+			map.put(key, value);
+		}
+		return map;
 	}
 
 	public static <K, V> ObjectMap<K, V> buildMap(K[] keys, Function<K, V> builder) {
