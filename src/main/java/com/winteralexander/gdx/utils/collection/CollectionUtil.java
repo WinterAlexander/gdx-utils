@@ -598,8 +598,12 @@ public class CollectionUtil {
 
 	public static <K, V> ObjectMap<K, V> toGdxMap(Function<V, K> keyFromValue, V... values) {
 		ObjectMap<K, V> map = new ObjectMap<>(values.length);
-		for(V value : values)
-			map.put(keyFromValue.apply(value), value);
+		for(V value : values) {
+			K key = keyFromValue.apply(value);
+			if(map.containsKey(key))
+				throw new IllegalArgumentException("Two values with the same key in call to toGdxMap");
+			map.put(key, value);
+		}
 		return map;
 	}
 
