@@ -48,4 +48,12 @@ public class EnumConstantCache {
 
 		return values;
 	}
+
+	public static <T extends Enum<T>> boolean isCached(Class<T> type) {
+		lock.readLock().lock();
+		Object[] values = map.get(type);
+		lock.readLock().unlock();
+
+		return values != null;
+	}
 }

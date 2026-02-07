@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Segment;
+import com.winteralexander.gdx.utils.EnumConstantCache;
+import com.winteralexander.gdx.utils.log.Logger;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 import static com.winteralexander.gdx.utils.math.shape3d.Intersector3D.LineIntersectionResult.*;
@@ -762,7 +764,9 @@ public class Intersector3D {
 		/**
 		 * Result when the lines are intersecting at a single point
 		 */
-		POINT
+		POINT;
+
+		public static final LineIntersectionResult[] values = EnumConstantCache.store(values());
 	}
 
 	/**
@@ -805,6 +809,8 @@ public class Intersector3D {
 		 * In this case the intersection is defined by a line segment which corresponds to the
 		 * line at which the 2 triangles are crossing.
 		 */
-		NONCOPLANAR_FACE_FACE
+		NONCOPLANAR_FACE_FACE;
+
+		public static final TriangleIntersectionResult[] values = EnumConstantCache.store(values());
 	}
 }
