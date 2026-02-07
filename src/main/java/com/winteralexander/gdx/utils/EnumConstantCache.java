@@ -23,8 +23,8 @@ public class EnumConstantCache {
 					"array provide class type");
 
 		Class<?> type = values[0].getClass();
-		if(!type.isEnum())
-			type = type.getSuperclass(); // in case the enum value is extended in-place VALUE {}
+		if(!type.isEnum()) // in case the enum value is extended in-place e.g. VALUE {}
+			type = type.getSuperclass();
 		if(type == null || !type.isEnum())
 			throw new IllegalArgumentException("Provided array is not an array of enum values");
 
