@@ -29,6 +29,29 @@ public class EnumConstantCacheTest {
 		assertSame(values, values2);
 	}
 
+	enum ExtendedEnum {
+		VALUE {
+			@Override
+			public String toString() {
+				return "Value";
+			}
+		},
+		VALUE2 {
+			@Override
+			public String toString() {
+				return "Value2";
+			}
+		};
+
+		public static final ExtendedEnum[] values = EnumConstantCache.store(values());
+	}
+
+	@Test
+	public void testEnumExtension() {
+		EnumConstantCache.store(ExtendedEnum.values());
+		assertTrue(EnumConstantCache.isCached(ExtendedEnum.class));
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testAllEnumsCached() throws ClassNotFoundException {
