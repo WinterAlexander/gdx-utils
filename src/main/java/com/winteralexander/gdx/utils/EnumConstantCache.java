@@ -22,8 +22,14 @@ public class EnumConstantCache {
 			throw new IllegalArgumentException("Received empty array, to use store with an empty " +
 					"array provide class type");
 
+		Class<?> type = values[0].getClass();
+		if(!type.isEnum()) // in case the enum value is extended in-place e.g. VALUE {}
+			type = type.getSuperclass();
+		if(type == null || !type.isEnum())
+			throw new IllegalArgumentException("Provided array is not an array of enum values");
+
 		lock.writeLock().lock();
-		map.put(values[0].getClass(), values);
+		map.put(type, values);
 		lock.writeLock().unlock();
 		return values;
 	}
