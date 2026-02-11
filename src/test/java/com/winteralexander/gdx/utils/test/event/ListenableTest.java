@@ -87,4 +87,21 @@ public class ListenableTest {
 		listenable.trigger(Runnable::run);
 		assertEquals("Incorrect order of listener execution", 10, (int)value.get());
 	}
+
+	@Test
+	public void testLockListeners() {
+		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
+		MutableBox<Integer> value = new MutableBox<>(0);
+		listenable.lockListeners();
+		listenable.addListener(() -> {
+			value.set(1);
+		});
+
+		listenable.trigger(Runnable::run);
+		listenable.unlockListeners();
+		assertEquals("Listener still executed despite lock", 0, (int)value.get());
+
+		listenable.trigger(Runnable::run);
+		assertEquals("Listener not added after unlock", 1, (int)value.get());
+	}
 }
