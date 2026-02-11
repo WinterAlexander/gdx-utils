@@ -94,7 +94,7 @@ public class ListenableTest {
 		MutableBox<Integer> value = new MutableBox<>(0);
 		listenable.lockListeners();
 		listenable.addListener(() -> {
-			value.set(1); // will execute before, so overwritten
+			value.set(1);
 		});
 
 		listenable.trigger(Runnable::run);
