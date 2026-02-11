@@ -33,9 +33,9 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 
 		priorities = ((Class<P>)defaultPriority.getClass()).getEnumConstants();
 		for(P priority : priorities) {
-			listeners.put(priority, new Array<>());
-			toAdd.put(priority, new Array<>());
-			toRemove.put(priority, new Array<>());
+			listeners.put(priority, new Array<>(true, 4));
+			toAdd.put(priority, new Array<>(true, 4));
+			toRemove.put(priority, new Array<>(false, 4));
 		}
 	}
 

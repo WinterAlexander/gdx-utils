@@ -53,7 +53,6 @@ public class ListenableTest {
 
 	@Test
 	public void testAddWhileInvoking() {
-
 		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
 		MutableBox<Integer> value = new MutableBox<>(0);
 
@@ -72,5 +71,20 @@ public class ListenableTest {
 				"should be delayed until end of invocation", 1, (int)value.get());
 		assertTrue("Listenable must now have listener active",
 				listenable.hasListener(secondListener));
+	}
+
+	@Test
+	public void testAddPriority() {
+		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
+		MutableBox<Integer> value = new MutableBox<>(0);
+		listenable.addListener(() -> {
+			value.set(10);
+		});
+		listenable.addPriorityListener(() -> {
+			value.set(1); // will execute before, so overwritten
+		});
+
+		listenable.trigger(Runnable::run);
+		assertEquals("Incorrect order of listener execution", 10, (int)value.get());
 	}
 }
