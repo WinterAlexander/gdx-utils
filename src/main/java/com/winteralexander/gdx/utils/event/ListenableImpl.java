@@ -16,7 +16,7 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 public class ListenableImpl<L> implements Listenable<L> {
 	private final Array<L> listeners = new Array<>(true, 4);
 
-	private boolean canEditListeners = true;
+	private boolean listenersLocked = false;
 	private final Array<L> toAdd = new Array<>(true, 4),
 			toAddWithPriority = new Array<>(true, 4),
 			toRemove = new Array<>(false, 4);
@@ -24,28 +24,19 @@ public class ListenableImpl<L> implements Listenable<L> {
 	public void trigger(Consumer<L> event) {
 		ensureNotNull(event, "event");
 
-		int size = listeners.size; // don't iterate over the listeners that have been added in the trigger call
-		canEditListeners = false;
-		for(int i = 0; i < size; i++)
+		boolean wasLocked = listenersLocked;
+		if(!wasLocked)
+			lockListeners();
+		for(int i = 0; i < listeners.size; i++)
 			event.accept(listeners.get(i));
-		canEditListeners = true;
-
-		listeners.removeAll(toRemove, true);
-		listeners.addAll(toAdd);
-		if(toAddWithPriority.size > 0) {
-			listeners.insertRange(0, toAddWithPriority.size);
-			for(int i = 0; i < toAddWithPriority.size; i++)
-				listeners.set(i, toAddWithPriority.get(i));
-		}
-		toRemove.clear();
-		toAdd.clear();
-		toAddWithPriority.clear();
+		if(!wasLocked)
+			unlockListeners();
 	}
 
 	@Override
 	public void addListener(L listener) {
 		ensureNotNull(listener, "listener");
-		if(!canEditListeners) {
+		if(listenersLocked) {
 			toAdd.add(listener);
 			return;
 		}
@@ -54,7 +45,7 @@ public class ListenableImpl<L> implements Listenable<L> {
 
 	public void addPriorityListener(L listener) {
 		ensureNotNull(listener, "listener");
-		if(!canEditListeners) {
+		if(listenersLocked) {
 			toAddWithPriority.add(listener);
 			return;
 		}
@@ -64,7 +55,7 @@ public class ListenableImpl<L> implements Listenable<L> {
 	@Override
 	public void removeListener(L listener) {
 		ensureNotNull(listener, "listener");
-		if(!canEditListeners) {
+		if(listenersLocked) {
 			toRemove.add(listener);
 			return;
 		}
@@ -80,11 +71,30 @@ public class ListenableImpl<L> implements Listenable<L> {
 
 	@Override
 	public void clearListeners() {
-		if(!canEditListeners) {
+		if(listenersLocked) {
 			toRemove.addAll(listeners);
 			return;
 		}
 
 		listeners.clear();
+	}
+
+	public void lockListeners() {
+		listenersLocked = true;
+	}
+
+	public void unlockListeners() {
+		listenersLocked = false;
+
+		listeners.removeAll(toRemove, true);
+		listeners.addAll(toAdd);
+		if(toAddWithPriority.size > 0) {
+			listeners.insertRange(0, toAddWithPriority.size);
+			for(int i = 0; i < toAddWithPriority.size; i++)
+				listeners.set(i, toAddWithPriority.get(i));
+		}
+		toRemove.clear();
+		toAdd.clear();
+		toAddWithPriority.clear();
 	}
 }

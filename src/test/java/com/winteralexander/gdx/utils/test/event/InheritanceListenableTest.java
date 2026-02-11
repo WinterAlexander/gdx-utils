@@ -38,12 +38,8 @@ public class InheritanceListenableTest {
 		BaseListener baseListener;
 		ChildListener childListener;
 
-		inheritanceListenable.addListener(baseListener = new BaseListener() {
-			@Override
-			public void changed() {
-				changedCount.set(changedCount.get() + 1);
-			}
-		});
+		inheritanceListenable.addListener(baseListener =
+				() -> changedCount.set(changedCount.get() + 1));
 
 		inheritanceListenable.addListener(childListener = new ChildListener() {
 			@Override
