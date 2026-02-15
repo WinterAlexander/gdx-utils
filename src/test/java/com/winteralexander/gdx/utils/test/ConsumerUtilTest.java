@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import java.util.function.Consumer;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Unit test for {@link ConsumerUtil}
  * <p>
@@ -17,5 +20,6 @@ public class ConsumerUtilTest {
 	public void testNoopConsumer() {
 		Consumer<ConsumerUtilTest> consumer = ConsumerUtil.noopConsumer();
 		consumer.accept(this);
+		assertSame(consumer, ConsumerUtil.noopConsumer());
 	}
 }

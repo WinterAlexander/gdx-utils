@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 public class ConsumerUtil {
 	private static final Consumer<?> NOOP_CONSUMER = v -> {};
 
+	private ConsumerUtil() {}
+
 	@SuppressWarnings("unchecked")
 	public static <T> Consumer<T> noopConsumer() {
 		return (Consumer<T>)NOOP_CONSUMER;

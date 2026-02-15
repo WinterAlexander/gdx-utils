@@ -26,7 +26,6 @@ import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
  *
  * @author Alexander Winter
  */
-@SuppressWarnings("deprecation")
 public class ReflectionUtil {
 	private ReflectionUtil() {}
 
@@ -155,7 +154,7 @@ public class ReflectionUtil {
 		ensureNotNull(field, "field");
 		ensureNotNull(returnType, "returnType");
 
-
+		Class<?> originalType = type;
 		while(type != null) {
 			try {
 				Field fieldHandle = type.getDeclaredField(field);
@@ -171,7 +170,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + type);
+		throw new RuntimeException("Field " + field + " not found for type " + originalType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -251,6 +250,7 @@ public class ReflectionUtil {
 		ensureNotNull(method, "method");
 
 		method = method.intern();
+		Class<?> originalType = type;
 
 		while(type != null) {
 			try {
@@ -275,7 +275,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Method " + method + " not found for type " + type);
+		throw new RuntimeException("Method " + method + " not found for type " + originalType);
 	}
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
@@ -454,7 +454,6 @@ public class ReflectionUtil {
 						}
 					} catch(Throwable ex) {
 						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
-						ex.printStackTrace();
 					}
 				}
 

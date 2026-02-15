@@ -13,6 +13,8 @@ package com.winteralexander.gdx.utils;
 public class Benchmark {
 	private static long time = -1L;
 
+	private Benchmark() {}
+
 	public static void start() {
 		time = System.nanoTime();
 	}
