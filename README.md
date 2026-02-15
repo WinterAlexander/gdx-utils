@@ -1,6 +1,7 @@
 # gdx-utils
 
 [![](https://jitpack.io/v/WinterAlexander/gdx-utils.svg)](https://jitpack.io/#WinterAlexander/gdx-utils)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=WinterAlexander_gdx-utils&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=WinterAlexander_gdx-utils)
 
 Library grouping utilities for libGDX. The main use for this library is for [MakerKing](https://makerking.net/) and [NormalPainter](https://github.com/WinterAlexander/NormalPainter). The library's API may change at anytime but follows [Semantic Versioning](https://semver.org/).
 
