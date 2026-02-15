@@ -14,7 +14,7 @@ import java.util.Date;
  * @author Alexander Winter
  */
 public abstract class AbstractLogger implements Logger {
-	private final static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 	protected LogLevel logLevel;
 

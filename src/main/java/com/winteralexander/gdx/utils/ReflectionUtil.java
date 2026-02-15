@@ -26,7 +26,6 @@ import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
  *
  * @author Alexander Winter
  */
-@SuppressWarnings("deprecation")
 public class ReflectionUtil {
 	private ReflectionUtil() {}
 
@@ -142,7 +141,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Field not found");
+		throw new IllegalArgumentException("Field not found");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,7 +154,7 @@ public class ReflectionUtil {
 		ensureNotNull(field, "field");
 		ensureNotNull(returnType, "returnType");
 
-
+		Class<?> origType = type;
 		while(type != null) {
 			try {
 				Field fieldHandle = type.getDeclaredField(field);
@@ -171,7 +170,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + type);
+		throw new IllegalArgumentException("Field " + field + " not found for type " + origType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -208,7 +207,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + object.getClass());
+		throw new IllegalArgumentException("Field " + field + " not found for type " +
+				object.getClass());
 	}
 
 	public static boolean has(Class<?> type, String field) {
@@ -243,7 +243,7 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + type);
+		throw new IllegalArgumentException("Field " + field + " not found for type " + type);
 	}
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
@@ -251,6 +251,7 @@ public class ReflectionUtil {
 		ensureNotNull(method, "method");
 
 		method = method.intern();
+		Class<?> origType = type;
 
 		while(type != null) {
 			try {
@@ -275,7 +276,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Method " + method + " not found for type " + type);
+		throw new IllegalArgumentException("Method " + method + " not found for type " + origType);
 	}
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
@@ -309,7 +310,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Method " + method + " not found for type " + object.getClass());
+		throw new IllegalArgumentException("Method " + method + " not found for type " +
+				object.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -329,7 +331,7 @@ public class ReflectionUtil {
 			}
 		}
 
-		throw new RuntimeException("No matching constructor found");
+		throw new IllegalArgumentException("No matching constructor found");
 	}
 
 	public static String toPrettyString(Object object) {
@@ -454,7 +456,6 @@ public class ReflectionUtil {
 						}
 					} catch(Throwable ex) {
 						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
-						ex.printStackTrace();
 					}
 				}
 
@@ -470,7 +471,7 @@ public class ReflectionUtil {
 	}
 
 	@SuppressWarnings("raw")
-	public static void disableAccessWarnings() {
+	public static boolean disableAccessWarnings() {
 		try {
 			Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 			Field field = unsafeClass.getDeclaredField("theUnsafe");
@@ -486,9 +487,11 @@ public class ReflectionUtil {
 			Field loggerField = loggerClass.getDeclaredField("logger");
 			Long offset = (Long)staticFieldOffset.invoke(unsafe, loggerField);
 			putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
-		} catch(Exception ignored) {}
+			return true;
+		} catch(Exception ignored) {
+			return false;
+		}
 	}
-
 
 	public static String getParentStackLocation() {
 		return getParentStackLocation(3);
@@ -588,7 +591,8 @@ public class ReflectionUtil {
 	 * @return array of classes loaded
 	 * @throws ClassNotFoundException if a class failed to be loaded
 	 */
-	public static Array<Class<?>> loadClasses(Iterable<String> classNames) throws ClassNotFoundException {
+	public static Array<Class<?>> loadClasses(Iterable<String> classNames)
+			throws ClassNotFoundException {
 		Array<Class<?>> classes = new Array<>();
 		for(String className : classNames)
 			classes.add(Class.forName(className));
