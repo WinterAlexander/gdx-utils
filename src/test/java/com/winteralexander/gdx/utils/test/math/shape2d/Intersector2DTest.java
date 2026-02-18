@@ -109,33 +109,33 @@ public class Intersector2DTest {
 		rect2.y = 10f;
 		rect2.width = 1f;
 		rect2.height = 1f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 		rect2.width = 100f;
 		rect2.height = 100f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 		rect2.x = 100f;
 		rect2.y = 10f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 		rect2.x = -100f;
 		rect2.y = 10f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 		rect2.x = 50f;
 		rect2.y = 20f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 		rect2.x = 50f;
 		rect2.y = -100f;
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
-		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 	}
 
 	@Test
@@ -153,9 +153,9 @@ public class Intersector2DTest {
 		rect2.width = 10f;
 		rect2.height = 100f;
 		assertEquals(MathUtil.pow2(15f),
-				Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
 		assertEquals(MathUtil.pow2(15f),
-				Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 
 		rect2.x = 115f;
@@ -163,9 +163,9 @@ public class Intersector2DTest {
 		rect2.width = 30f;
 		rect2.height = 100f;
 		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
-				Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
 		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
-				Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
 
 	}
 }

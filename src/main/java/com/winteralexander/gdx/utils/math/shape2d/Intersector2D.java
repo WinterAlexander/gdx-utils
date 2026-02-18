@@ -388,18 +388,18 @@ public class Intersector2D {
 		return out;
 	}
 
-	public static float AABBdistanceSquaredToAABB(Rectangle aabb1, Rectangle aabb2) {
-		return AABBdistanceSquaredToAABB(aabb1.x, aabb1.y, aabb1.width, aabb1.height,
+	public static float distanceSquaredAABBToAABB(Rectangle aabb1, Rectangle aabb2) {
+		return distanceSquaredAABBToAABB(aabb1.x, aabb1.y, aabb1.width, aabb1.height,
 				aabb2.x, aabb2.y, aabb2.width, aabb2.height);
 	}
 
-	public static float AABBdistanceSquaredToAABB(Vector2 pos1, Vector2 size1,
+	public static float distanceSquaredAABBToAABB(Vector2 pos1, Vector2 size1,
 	                                              Vector2 pos2, Vector2 size2) {
-		return AABBdistanceSquaredToAABB(pos1.x, pos1.y, size1.x, size1.y,
+		return distanceSquaredAABBToAABB(pos1.x, pos1.y, size1.x, size1.y,
 				pos2.x, pos2.y, size2.x, size2.y);
 	}
 
-	public static float AABBdistanceSquaredToAABB(float x1, float y1, float width1, float height1,
+	public static float distanceSquaredAABBToAABB(float x1, float y1, float width1, float height1,
 	                                              float x2, float y2, float width2, float height2) {
 		float points1DstTo2 = Math.min(
 				Math.min(distanceSquaredToAABB(x1, y1, x2, y2, width2, height2),
