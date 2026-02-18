@@ -2,6 +2,7 @@ package com.winteralexander.gdx.utils.test.math.shape2d;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.winteralexander.gdx.utils.math.MathUtil;
 import com.winteralexander.gdx.utils.math.shape2d.Intersector2D;
 import com.winteralexander.gdx.utils.test.math.TestVec2;
 import org.junit.Test;
@@ -40,9 +41,8 @@ public class Intersector2DTest {
 		assertFalse(lineIntersectsLine(-1f, -1f, 1f, 1f, 0f, 0f, 1f, -1f));
 	}
 
-
 	@Test
-	public void computeOverlapTest() {
+	public void testComputeOverlap() {
 		Rectangle rect1 = new Rectangle(0f, 0f, 10f, 10f);
 		Rectangle rect2 = new Rectangle(5f, 5f, 10f, 10f);
 		Vector2 overlap = new Vector2();
@@ -93,5 +93,79 @@ public class Intersector2DTest {
 		computeOverlap(rect1, rect2, overlap);
 		assertEquals(0f, overlap.x, 1e-10f);
 		assertEquals(0f, overlap.y, 1e-10f);
+	}
+
+	@Test
+	public void testAABBToAABBDistanceTouching() {
+		Rectangle rect1 = new Rectangle();
+		Rectangle rect2 = new Rectangle();
+
+		rect1.x = 0f;
+		rect1.y = 0f;
+		rect1.width = 100f;
+		rect1.height = 20f;
+
+		rect2.x = 15f;
+		rect2.y = 10f;
+		rect2.width = 1f;
+		rect2.height = 1f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+		rect2.width = 100f;
+		rect2.height = 100f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+		rect2.x = 100f;
+		rect2.y = 10f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+		rect2.x = -100f;
+		rect2.y = 10f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+		rect2.x = 50f;
+		rect2.y = 20f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+		rect2.x = 50f;
+		rect2.y = -100f;
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(0f, Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+	}
+
+	@Test
+	public void testAABBToAABBDistanceDisjoint() {
+		Rectangle rect1 = new Rectangle();
+		Rectangle rect2 = new Rectangle();
+
+		rect1.x = 0f;
+		rect1.y = 0f;
+		rect1.width = 100f;
+		rect1.height = 20f;
+
+		rect2.x = 115f;
+		rect2.y = 10f;
+		rect2.width = 10f;
+		rect2.height = 100f;
+		assertEquals(MathUtil.pow2(15f),
+				Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(MathUtil.pow2(15f),
+				Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
+
+		rect2.x = 115f;
+		rect2.y = 30f;
+		rect2.width = 30f;
+		rect2.height = 100f;
+		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
+				Intersector2D.AABBdistanceSquaredToAABB(rect1, rect2), 1e-10f);
+		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
+				Intersector2D.AABBdistanceSquaredToAABB(rect2, rect1), 1e-10f);
+
 	}
 }
