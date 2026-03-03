@@ -41,6 +41,7 @@ public class SegmentedCylinderShapeBuilder {
 		}
 		builder.setVertexTransform(prevVertexTransform);
 		builder.setVertexTransformationEnabled(transform);
+		builder.setUVRange(0f, 0f, 1f, 1f);
 
 		if(!closed)
 			return;

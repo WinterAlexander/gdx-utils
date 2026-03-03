@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class SimpleLogger implements Logger {
 	private LogLevel logLevel;
-	private final static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 	public SimpleLogger(LogLevel logLevel) {
 		this.logLevel = logLevel;

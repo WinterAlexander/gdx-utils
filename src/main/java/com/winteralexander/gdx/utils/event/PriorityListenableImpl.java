@@ -2,10 +2,12 @@ package com.winteralexander.gdx.utils.event;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.winteralexander.gdx.utils.Validation;
+import com.winteralexander.gdx.utils.EnumConstantCache;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
 /**
  * PriorityListenable implementation with ObjectMap and enum values as priority
@@ -21,17 +23,19 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 
 	private final P defaultPriority;
 
-	private boolean canRemove = true;
-	private final ObjectMap<P, Array<L>> toRemove = new ObjectMap<>();
+	private boolean lockListeners = false;
+	private final ObjectMap<P, Array<L>> toAdd = new ObjectMap<>(),
+			toRemove = new ObjectMap<>();
 
 	@SuppressWarnings("unchecked")
 	public PriorityListenableImpl(P defaultPriority) {
 		this.defaultPriority = defaultPriority;
 
-		priorities = ((Class<P>)defaultPriority.getClass()).getEnumConstants();
+		priorities = EnumConstantCache.get((Class<P>)defaultPriority.getClass());
 		for(P priority : priorities) {
-			listeners.put(priority, new Array<>());
-			toRemove.put(priority, new Array<>());
+			listeners.put(priority, new Array<>(true, 4));
+			toAdd.put(priority, new Array<>(true, 4));
+			toRemove.put(priority, new Array<>(false, 4));
 		}
 	}
 
@@ -43,8 +47,10 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 	 * @param event event to dispatch
 	 * @return true if any listener handled the event, otherwise false
 	 */
-	protected boolean trigger(Function<L, Boolean> event) {
-		canRemove = false;
+	public boolean trigger(Function<L, Boolean> event) {
+		boolean wasLocked = lockListeners;
+		if(!wasLocked)
+			lockListeners();
 		boolean result = false;
 		for(P priority : priorities) {
 			Array<L> level = listeners.get(priority);
@@ -63,11 +69,8 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 				break;
 			}
 		}
-		canRemove = true;
-		for(P priority : priorities) {
-			listeners.get(priority).removeAll(toRemove.get(priority), true);
-			toRemove.get(priority).clear();
-		}
+		if(!wasLocked)
+			unlockListeners();
 
 		return result;
 	}
@@ -81,8 +84,10 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 	 * @param handledEvent event to dispatch when handled
 	 * @return true if any listener handled the event, otherwise false
 	 */
-	protected boolean trigger(Function<L, Boolean> event, Consumer<L> handledEvent) {
-		canRemove = false;
+	public boolean trigger(Function<L, Boolean> event, Consumer<L> handledEvent) {
+		boolean wasLocked = lockListeners;
+		if(!wasLocked)
+			lockListeners();
 		boolean handled = false;
 
 		for(P priority : priorities) {
@@ -98,11 +103,8 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 				if(event.apply(listener))
 					handled = true;
 		}
-		canRemove = true;
-		for(P priority : priorities) {
-			listeners.get(priority).removeAll(toRemove.get(priority), true);
-			toRemove.get(priority).clear();
-		}
+		if(!wasLocked)
+			unlockListeners();
 
 		return handled;
 	}
@@ -114,18 +116,22 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 
 	@Override
 	public void addListener(L listener, P priority) {
-		Validation.ensureNotNull(listener, "listener");
-		listeners.get(priority).add(listener);
+		ensureNotNull(listener, "listener");
+		if(lockListeners)
+			toAdd.get(priority).add(listener);
+		else
+			listeners.get(priority).add(listener);
 	}
 
 	@Override
 	public void removeListener(L listener) {
-		if(canRemove)
-			for(Array<L> array : listeners.values())
-				array.removeValue(listener, true);
-		else
+		ensureNotNull(listener, "listener");
+		if(lockListeners)
 			for(Array<L> array : toRemove.values())
 				array.add(listener);
+		else
+			for(Array<L> array : listeners.values())
+				array.removeValue(listener, true);
 	}
 
 	@Override
@@ -138,11 +144,25 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 
 	@Override
 	public void clearListeners() {
-		if(canRemove)
-			for(Array<L> array : listeners.values())
-				array.clear();
-		else
+		if(lockListeners)
 			for(P priority : priorities)
 				toRemove.get(priority).addAll(listeners.get(priority));
+		else
+			for(Array<L> array : listeners.values())
+				array.clear();
+	}
+
+	public void lockListeners() {
+		lockListeners = true;
+	}
+
+	public void unlockListeners() {
+		lockListeners = false;
+		for(P priority : priorities) {
+			listeners.get(priority).removeAll(toRemove.get(priority), true);
+			listeners.get(priority).addAll(toAdd.get(priority));
+			toAdd.get(priority).clear();
+			toRemove.get(priority).clear();
+		}
 	}
 }

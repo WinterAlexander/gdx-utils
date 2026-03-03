@@ -47,8 +47,10 @@ public class FileUtilTest {
 		t2.join();
 
 		for(Throwable throwable : errors)
-			throw throwable;
+			throwable.printStackTrace(System.err);
 
+		if(errors.size > 0)
+			throw errors.get(0);
 
 		assertTrue(testTmp.delete());
 	}

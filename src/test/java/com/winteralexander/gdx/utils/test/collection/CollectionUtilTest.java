@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import java.util.Comparator;
 
-import static com.winteralexander.gdx.utils.collection.CollectionUtil.except;
-import static com.winteralexander.gdx.utils.collection.CollectionUtil.greatest;
+import static com.winteralexander.gdx.utils.collection.CollectionUtil.*;
 import static org.junit.Assert.*;
 
 /**
@@ -81,5 +80,23 @@ public class CollectionUtilTest {
 
 		String greatest = greatest(obs, Comparator.comparingInt(Integer::parseInt));
 		assertEquals("23424", greatest);
+	}
+
+	@Test
+	public void testAny() {
+		assertTrue(any(new String[] { "aa", "bb", "cc" }, s -> s.startsWith("a")));
+		assertTrue(any(new String[] { "aa", "bb", "cc" }, s -> s.endsWith("c")));
+		assertTrue(any(new int[] { 1, 2, 3, 4 }, i -> i == 3));
+		assertFalse(any(new double[] { 1.123123, 2.34243, 3.231423, 4.324234 }, i -> i == 3));
+		assertFalse(any(new long[] { 1L, 2L, 3L, 4L }, i -> i == 6L));
+	}
+
+	@Test
+	public void testAll() {
+		assertTrue(all(new String[] { "aa", "bb", "cc" }, s -> s.length() == 2));
+		assertTrue(all(new String[] { "aa", "bb", "cc" }, s -> !s.startsWith("d")));
+		assertTrue(all(new int[] { 1, 2, 3, 4 }, i -> i < 10));
+		assertFalse(all(new double[] { 1.123123, 2.34243, 3.231423, 4.324234 }, i -> i > 2.0));
+		assertFalse(all(new long[] { 1L, 2L, 3L, 4L }, i -> i == 3L));
 	}
 }

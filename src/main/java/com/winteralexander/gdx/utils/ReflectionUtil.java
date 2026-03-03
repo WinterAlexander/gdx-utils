@@ -2,9 +2,18 @@ package com.winteralexander.gdx.utils;
 
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static com.winteralexander.gdx.utils.TypeUtil.isPrimitiveBox;
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
@@ -17,7 +26,6 @@ import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
  *
  * @author Alexander Winter
  */
-@SuppressWarnings("deprecation")
 public class ReflectionUtil {
 	private ReflectionUtil() {}
 
@@ -133,7 +141,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Field not found");
+		throw new IllegalArgumentException("Field not found");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -146,7 +154,7 @@ public class ReflectionUtil {
 		ensureNotNull(field, "field");
 		ensureNotNull(returnType, "returnType");
 
-
+		Class<?> origType = type;
 		while(type != null) {
 			try {
 				Field fieldHandle = type.getDeclaredField(field);
@@ -162,7 +170,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + type);
+		throw new IllegalArgumentException("Field " + field + " not found for type " + origType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -199,7 +207,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + object.getClass());
+		throw new IllegalArgumentException("Field " + field + " not found for type " +
+				object.getClass());
 	}
 
 	public static boolean has(Class<?> type, String field) {
@@ -234,7 +243,7 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Field " + field + " not found for type " + type);
+		throw new IllegalArgumentException("Field " + field + " not found for type " + type);
 	}
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
@@ -242,6 +251,7 @@ public class ReflectionUtil {
 		ensureNotNull(method, "method");
 
 		method = method.intern();
+		Class<?> origType = type;
 
 		while(type != null) {
 			try {
@@ -266,7 +276,7 @@ public class ReflectionUtil {
 			type = type.getSuperclass();
 		}
 
-		throw new RuntimeException("Method " + method + " not found for type " + type);
+		throw new IllegalArgumentException("Method " + method + " not found for type " + origType);
 	}
 
 	@SuppressWarnings({"unchecked", "StringEquality"})
@@ -300,7 +310,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new RuntimeException("Method " + method + " not found for type " + object.getClass());
+		throw new IllegalArgumentException("Method " + method + " not found for type " +
+				object.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -320,7 +331,7 @@ public class ReflectionUtil {
 			}
 		}
 
-		throw new RuntimeException("No matching constructor found");
+		throw new IllegalArgumentException("No matching constructor found");
 	}
 
 	public static String toPrettyString(Object object) {
@@ -445,7 +456,6 @@ public class ReflectionUtil {
 						}
 					} catch(Throwable ex) {
 						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
-						ex.printStackTrace();
 					}
 				}
 
@@ -461,7 +471,7 @@ public class ReflectionUtil {
 	}
 
 	@SuppressWarnings("raw")
-	public static void disableAccessWarnings() {
+	public static boolean disableAccessWarnings() {
 		try {
 			Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 			Field field = unsafeClass.getDeclaredField("theUnsafe");
@@ -477,9 +487,11 @@ public class ReflectionUtil {
 			Field loggerField = loggerClass.getDeclaredField("logger");
 			Long offset = (Long)staticFieldOffset.invoke(unsafe, loggerField);
 			putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
-		} catch(Exception ignored) {}
+			return true;
+		} catch(Exception ignored) {
+			return false;
+		}
 	}
-
 
 	public static String getParentStackLocation() {
 		return getParentStackLocation(3);
@@ -501,5 +513,89 @@ public class ReflectionUtil {
 		return last(elements[index].getClassName().split(Pattern.quote("."))) +
 				"#" + elements[index].getMethodName() + "() " +
 				"(" + elements[index].getFileName() + ":" + elements[index].getLineNumber() + ")";
+	}
+
+	/**
+	 * @see #scanClasspath(Array, ObjectMap)
+	 * @return array of files from the class path
+	 */
+	public static Array<String> scanClasspath() {
+		Array<String> out = new Array<>();
+		scanClasspath(out, null);
+		return out;
+	}
+
+	/**
+	 * Scans the class path of the current Java process to retrieve all files that are part of it
+	 * (files inside directories and jars in the class path)
+	 * @param files array to fill with files found in the class path
+	 * @param errors per file error map to fill with errors encountered in the process
+	 */
+	public static void scanClasspath(Array<String> files, ObjectMap<String, IOException> errors) {
+		String classpath = System.getProperty("java.class.path");
+		for(String entry : classpath.split(File.pathSeparator)) {
+			File entryFile = new File(entry);
+			try {
+				if(entryFile.isDirectory())
+					scanDirectory(entryFile, files);
+				else if(entryFile.getName().endsWith(".jar"))
+					scanJar(entryFile, files);
+				else
+					throw new IOException("Unrecognized entry: " + entryFile.getName());
+			} catch(IOException ex) {
+				if(errors != null)
+					errors.put(entry, ex);
+			}
+		}
+	}
+
+	private static void scanDirectory(File directory, Array<String> out) throws IOException {
+		try(Stream<Path> stream = Files.walk(directory.toPath())) {
+			stream.filter(Files::isRegularFile)
+					.forEach(p -> out.add(directory.toPath().relativize(p).toString()));
+		}
+	}
+
+	private static void scanJar(File jarFile, Array<String> out) throws IOException {
+		try(JarFile jar = new JarFile(jarFile)) {
+			Enumeration<JarEntry> entries = jar.entries();
+			while(entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				out.add(entry.getName());
+			}
+		}
+	}
+
+	/**
+	 * Filters files from the result of a {@link #scanClasspath(Array, ObjectMap)} and converts
+	 * class paths to class names which can later be converted to classes using
+	 * {@link Class#forName(String)}
+	 *
+	 * @param classpathScanResult iterable of file paths from the class path
+	 * @return array of class names
+	 */
+	public static Array<String> getClasses(Iterable<String> classpathScanResult) {
+		Array<String> classes = new Array<>();
+		classpathScanResult.forEach(c -> {
+			if(c.endsWith(".class"))
+				classes.add(c.replace(File.separatorChar, '.')
+						.replace('/', '.')
+						.replace(".class", ""));
+		});
+		return classes;
+	}
+
+	/**
+	 * Loads every class from an array of class names
+	 * @param classNames array of class names
+	 * @return array of classes loaded
+	 * @throws ClassNotFoundException if a class failed to be loaded
+	 */
+	public static Array<Class<?>> loadClasses(Iterable<String> classNames)
+			throws ClassNotFoundException {
+		Array<Class<?>> classes = new Array<>();
+		for(String className : classNames)
+			classes.add(Class.forName(className));
+		return classes;
 	}
 }

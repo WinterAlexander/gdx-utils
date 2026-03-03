@@ -1,6 +1,9 @@
 package com.winteralexander.gdx.utils.math.shape3d;
 
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
 
@@ -20,7 +23,8 @@ public class Triangle {
 
 	private final Vector3 tmpBarycentric = new Vector3();
 
-	private final Vector3 dir1 = new Vector3(), dir2 = new Vector3();
+	private final Vector3 tmpDir1 = new Vector3(), tmpDir2 = new Vector3();
+	private final Ray tmpRay1 = new Ray(), tmpRay2 = new Ray(), tmpRay3 = new Ray();
 
 	public Triangle() {}
 
@@ -114,24 +118,64 @@ public class Triangle {
 	}
 
 	public Vector3 getBarycentricCoordinates(Vector3 point) {
-		dir1.set(p2).sub(p1);
-		dir2.set(dir1).crs(getNormal());
+		tmpDir1.set(p2).sub(p1);
+		tmpDir2.set(tmpDir1).crs(getNormal());
 
-		float len2 = dir1.len2();
-		float height2 = dir2.dot(p3.x - p1.x,
+		float len2 = tmpDir1.len2();
+		float height2 = tmpDir2.dot(p3.x - p1.x,
 				p3.y - p1.y,
 				p3.z - p1.z);
 
-		float x = dir1.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / len2;
-		float y = dir2.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / height2;
+		float x = tmpDir1.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / len2;
+		float y = tmpDir2.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / height2;
 
-		float xC = dir1.dot(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z) / len2;
+		float xC = tmpDir1.dot(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z) / len2;
 
 		tmpBarycentric.x = (1f - x) + y * (xC - 1f);
 		tmpBarycentric.y = (x - xC) + xC * (1f - y);
 		tmpBarycentric.z = 1f - tmpBarycentric.x - tmpBarycentric.y;
 
 		return tmpBarycentric;
+	}
+
+	public float getArea() {
+		tmpDir1.set(p2).sub(p1);
+		tmpDir2.set(tmpDir1).crs(getNormal()).nor();
+
+		float base = tmpDir1.len();
+		float height = Math.abs(tmpDir2.dot(p3.x - p1.x,
+				p3.y - p1.y,
+				p3.z - p1.z));
+
+		return base * height / 2f;
+	}
+
+	public float getArea(Plane plane) {
+		tmpRay1.set(p1, plane.normal);
+		tmpRay2.set(p2, plane.normal);
+		tmpRay3.set(p3, plane.normal);
+		if(!Intersector.intersectRayPlane(tmpRay1, plane, tmpRay1.origin)) {
+			tmpRay1.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay1, plane, tmpRay1.origin);
+		}
+		if(!Intersector.intersectRayPlane(tmpRay2, plane, tmpRay2.origin)) {
+			tmpRay2.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay2, plane, tmpRay2.origin);
+		}
+		if(!Intersector.intersectRayPlane(tmpRay3, plane, tmpRay3.origin)) {
+			tmpRay3.direction.scl(-1f);
+			Intersector.intersectRayPlane(tmpRay3, plane, tmpRay3.origin);
+		}
+
+		tmpDir1.set(tmpRay2.origin).sub(tmpRay1.origin);
+		tmpDir2.set(tmpDir1).crs(plane.normal).nor();
+
+		float base = tmpDir1.len();
+		float height = Math.abs(tmpDir2.dot(tmpRay3.origin.x - tmpRay1.origin.x,
+				tmpRay3.origin.y - tmpRay1.origin.y,
+				tmpRay3.origin.z - tmpRay1.origin.z));
+
+		return base * height / 2f;
 	}
 
 	public void toArray(float[] out) {

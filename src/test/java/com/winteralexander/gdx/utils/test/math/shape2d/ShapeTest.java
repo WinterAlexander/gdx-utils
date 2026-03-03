@@ -23,10 +23,10 @@ public class ShapeTest {
 	public void testRectContains() {
 		Rectangle rect1 = new Rectangle(new Vector2(0f, 10f), new Vector2(20, 20));
 
-		assertTrue(rect1.contains(-9, 1));
-		assertTrue(rect1.contains(-9, 19));
-		assertTrue(rect1.contains(9, 19));
-		assertTrue(rect1.contains(9, 1));
+		assertTrue(rect1.contains(-9f, 1f));
+		assertTrue(rect1.contains(-9f, 19f));
+		assertTrue(rect1.contains(9f, 19f));
+		assertTrue(rect1.contains(9f, 1f));
 	}
 
 	@Test
@@ -72,12 +72,12 @@ public class ShapeTest {
 		Annulus annulus = new Annulus(new Vector2(0f, 0f), 1f, 5f);
 		Vector2 proj = new Vector2(6f, 0f);
 		annulus.projectOnto(proj);
-		assertEquals(proj.x, 5f, 0.001f);
-		assertEquals(proj.y, 0f, 0.001f);
+		assertEquals(5f, proj.x, 0.001f);
+		assertEquals(0f, proj.y, 0.001f);
 
 		annulus.projectOnto(proj);
-		assertEquals(proj.x, 5f, 0.001f);
-		assertEquals(proj.y, 0f, 0.001f);
+		assertEquals(5f, proj.x, 0.001f);
+		assertEquals(0f, proj.y, 0.001f);
 	}
 
 	@Test
@@ -85,11 +85,11 @@ public class ShapeTest {
 		Circle circle = new Circle(new Vector2(0f, 0f), 1f);
 		Vector2 point = new Vector2(Float.POSITIVE_INFINITY, 0f);
 		circle.projectOnto(point);
-		System.out.println(point);
+		assertEquals(new Vector2(1f, 0f), point);
 
 		Rectangle rectangle = new Rectangle(new Vector2(0f, 0f), new Vector2(1f, 1f));
 		point = new Vector2(Float.POSITIVE_INFINITY, 0f);
 		rectangle.projectOnto(point);
-		System.out.println(point);
+		assertEquals(new Vector2(0.5f, 0f), point);
 	}
 }

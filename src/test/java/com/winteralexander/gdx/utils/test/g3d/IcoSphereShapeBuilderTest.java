@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.winteralexander.gdx.utils.g3d.IcoSphereShapeBuilder;
-import com.winteralexander.gdx.utils.test.g3d.debugviewer.ModelViewer;
+import com.winteralexander.gdx.utils.test.debugviewer.ModelViewer;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;

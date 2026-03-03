@@ -2,10 +2,14 @@ package com.winteralexander.gdx.utils.collection;
 
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.winteralexander.gdx.utils.FloatPredicate;
 import com.winteralexander.gdx.utils.collection.iterator.JavaArrayIndexIterator;
 
 import java.util.*;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 
 /**
  * Utility class for collections
@@ -239,6 +243,70 @@ public class CollectionUtil {
 	}
 
 	/**
+	 * Evaluates integers of an array and returns true if any of the integers matches the specified
+	 * predicate. May not evaluate all integers if one is found to be true early.
+	 *
+	 * @param array array of integers to evaluate
+	 * @param predicate predicate to test on integers
+	 * @return true if the predicate matches any integer in the array
+	 */
+	public static boolean any(int[] array, IntPredicate predicate) {
+		for(int element : array)
+			if(predicate.test(element))
+				return true;
+
+		return false;
+	}
+
+	/**
+	 * Evaluates integers of an array and returns true if any of the integers matches the specified
+	 * predicate. May not evaluate all integers if one is found to be true early.
+	 *
+	 * @param array array of integers to evaluate
+	 * @param predicate predicate to test on integers
+	 * @return true if the predicate matches any integer in the array
+	 */
+	public static boolean any(long[] array, LongPredicate predicate) {
+		for(long element : array)
+			if(predicate.test(element))
+				return true;
+
+		return false;
+	}
+
+	/**
+	 * Evaluates floats of an array and returns true if any of the floats matches the specified
+	 * predicate. May not evaluate all floats if one is found to be true early.
+	 *
+	 * @param array array of floats to evaluate
+	 * @param predicate predicate to test on floats
+	 * @return true if the predicate matches any float in the array
+	 */
+	public static boolean any(float[] array, FloatPredicate predicate) {
+		for(float element : array)
+			if(predicate.test(element))
+				return true;
+
+		return false;
+	}
+
+	/**
+	 * Evaluates doubles of an array and returns true if any of the doubles matches the specified
+	 * predicate. May not evaluate all doubles if one is found to be true early.
+	 *
+	 * @param array array of doubles to evaluate
+	 * @param predicate predicate to test on doubles
+	 * @return true if the predicate matches any double in the array
+	 */
+	public static boolean any(double[] array, DoublePredicate predicate) {
+		for(double element : array)
+			if(predicate.test(element))
+				return true;
+
+		return false;
+	}
+
+	/**
 	 * Evaluates elements of an array and returns true if all the elements match the specified
 	 * predicate. May not evaluate all elements if one is found to be false early.
 	 *
@@ -267,6 +335,70 @@ public class CollectionUtil {
 	public static <T> boolean all(T[] array, Predicate<T> predicate) {
 		for(T element : array)
 			if(!predicate.evaluate(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates integers of an array and returns true if all the integers match the specified
+	 * predicate. May not evaluate all integers if one is found to be false early.
+	 *
+	 * @param array array of integers to evaluate
+	 * @param predicate predicate to test on integers
+	 * @return true if the predicate matches all integers in the array
+	 */
+	public static boolean all(int[] array, IntPredicate predicate) {
+		for(int element : array)
+			if(!predicate.test(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates integers of an array and returns true if all the integers match the specified
+	 * predicate. May not evaluate all integers if one is found to be false early.
+	 *
+	 * @param array array of integers to evaluate
+	 * @param predicate predicate to test on integers
+	 * @return true if the predicate matches all integers in the array
+	 */
+	public static boolean all(long[] array, LongPredicate predicate) {
+		for(long element : array)
+			if(!predicate.test(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates floats of an array and returns true if all the floats match the specified
+	 * predicate. May not evaluate all floats if one is found to be false early.
+	 *
+	 * @param array array of floats to evaluate
+	 * @param predicate predicate to test on floats
+	 * @return true if the predicate matches all floats in the array
+	 */
+	public static boolean all(float[] array, FloatPredicate predicate) {
+		for(float element : array)
+			if(!predicate.test(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates doubles of an array and returns true if all the doubles match the specified
+	 * predicate. May not evaluate all doubles if one is found to be false early.
+	 *
+	 * @param array array of doubles to evaluate
+	 * @param predicate predicate to test on doubles
+	 * @return true if the predicate matches all doubles in the array
+	 */
+	public static boolean all(double[] array, DoublePredicate predicate) {
+		for(double element : array)
+			if(!predicate.test(element))
 				return false;
 
 		return true;
@@ -318,6 +450,24 @@ public class CollectionUtil {
 		while(iterator.hasNext())
 			array.add(iterator.next());
 		return array;
+	}
+
+	@SafeVarargs
+	public static <T> ObjectSet<T> toGdxSet(T... elements) {
+		ObjectSet<T> set = new ObjectSet<>();
+		set.addAll(elements);
+		return set;
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterable<T> iterable) {
+		return toGdxSet(iterable.iterator());
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterator<T> iterator) {
+		ObjectSet<T> set = new ObjectSet<>();
+		while(iterator.hasNext())
+			set.add(iterator.next());
+		return set;
 	}
 
 	@SafeVarargs
@@ -444,6 +594,18 @@ public class CollectionUtil {
 			res[i] = intArray[i];
 
 		return res;
+	}
+
+	@SafeVarargs
+	public static <K, V> ObjectMap<K, V> toGdxMap(Function<V, K> keyFromValue, V... values) {
+		ObjectMap<K, V> map = new ObjectMap<>(values.length);
+		for(V value : values) {
+			K key = keyFromValue.apply(value);
+			if(map.containsKey(key))
+				throw new IllegalArgumentException("Two values with the same key in call to toGdxMap");
+			map.put(key, value);
+		}
+		return map;
 	}
 
 	public static <K, V> ObjectMap<K, V> buildMap(K[] keys, Function<K, V> builder) {

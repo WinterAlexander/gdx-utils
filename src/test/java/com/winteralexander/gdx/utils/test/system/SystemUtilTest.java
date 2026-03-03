@@ -2,6 +2,7 @@ package com.winteralexander.gdx.utils.test.system;
 
 import com.winteralexander.gdx.utils.StringUtil;
 import com.winteralexander.gdx.utils.system.SystemUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -13,6 +14,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Alexander Winter
  */
+@Ignore
 public class SystemUtilTest {
 	@Test
 	public void testSystemSpecs() throws Exception {

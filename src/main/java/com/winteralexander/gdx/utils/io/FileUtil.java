@@ -25,9 +25,6 @@ import java.util.zip.ZipFile;
  * @author Alexander Winter
  */
 public class FileUtil {
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private static final Date date = new Date();
-
 	private FileUtil() {}
 
 	public static void appendToFile(File file, String line) {
@@ -316,7 +313,9 @@ public class FileUtil {
 	 * @return a filename
 	 */
 	public static String getDailyLogfileName() {
+		Date date = new Date();
 		date.setTime(System.currentTimeMillis());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date) + ".log";
 	}
 

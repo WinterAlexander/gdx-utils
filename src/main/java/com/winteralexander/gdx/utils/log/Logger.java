@@ -1,5 +1,7 @@
 package com.winteralexander.gdx.utils.log;
 
+import com.winteralexander.gdx.utils.EnumConstantCache;
+
 /**
  * A model for an object to log ouput.
  * Used by classes that should be reused amount multiple projects.
@@ -30,6 +32,8 @@ public interface Logger {
 	LogLevel getLogLevel();
 
 	enum LogLevel {
-		NONE, ERROR, WARNING, INFO, DEBUG
+		NONE, ERROR, WARNING, INFO, DEBUG;
+
+		public static final LogLevel[] values = EnumConstantCache.store(values());
 	}
 }
