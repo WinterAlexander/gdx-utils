@@ -54,8 +54,8 @@ jobs:
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          ./llvm.sh 21
-          apt install llvm-21* clang-21* lld-21* lldb-21*
+          sudo ./llvm.sh 21
+          sudo apt install llvm-21* clang-21* lld-21* lldb-21*
       - name: Clone winterfmt
         uses: actions/checkout@v5
         with:
