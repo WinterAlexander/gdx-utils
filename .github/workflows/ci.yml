@@ -51,6 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Clang
+        if: false
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
