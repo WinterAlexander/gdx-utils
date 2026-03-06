@@ -56,4 +56,6 @@ jobs:
           repository: WinterAlexander/winterfmt
           path: winterfmt
       - name: Check format
-        run: source winterfmt/init.sh; winterfmt -n **/*.java
+        run: |
+          source winterfmt/init.sh
+          winterfmt -n **/*.java
