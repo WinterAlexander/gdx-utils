@@ -49,6 +49,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: wolletd/clang-format-checker@v1
+      - uses: actions/checkout@v5
+      - name: Clone winterfmt
+        uses: actions/checkout@v5
         with:
-          target-ref: master
+          repository: WinterAlexander/winterfmt
+          path: winterfmt
+      - name: Check format
+        run: source winterfmt/init.sh; winterfmt -n **/*.java
