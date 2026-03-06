@@ -55,6 +55,7 @@ jobs:
         with:
           repository: WinterAlexander/winterfmt
           path: winterfmt
+          ref: debug
       - name: Check format
         run: |
           source winterfmt/init.sh
