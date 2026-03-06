@@ -58,5 +58,7 @@ jobs:
           ref: debug
       - name: Check format
         run: |
+          ls
+          ls winterfmt
           source winterfmt/init.sh
           winterfmt -n **/*.java
