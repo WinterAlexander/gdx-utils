@@ -63,5 +63,6 @@ jobs:
           ref: debug
       - name: Check format
         run: |
+          clang-format --version
           source winterfmt/init.sh
           winterfmt check
