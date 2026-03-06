@@ -58,7 +58,7 @@ jobs:
           ref: debug
       - name: Check format
         run: |
-          ls
-          ls winterfmt
+          echo "SOURCE"
           source winterfmt/init.sh
+          echo "RUNNING WINTERFMT"
           winterfmt -n **/*.java
