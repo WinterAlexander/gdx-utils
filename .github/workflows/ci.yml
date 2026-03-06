@@ -51,12 +51,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up Clang
-        if: false
-        run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          sudo apt install llvm-21* clang-21* lld-21* lldb-21*
+        uses: egor-tensin/setup-clang@v2.1
+        with:
+          version: 21
+          platform: x64
       - name: Clone winterfmt
         uses: actions/checkout@v5
         with:
@@ -65,6 +63,6 @@ jobs:
           ref: debug
       - name: Check format
         run: |
-          clang-format --version
+          clang-format-21 --version
           source winterfmt/init.sh
           winterfmt check
