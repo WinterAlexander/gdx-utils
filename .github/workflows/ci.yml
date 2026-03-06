@@ -60,7 +60,7 @@ jobs:
         with:
           repository: WinterAlexander/winterfmt
           path: winterfmt
-          ref: debug
+          ref: master
       - name: Check format
         run: |
           export WINTERFMT_CLANG_FORMAT="clang-format-21"
