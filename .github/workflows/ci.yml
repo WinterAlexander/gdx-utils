@@ -63,6 +63,7 @@ jobs:
           ref: debug
       - name: Check format
         run: |
-          clang-format-21 --version
+          alias clang-format='clang-format-21'
+          clang-format --version
           source winterfmt/init.sh
           winterfmt check
