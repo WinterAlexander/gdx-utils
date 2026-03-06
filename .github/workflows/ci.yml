@@ -60,10 +60,7 @@ jobs:
         with:
           repository: WinterAlexander/winterfmt
           path: winterfmt
-          ref: debug
       - name: Check format
         run: |
-          echo "SOURCE"
           source winterfmt/init.sh
-          echo "RUNNING WINTERFMT"
-          winterfmt -n **/*.java
+          winterfmt check
