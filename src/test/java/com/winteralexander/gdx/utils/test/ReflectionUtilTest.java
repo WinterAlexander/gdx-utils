@@ -32,9 +32,7 @@ public class ReflectionUtilTest {
 			Object innerObjectAAAAA = new Object() {
 				Object innerObjectBBBBB = new Object() {
 					Object innerObjectCCCCC = new Object() {
-						Object innerObjectDDDDD = new Object() {
-							int innerValueEEEEE = 32;
-						};
+						Object innerObjectDDDDD = new Object() { int innerValueEEEEE = 32; };
 					};
 				};
 			};
@@ -60,7 +58,7 @@ public class ReflectionUtilTest {
 		assertTrue(all.contains("innerObjectCCCCC"));
 		assertTrue(all.contains("innerObjectDDDDD"));
 		assertTrue(all.contains("innerValueEEEEE"));
- 	}
+	}
 
 	@Test
 	public void testParentStackLocation() {
@@ -68,7 +66,7 @@ public class ReflectionUtilTest {
 	}
 
 	private void childMethod() {
-		assertTrue(ReflectionUtil.getParentStackLocation()
-				.startsWith("ReflectionUtilTest#testParentStackLocation"));
+		assertTrue(ReflectionUtil.getParentStackLocation().startsWith("ReflectionUtilTest#"
+				+ "testParentStackLocation"));
 	}
 }

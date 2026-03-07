@@ -25,7 +25,8 @@ public class Rectangle implements Shape {
 
 	private final Vector2 tmpVec2 = new Vector2();
 
-	private final com.badlogic.gdx.math.Rectangle tmpGdxRect = new com.badlogic.gdx.math.Rectangle();
+	private final com.badlogic.gdx.math.Rectangle tmpGdxRect = new com.badlogic.gdx.math
+																	   .Rectangle();
 
 	public Rectangle(Vector2 position, Vector2 size) {
 		this(() -> position, () -> size);
@@ -54,9 +55,9 @@ public class Rectangle implements Shape {
 	}
 
 	public Rectangle(Supplier<com.badlogic.gdx.math.Rectangle> gdxRect) {
-		this(new Vec2Supplier(v -> v.set(
-						gdxRect.get().x + gdxRect.get().width / 2f,
-						gdxRect.get().y + gdxRect.get().height / 2f)),
+		this(new Vec2Supplier(v
+					 -> v.set(gdxRect.get().x + gdxRect.get().width / 2f,
+							 gdxRect.get().y + gdxRect.get().height / 2f)),
 				new Vec2Supplier(v -> v.set(gdxRect.get().width, gdxRect.get().height)));
 	}
 
@@ -72,7 +73,10 @@ public class Rectangle implements Shape {
 		y = tmpVec2.y;
 		tmpVec2.set(x2, y2).sub(getPosition()).rotateDeg(-getAngle());
 
-		return lineCrossesAABB(x, y, tmpVec2.x, tmpVec2.y,
+		return lineCrossesAABB(x,
+				y,
+				tmpVec2.x,
+				tmpVec2.y,
 				-getSize().x / 2f,
 				-getSize().y / 2f,
 				getSize().x,
@@ -98,8 +102,8 @@ public class Rectangle implements Shape {
 					((Circle)shape).getRadius());
 		else if(shape instanceof Annulus) {
 			if(!overlapsCircle(((Annulus)shape).getPosition().x,
-					((Annulus)shape).getPosition().y,
-					((Annulus)shape).getOuterRadius()))
+					   ((Annulus)shape).getPosition().y,
+					   ((Annulus)shape).getOuterRadius()))
 				return false;
 
 			tmpVec2.set(getSize()).scl(0.5f).rotateDeg(getAngle());
@@ -132,7 +136,6 @@ public class Rectangle implements Shape {
 			closestY = -hh;
 		else if(y > hh)
 			closestY = hh;
-
 
 		closestX = closestX - x;
 		closestX *= closestX;
@@ -222,7 +225,8 @@ public class Rectangle implements Shape {
 		}
 
 		if(shape instanceof Circle) {
-			if(((Circle)shape).getRadius() > getSize().x / 2f || ((Circle)shape).getRadius() > getSize().y / 2f)
+			if(((Circle)shape).getRadius() > getSize().x / 2f
+					|| ((Circle)shape).getRadius() > getSize().y / 2f)
 				return false;
 
 			tmpVec2.set(getPosition()).sub(((Circle)shape).getPosition());
@@ -232,7 +236,8 @@ public class Rectangle implements Shape {
 		}
 
 		if(shape instanceof Annulus) {
-			if(((Annulus)shape).getOuterRadius() > getSize().x / 2f || ((Annulus)shape).getOuterRadius() > getSize().y / 2f)
+			if(((Annulus)shape).getOuterRadius() > getSize().x / 2f
+					|| ((Annulus)shape).getOuterRadius() > getSize().y / 2f)
 				return false;
 
 			tmpVec2.set(getPosition()).sub(((Annulus)shape).getPosition());

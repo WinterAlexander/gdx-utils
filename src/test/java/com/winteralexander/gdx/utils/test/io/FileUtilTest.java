@@ -83,13 +83,13 @@ public class FileUtilTest {
 
 	@Test
 	public void testGetResources() throws IOException {
-		List<String> resources = FileUtil.listResources(fileName ->
-				fileName.startsWith("test_resources" + File.separatorChar));
+		List<String> resources = FileUtil.listResources(fileName
+				-> fileName.startsWith("test_resources" + File.separatorChar));
 		assertEquals(3, resources.size());
 		assertTrue(resources.contains("test_resources" + File.separatorChar + "test_resource.txt"));
-		assertTrue(resources.contains("test_resources" + File.separatorChar +
-				"inner" + File.separatorChar + "test_inner.txt"));
-		assertTrue(resources.contains("test_resources" + File.separatorChar +
-				"inner" + File.separatorChar + "test_inner2.txt"));
+		assertTrue(resources.contains("test_resources" + File.separatorChar + "inner"
+				+ File.separatorChar + "test_inner.txt"));
+		assertTrue(resources.contains("test_resources" + File.separatorChar + "inner"
+				+ File.separatorChar + "test_inner2.txt"));
 	}
 }

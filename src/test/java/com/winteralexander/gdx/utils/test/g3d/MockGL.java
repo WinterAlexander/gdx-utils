@@ -32,7 +32,8 @@ public class MockGL {
 
 			LwjglNativesLoader.load();
 			Class<LwjglGraphics> gfx = LwjglGraphics.class;
-			Constructor<LwjglGraphics> cons = gfx.getDeclaredConstructor(LwjglApplicationConfiguration.class);
+			Constructor<LwjglGraphics>
+					cons = gfx.getDeclaredConstructor(LwjglApplicationConfiguration.class);
 			cons.setAccessible(true);
 			LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 			config.undecorated = true;

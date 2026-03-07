@@ -12,10 +12,11 @@ package com.winteralexander.gdx.utils.scheduler;
 public class Task implements Runnable {
 	private Scheduler scheduler = null; // scheduler this task is scheduled on
 
-	private final long delay; // delay of the task (millis)
-	private long lastWork = -1L; // last time it got executed (millis)
+	private final long delay;		 // delay of the task (millis)
+	private long lastWork = -1L;	 // last time it got executed (millis)
 	private final boolean repeating; // true if the task is meant to be repeated
-	private final Runnable runnable; // content of the task, or null if task itself has been redefined
+	private final Runnable
+			runnable; // content of the task, or null if task itself has been redefined
 
 	public Task(long delay) {
 		this(delay, false);

@@ -81,10 +81,12 @@ public class NullAcceptingIdentityMap<K, V> extends IdentityMap<K, V> {
 	}
 
 	public Keys<K> keys() {
-		throw new UnsupportedOperationException("NullAcceptingIdentityMap doesn't support iterating over keys");
+		throw new UnsupportedOperationException("NullAcceptingIdentityMap doesn't support "
+				+ "iterating over keys");
 	}
 
 	public Entries<K, V> entries() {
-		throw new UnsupportedOperationException("NullAcceptingIdentityMap doesn't support iterating over entries");
+		throw new UnsupportedOperationException("NullAcceptingIdentityMap doesn't support "
+				+ "iterating over entries");
 	}
 }

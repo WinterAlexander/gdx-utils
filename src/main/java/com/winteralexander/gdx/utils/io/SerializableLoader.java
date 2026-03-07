@@ -32,9 +32,9 @@ public class SerializableLoader<T extends Serializable>
 
 	@Override
 	public T load(AssetManager assetManager,
-	              String fileName,
-	              FileHandle file,
-	              CustomSerializableParameter<T> parameter) {
+			String fileName,
+			FileHandle file,
+			CustomSerializableParameter<T> parameter) {
 		try {
 			InputStream inputStream = file.read();
 
@@ -44,15 +44,16 @@ public class SerializableLoader<T extends Serializable>
 
 			return obj;
 		} catch(Exception ex) {
-			throw new GdxRuntimeException("Couldn't load " + type.getSimpleName() +
-					" in CustomSerializableLoader", ex);
+			throw new GdxRuntimeException("Couldn't load " + type.getSimpleName()
+							+ " in CustomSerializableLoader",
+					ex);
 		}
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
-	                                              FileHandle file,
-	                                              CustomSerializableParameter<T> parameter) {
+			FileHandle file,
+			CustomSerializableParameter<T> parameter) {
 		return null;
 	}
 

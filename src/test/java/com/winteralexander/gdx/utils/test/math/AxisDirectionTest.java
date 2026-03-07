@@ -16,7 +16,8 @@ public class AxisDirectionTest {
 	@Test
 	public void testOppositesAreOpposites() {
 		for(AxisDirection6 dir : AxisDirection6.values)
-			assertEquals("AxisDirection6." + dir + " is not opposite to AxisDirection6." + dir.opposite(),
+			assertEquals("AxisDirection6." + dir + " is not opposite to AxisDirection6."
+							+ dir.opposite(),
 					-1f,
 					dir.opposite().asVector().dot(dir.asVector()),
 					0.0001f);

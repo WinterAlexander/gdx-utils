@@ -32,6 +32,7 @@ public class AsyncCallManager {
 		this.executor = executor;
 		this.defaultRetryDelay = defaultRetryDelay;
 	}
+
 	/**
 	 * Async call to a function without any parameters that returns void
 	 *
@@ -70,22 +71,34 @@ public class AsyncCallManager {
 	}
 
 	public <P1, P2, R> AsyncCall<R> async(AsyncCall.CheckedBiFunction<P1, P2, R> function,
-	                                      P1 param1, P2 param2) {
+			P1 param1,
+			P2 param2) {
 		return new AsyncCall<>(this, () -> function.call(param1, param2));
 	}
 
 	public <P1, P2, P3, R> AsyncCall<R> async(AsyncCall.CheckedTriFunction<P1, P2, P3, R> function,
-	                                          P1 param1, P2 param2, P3 param3) {
+			P1 param1,
+			P2 param2,
+			P3 param3) {
 		return new AsyncCall<>(this, () -> function.call(param1, param2, param3));
 	}
 
-	public <P1, P2, P3, P4, R> AsyncCall<R> async(AsyncCall.CheckedQuadriFunction<P1, P2, P3, P4, R> function,
-	                                              P1 param1, P2 param2, P3 param3, P4 param4) {
+	public <P1, P2, P3, P4, R> AsyncCall<R> async(
+			AsyncCall.CheckedQuadriFunction<P1, P2, P3, P4, R> function,
+			P1 param1,
+			P2 param2,
+			P3 param3,
+			P4 param4) {
 		return new AsyncCall<>(this, () -> function.call(param1, param2, param3, param4));
 	}
 
-	public <P1, P2, P3, P4, P5, R> AsyncCall<R> async(AsyncCall.CheckedPentaFunction<P1, P2, P3, P4, P5, R> function,
-	                                                  P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+	public <P1, P2, P3, P4, P5, R> AsyncCall<R> async(
+			AsyncCall.CheckedPentaFunction<P1, P2, P3, P4, P5, R> function,
+			P1 param1,
+			P2 param2,
+			P3 param3,
+			P4 param4,
+			P5 param5) {
 		return new AsyncCall<>(this, () -> function.call(param1, param2, param3, param4, param5));
 	}
 
@@ -97,8 +110,8 @@ public class AsyncCallManager {
 	}
 
 	public <P1, P2> AsyncCall<Void> async(AsyncCall.CheckedBiVoidFunction<P1, P2> function,
-	                                      P1 param1,
-	                                      P2 param2) {
+			P1 param1,
+			P2 param2) {
 		return new AsyncCall<>(this, () -> {
 			function.call(param1, param2);
 			return null;
@@ -106,25 +119,34 @@ public class AsyncCallManager {
 	}
 
 	public <P1, P2, P3> AsyncCall<Void> async(AsyncCall.CheckedTriVoidFunction<P1, P2, P3> function,
-	                                          P1 param1,
-	                                          P2 param2,
-	                                          P3 param3) {
+			P1 param1,
+			P2 param2,
+			P3 param3) {
 		return new AsyncCall<>(this, () -> {
 			function.call(param1, param2, param3);
 			return null;
 		});
 	}
 
-	public <P1, P2, P3, P4> AsyncCall<Void> async(AsyncCall.CheckedQuadriVoidFunction<P1, P2, P3, P4> function,
-	                                              P1 param1, P2 param2, P3 param3, P4 param4) {
+	public <P1, P2, P3, P4> AsyncCall<Void> async(
+			AsyncCall.CheckedQuadriVoidFunction<P1, P2, P3, P4> function,
+			P1 param1,
+			P2 param2,
+			P3 param3,
+			P4 param4) {
 		return new AsyncCall<>(this, () -> {
 			function.call(param1, param2, param3, param4);
 			return null;
 		});
 	}
 
-	public <P1, P2, P3, P4, P5> AsyncCall<Void> async(AsyncCall.CheckedPentaVoidFunction<P1, P2, P3, P4, P5> function,
-	                                                  P1 param1, P2 param2, P3 param3, P4 param4, P5 param5) {
+	public <P1, P2, P3, P4, P5> AsyncCall<Void> async(
+			AsyncCall.CheckedPentaVoidFunction<P1, P2, P3, P4, P5> function,
+			P1 param1,
+			P2 param2,
+			P3 param3,
+			P4 param4,
+			P5 param5) {
 		return new AsyncCall<>(this, () -> {
 			function.call(param1, param2, param3, param4, param5);
 			return null;

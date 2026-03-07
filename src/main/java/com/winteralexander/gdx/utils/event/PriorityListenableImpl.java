@@ -24,8 +24,7 @@ public class PriorityListenableImpl<L, P extends Enum<P>> implements PriorityLis
 	private final P defaultPriority;
 
 	private boolean lockListeners = false;
-	private final ObjectMap<P, Array<L>> toAdd = new ObjectMap<>(),
-			toRemove = new ObjectMap<>();
+	private final ObjectMap<P, Array<L>> toAdd = new ObjectMap<>(), toRemove = new ObjectMap<>();
 
 	@SuppressWarnings("unchecked")
 	public PriorityListenableImpl(P defaultPriority) {

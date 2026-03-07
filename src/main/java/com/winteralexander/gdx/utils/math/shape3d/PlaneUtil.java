@@ -12,9 +12,8 @@ import com.badlogic.gdx.math.Vector3;
  * @author Alexander Winter
  */
 public class PlaneUtil {
-	private static final Vector3 tmpVec1 = new Vector3(),
-			tmpVec2 = new Vector3(),
-			tmpVec3 = new Vector3();
+	private static final Vector3 tmpVec1 = new Vector3(), tmpVec2 = new Vector3(),
+								 tmpVec3 = new Vector3();
 
 	private PlaneUtil() {}
 

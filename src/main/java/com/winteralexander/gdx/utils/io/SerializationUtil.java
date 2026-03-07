@@ -30,8 +30,8 @@ public class SerializationUtil {
 	private static final byte BYTE_T = 5;
 	private static final byte NULL_T = 6;
 
-	public static <T extends Readable> T readSerializable(InputStream inputStream,
-														  Class<T> type) throws IOException {
+	public static <T extends Readable> T readSerializable(InputStream inputStream, Class<T> type)
+			throws IOException {
 		T newInstance;
 		try {
 			newInstance = type.getDeclaredConstructor().newInstance();
@@ -43,14 +43,13 @@ public class SerializationUtil {
 		return newInstance;
 	}
 
-	public static <T> Array<T> readSmallArray(InputStream stream,
-	                                          Class<T> type) throws IOException {
+	public static <T> Array<T> readSmallArray(InputStream stream, Class<T> type)
+			throws IOException {
 		return readSmallArray(stream, type, new Array<>());
 	}
 
-	public static <T> Array<T> readSmallArray(InputStream stream,
-	                                          Class<T> type,
-	                                          Array<T> out) throws IOException {
+	public static <T> Array<T> readSmallArray(InputStream stream, Class<T> type, Array<T> out)
+			throws IOException {
 		out.clear();
 		int size = readShort(stream);
 		out.ensureCapacity(size);
@@ -59,21 +58,18 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeSmallArray(OutputStream stream,
-									   Array<?> array) throws IOException {
+	public static void writeSmallArray(OutputStream stream, Array<?> array) throws IOException {
 		writeShort(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeAny(stream, array.get(i));
 	}
 
-	public static <T> Array<T> readArray(InputStream stream,
-	                                     Class<T> type) throws IOException {
+	public static <T> Array<T> readArray(InputStream stream, Class<T> type) throws IOException {
 		return readArray(stream, type, new Array<>());
 	}
 
-	public static <T> Array<T> readArray(InputStream stream,
-	                                     Class<T> type,
-	                                     Array<T> out) throws IOException {
+	public static <T> Array<T> readArray(InputStream stream, Class<T> type, Array<T> out)
+			throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -82,8 +78,7 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeArray(OutputStream stream,
-								  Array<?> array) throws IOException {
+	public static void writeArray(OutputStream stream, Array<?> array) throws IOException {
 		writeInt(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeAny(stream, array.get(i));
@@ -93,8 +88,7 @@ public class SerializationUtil {
 		return readIntArray(stream, new IntArray());
 	}
 
-	public static IntArray readIntArray(InputStream stream,
-	                                    IntArray out) throws IOException {
+	public static IntArray readIntArray(InputStream stream, IntArray out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -103,8 +97,7 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeIntArray(OutputStream stream,
-	                                 IntArray array) throws IOException {
+	public static void writeIntArray(OutputStream stream, IntArray array) throws IOException {
 		writeInt(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeInt(stream, array.get(i));
@@ -114,8 +107,7 @@ public class SerializationUtil {
 		return readLongArray(stream, new LongArray());
 	}
 
-	public static LongArray readLongArray(InputStream stream,
-	                                      LongArray out) throws IOException {
+	public static LongArray readLongArray(InputStream stream, LongArray out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -124,23 +116,22 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeLongArray(OutputStream stream,
-	                                  LongArray array) throws IOException {
+	public static void writeLongArray(OutputStream stream, LongArray array) throws IOException {
 		writeInt(stream, array.size);
 		for(int i = 0; i < array.size; i++)
 			writeLong(stream, array.get(i));
 	}
 
 	public static <K, V> ObjectMap<K, V> readMap(InputStream stream,
-	                                             Class<K> keyType,
-	                                             Class<V> valueType) throws IOException {
+			Class<K> keyType,
+			Class<V> valueType) throws IOException {
 		return readMap(stream, keyType, valueType, new ObjectMap<>());
 	}
 
 	public static <K, V> ObjectMap<K, V> readMap(InputStream stream,
-	                                             Class<K> keyType,
-	                                             Class<V> valueType,
-	                                             ObjectMap<K, V> out) throws IOException {
+			Class<K> keyType,
+			Class<V> valueType,
+			ObjectMap<K, V> out) throws IOException {
 		out.clear();
 		int size = readInt(stream);
 		out.ensureCapacity(size);
@@ -149,8 +140,7 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeMap(OutputStream stream,
-								ObjectMap<?, ?> map) throws IOException {
+	public static void writeMap(OutputStream stream, ObjectMap<?, ?> map) throws IOException {
 		writeInt(stream, map.size);
 		for(ObjectMap.Entry<?, ?> entry : map.entries()) {
 			writeAny(stream, entry.key);
@@ -162,14 +152,12 @@ public class SerializationUtil {
 		return readColor(stream, new Color());
 	}
 
-	public static Color readColor(InputStream stream,
-	                              Color out) throws IOException {
+	public static Color readColor(InputStream stream, Color out) throws IOException {
 		Color.argb8888ToColor(out, readInt(stream));
 		return out;
 	}
 
-	public static void writeColor(OutputStream stream,
-								  Color color) throws IOException {
+	public static void writeColor(OutputStream stream, Color color) throws IOException {
 		writeInt(stream, Color.argb8888(color));
 	}
 
@@ -177,21 +165,18 @@ public class SerializationUtil {
 		return readRGB(stream, new Color());
 	}
 
-	public static Color readRGB(InputStream stream,
-	                            Color out) throws IOException {
+	public static Color readRGB(InputStream stream, Color out) throws IOException {
 		float prevA = out.a;
 		Color.argb8888ToColor(out, readInt24(stream));
 		out.a = prevA;
 		return out;
 	}
 
-	public static void writeRGB(OutputStream stream,
-								Color color) throws IOException {
+	public static void writeRGB(OutputStream stream, Color color) throws IOException {
 		writeInt24(stream, Color.argb8888(color));
 	}
 
-	public static void readBuffered(InputStream stream,
-									Readable serializable) throws IOException {
+	public static void readBuffered(InputStream stream, Readable serializable) throws IOException {
 		int size = readInt(stream);
 
 		if(size < 0)
@@ -207,14 +192,13 @@ public class SerializationUtil {
 				throw new EOFException();
 
 			totalRead += read;
-		}
-		while(totalRead < size);
+		} while(totalRead < size);
 
 		serializable.readFrom(new ByteArrayInputStream(data));
 	}
 
-	public static void writeBuffered(OutputStream stream,
-									 Writable serializable) throws IOException {
+	public static void writeBuffered(OutputStream stream, Writable serializable)
+			throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		serializable.writeTo(baos);
 		writeInt(stream, baos.size());
@@ -222,8 +206,7 @@ public class SerializationUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T readPrimitive(InputStream stream,
-									  Class<T> type) throws IOException {
+	public static <T> T readPrimitive(InputStream stream, Class<T> type) throws IOException {
 		if(type == int.class || type == Integer.class)
 			return (T)Integer.valueOf(readInt(stream));
 
@@ -251,8 +234,8 @@ public class SerializationUtil {
 		throw new IllegalArgumentException("Specified type must be primitive");
 	}
 
-	public static void writePrimitive(OutputStream outputStream,
-									  Object primitive) throws IOException {
+	public static void writePrimitive(OutputStream outputStream, Object primitive)
+			throws IOException {
 		if(primitive instanceof Integer)
 			writeInt(outputStream, (Integer)primitive);
 
@@ -331,22 +314,32 @@ public class SerializationUtil {
 		if(number.getClass() == Integer.class) {
 			writeByte(stream, INT_T);
 			writeInt(stream, number.intValue());
+
 		} else if(number.getClass() == Float.class) {
 			writeByte(stream, FLOAT_T);
 			writeFloat(stream, number.floatValue());
+
 		} else if(number.getClass() == Long.class) {
+
 			writeByte(stream, LONG_T);
 			writeLong(stream, number.longValue());
+
 		} else if(number.getClass() == Double.class) {
+
 			writeByte(stream, DOUBLE_T);
 			writeDouble(stream, number.doubleValue());
+
 		} else if(number.getClass() == Short.class) {
+
 			writeByte(stream, SHORT_T);
 			writeShort(stream, number.shortValue());
+
 		} else if(number.getClass() == Byte.class) {
+
 			writeByte(stream, BYTE_T);
 			writeByte(stream, number.byteValue());
 		} else
+
 			throw new IllegalArgumentException("Unknown number type: " + number.getClass());
 	}
 
@@ -407,7 +400,7 @@ public class SerializationUtil {
 			// this cast is not redundant, this is an error from IntelliJ
 			return (T)readSerializable(stream, type.asSubclass(Readable.class));
 		else if(type == Color.class)
-			return (T)new Color(readInt(stream));
+			return (T) new Color(readInt(stream));
 		else if(type == String.class)
 			return (T)readUTF(stream);
 		else if(type == Vector2.class)
@@ -475,11 +468,10 @@ public class SerializationUtil {
 	}
 
 	public static void writeMany(OutputStream stream,
-								 Object first,
-								 Object second,
-								 Object third,
-								 Object fourth)
-			throws IOException {
+			Object first,
+			Object second,
+			Object third,
+			Object fourth) throws IOException {
 		writeAny(stream, first);
 		writeAny(stream, second);
 		writeAny(stream, third);
@@ -487,12 +479,11 @@ public class SerializationUtil {
 	}
 
 	public static void writeMany(OutputStream stream,
-								 Object first,
-								 Object second,
-								 Object third,
-								 Object fourth,
-								 Object fifth)
-			throws IOException {
+			Object first,
+			Object second,
+			Object third,
+			Object fourth,
+			Object fifth) throws IOException {
 		writeAny(stream, first);
 		writeAny(stream, second);
 		writeAny(stream, third);
@@ -506,15 +497,15 @@ public class SerializationUtil {
 	}
 
 	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
-	                                                   Class<K> keyType,
-	                                                   Class<V> valueType) throws IOException {
+			Class<K> keyType,
+			Class<V> valueType) throws IOException {
 		return readObjectMap(stream, keyType, valueType, new ObjectMap<>());
 	}
 
 	public static <K, V> ObjectMap<K, V> readObjectMap(InputStream stream,
-	                                                   Class<K> keyType,
-	                                                   Class<V> valueType,
-	                                                   ObjectMap<K, V> out) throws IOException {
+			Class<K> keyType,
+			Class<V> valueType,
+			ObjectMap<K, V> out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			K key = readAny(stream, keyType);
@@ -524,8 +515,7 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeObjectMap(OutputStream stream,
-	                                  ObjectMap<?, ?> map) throws IOException {
+	public static void writeObjectMap(OutputStream stream, ObjectMap<?, ?> map) throws IOException {
 		writeInt(stream, map.size);
 		for(ObjectMap.Entry<?, ?> entry : map) {
 			writeAny(stream, entry.key);
@@ -533,14 +523,12 @@ public class SerializationUtil {
 		}
 	}
 
-	public static <T> IntMap<T> readIntMap(InputStream stream,
-	                                       Class<T> type) throws IOException {
+	public static <T> IntMap<T> readIntMap(InputStream stream, Class<T> type) throws IOException {
 		return readIntMap(stream, type, new IntMap<>());
 	}
 
-	public static <T> IntMap<T> readIntMap(InputStream stream,
-	                                       Class<T> type,
-	                                       IntMap<T> out) throws IOException {
+	public static <T> IntMap<T> readIntMap(InputStream stream, Class<T> type, IntMap<T> out)
+			throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			int key = readInt(stream);
@@ -558,14 +546,12 @@ public class SerializationUtil {
 		}
 	}
 
-	public static <T> LongMap<T> readLongMap(InputStream stream,
-	                                         Class<T> type) throws IOException {
+	public static <T> LongMap<T> readLongMap(InputStream stream, Class<T> type) throws IOException {
 		return readLongMap(stream, type, new LongMap<>());
 	}
 
-	public static <T> LongMap<T> readLongMap(InputStream stream,
-	                                         Class<T> type,
-	                                         LongMap<T> out) throws IOException {
+	public static <T> LongMap<T> readLongMap(InputStream stream, Class<T> type, LongMap<T> out)
+			throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			long key = readLong(stream);
@@ -575,8 +561,7 @@ public class SerializationUtil {
 		return out;
 	}
 
-	public static void writeLongMap(OutputStream stream, LongMap<?> map)
-			throws IOException {
+	public static void writeLongMap(OutputStream stream, LongMap<?> map) throws IOException {
 		writeInt(stream, map.size);
 		for(LongMap.Entry<?> entry : map) {
 			writeLong(stream, entry.key);
@@ -588,8 +573,8 @@ public class SerializationUtil {
 		return readIntFloatMap(stream, new IntFloatMap());
 	}
 
-	public static IntFloatMap readIntFloatMap(InputStream stream,
-	                                          IntFloatMap out) throws IOException {
+	public static IntFloatMap readIntFloatMap(InputStream stream, IntFloatMap out)
+			throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			int key = readInt(stream);
@@ -611,8 +596,7 @@ public class SerializationUtil {
 		return readIntIntMap(stream, new IntIntMap());
 	}
 
-	public static IntIntMap readIntIntMap(InputStream stream,
-	                                        IntIntMap out) throws IOException {
+	public static IntIntMap readIntIntMap(InputStream stream, IntIntMap out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++) {
 			int key = readInt(stream);
@@ -630,14 +614,13 @@ public class SerializationUtil {
 		}
 	}
 
-	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
-	                                           Class<V> type) throws IOException {
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream, Class<V> type)
+			throws IOException {
 		return readVec2sMap(stream, type, new Vec2sMap<>());
 	}
 
-	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream,
-	                                           Class<V> type,
-	                                           Vec2sMap<V> out) throws IOException {
+	public static <V> Vec2sMap<V> readVec2sMap(InputStream stream, Class<V> type, Vec2sMap<V> out)
+			throws IOException {
 		readIntMap(stream, type, out.getInnerMap());
 		return out;
 	}
@@ -646,14 +629,13 @@ public class SerializationUtil {
 		writeIntMap(stream, map.getInnerMap());
 	}
 
-	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
-	                                           Class<V> type) throws IOException {
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream, Class<V> type)
+			throws IOException {
 		return readVec2iMap(stream, type, new Vec2iMap<>());
 	}
 
-	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream,
-	                                           Class<V> type,
-	                                           Vec2iMap<V> out) throws IOException {
+	public static <V> Vec2iMap<V> readVec2iMap(InputStream stream, Class<V> type, Vec2iMap<V> out)
+			throws IOException {
 		readLongMap(stream, type, out.getInnerMap());
 		return out;
 	}
@@ -662,22 +644,21 @@ public class SerializationUtil {
 		writeLongMap(stream, map.getInnerMap());
 	}
 
-	public static <T> ObjectSet<T> readObjectSet(InputStream stream,
-	                                             Class<T> type) throws IOException {
+	public static <T> ObjectSet<T> readObjectSet(InputStream stream, Class<T> type)
+			throws IOException {
 		return readObjectSet(stream, type, new ObjectSet<>());
 	}
 
 	public static <T> ObjectSet<T> readObjectSet(InputStream stream,
-	                                             Class<T> type,
-	                                             ObjectSet<T> out) throws IOException {
+			Class<T> type,
+			ObjectSet<T> out) throws IOException {
 		int size = readInt(stream);
 		for(int i = 0; i < size; i++)
 			out.add(readAny(stream, type));
 		return out;
 	}
 
-	public static void writeObjectSet(OutputStream stream,
-	                                  ObjectSet<?> set) throws IOException {
+	public static void writeObjectSet(OutputStream stream, ObjectSet<?> set) throws IOException {
 		writeInt(stream, set.size);
 		for(Object val : set) {
 			writeAny(stream, val);

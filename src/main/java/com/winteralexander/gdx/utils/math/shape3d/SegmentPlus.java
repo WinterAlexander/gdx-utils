@@ -19,8 +19,7 @@ public class SegmentPlus extends Segment {
 		super(a, b);
 	}
 
-	public SegmentPlus(float aX, float aY, float aZ,
-	                   float bX, float bY, float bZ) {
+	public SegmentPlus(float aX, float aY, float aZ, float bX, float bY, float bZ) {
 		super(aX, aY, aZ, bX, bY, bZ);
 	}
 

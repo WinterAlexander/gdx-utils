@@ -75,7 +75,8 @@ public class Scheduler implements CallbackWrapper {
 							wait(toWait);
 					}
 				} catch(InterruptedException ex) {
-					logger.error("Unexpected exception occurred while waiting in Scheduler lopp", ex);
+					logger.error("Unexpected exception occurred while waiting in Scheduler lopp",
+							ex);
 				}
 			}
 			update();
@@ -157,7 +158,8 @@ public class Scheduler implements CallbackWrapper {
 	}
 
 	/**
-	 * Gets the time that has passed since the start of this scheduler. Pauses are substracted from this time.
+	 * Gets the time that has passed since the start of this scheduler. Pauses are substracted from
+	 * this time.
 	 *
 	 * @return time in milliseconds
 	 */

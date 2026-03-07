@@ -29,11 +29,19 @@ public class BatchUtil {
 		batch.setColor(color.r * color.a, color.g * color.a, color.b * color.a, color.a);
 	}
 
-	public static void draw(Batch batch, Texture texture, Vector2 position, Vector2 origin, Vector2 size) {
+	public static void draw(Batch batch,
+			Texture texture,
+			Vector2 position,
+			Vector2 origin,
+			Vector2 size) {
 		batch.draw(texture, position.x + origin.x, position.y + origin.y, size.x, size.y);
 	}
 
-	public static void draw(Batch batch, TextureRegion region, Vector2 position, Vector2 origin, Vector2 size) {
+	public static void draw(Batch batch,
+			TextureRegion region,
+			Vector2 position,
+			Vector2 origin,
+			Vector2 size) {
 		batch.draw(region, position.x + origin.x, position.y + origin.y, size.x, size.y);
 	}
 
@@ -45,54 +53,152 @@ public class BatchUtil {
 				pos.y - size.y / 2f,
 				size.x / 2f,
 				size.y / 2f,
-				size.x, size.y,
-				1f, 1f,
+				size.x,
+				size.y,
+				1f,
+				1f,
 				rectangle.getAngle());
 	}
 
-	public static void draw(Batch batch, TextureRegion region, com.badlogic.gdx.math.Rectangle rectangle) {
+	public static void draw(Batch batch,
+			TextureRegion region,
+			com.badlogic.gdx.math.Rectangle rectangle) {
 		batch.draw(region, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 	}
 
-	public static void draw(Batch batch, TextureRegion region, Vector2 position, Vector2 origin, Vector2 size, float rotation) {
-		batch.draw(region, position.x + origin.x, position.y + origin.y, -origin.x, -origin.y, size.x, size.y, 1, 1, rotation);
+	public static void draw(Batch batch,
+			TextureRegion region,
+			Vector2 position,
+			Vector2 origin,
+			Vector2 size,
+			float rotation) {
+		batch.draw(region,
+				position.x + origin.x,
+				position.y + origin.y,
+				-origin.x,
+				-origin.y,
+				size.x,
+				size.y,
+				1,
+				1,
+				rotation);
 	}
 
-	public static void draw(Batch batch, TextureRegion region, float x, float y, float width, float height, boolean flippedX, boolean flippedY) {
-		batch.draw(region, x + (flippedX ? width : 0), y + (flippedY ? height : 0), 0, 0, width, height, flippedX ? -1f : 1f, flippedY ? -1f : 1f, 0f);
+	public static void draw(Batch batch,
+			TextureRegion region,
+			float x,
+			float y,
+			float width,
+			float height,
+			boolean flippedX,
+			boolean flippedY) {
+		batch.draw(region,
+				x + (flippedX ? width : 0),
+				y + (flippedY ? height : 0),
+				0,
+				0,
+				width,
+				height,
+				flippedX ? -1f : 1f,
+				flippedY ? -1f : 1f,
+				0f);
 	}
 
-	public static void draw(Batch batch, TextureRegion region,
-	                        float x, float y,
-	                        float originX, float originY,
-	                        float width, float height,
-	                        float scaleX, float scaleY,
-	                        float rotation,
-	                        UVTransform uvTransform) {
+	public static void draw(Batch batch,
+			TextureRegion region,
+			float x,
+			float y,
+			float originX,
+			float originY,
+			float width,
+			float height,
+			float scaleX,
+			float scaleY,
+			float rotation,
+			UVTransform uvTransform) {
 		switch(uvTransform) {
 			case NONE:
 				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 				return;
 			case FLIPPED_X:
-				batch.draw(region.getTexture(), x, y, originX, originY, width, height, scaleX, scaleY, rotation,
-						region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(),
-						true, false);
+				batch.draw(region.getTexture(),
+						x,
+						y,
+						originX,
+						originY,
+						width,
+						height,
+						scaleX,
+						scaleY,
+						rotation,
+						region.getRegionX(),
+						region.getRegionY(),
+						region.getRegionWidth(),
+						region.getRegionHeight(),
+						true,
+						false);
 				return;
 			case FLIPPED_Y:
-				batch.draw(region.getTexture(), x, y, originX, originY, width, height, scaleX, scaleY, rotation,
-						region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(),
-						false, true);
+				batch.draw(region.getTexture(),
+						x,
+						y,
+						originX,
+						originY,
+						width,
+						height,
+						scaleX,
+						scaleY,
+						rotation,
+						region.getRegionX(),
+						region.getRegionY(),
+						region.getRegionWidth(),
+						region.getRegionHeight(),
+						false,
+						true);
 				return;
 			case UPSIDE_DOWN:
-				batch.draw(region.getTexture(), x, y, originX, originY, width, height, scaleX, scaleY, rotation,
-						region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight(),
-						true, true);
+				batch.draw(region.getTexture(),
+						x,
+						y,
+						originX,
+						originY,
+						width,
+						height,
+						scaleX,
+						scaleY,
+						rotation,
+						region.getRegionX(),
+						region.getRegionY(),
+						region.getRegionWidth(),
+						region.getRegionHeight(),
+						true,
+						true);
 				return;
 			case COUNTER_CLOCKWISE:
-				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, false);
+				batch.draw(region,
+						x,
+						y,
+						originX,
+						originY,
+						width,
+						height,
+						scaleX,
+						scaleY,
+						rotation,
+						false);
 				return;
 			case CLOCKWISE:
-				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, true);
+				batch.draw(region,
+						x,
+						y,
+						originX,
+						originY,
+						width,
+						height,
+						scaleX,
+						scaleY,
+						rotation,
+						true);
 				return;
 
 			case FLIPPED_CLOCKWISE:
@@ -102,11 +208,15 @@ public class BatchUtil {
 	}
 
 	public static void draw(Batch batch,
-	                        TextureRegion region,
-	                        float x1, float y1,
-	                        float x2, float y2,
-	                        float x3, float y3,
-	                        float x4, float y4) {
+			TextureRegion region,
+			float x1,
+			float y1,
+			float x2,
+			float y2,
+			float x3,
+			float y3,
+			float x4,
+			float y4) {
 
 		final float u = region.getU();
 		final float v = region.getV2();

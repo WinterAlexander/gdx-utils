@@ -52,7 +52,8 @@ public class ParticleUtil {
 			float lengthMin = (float)sqrt(pow2(emitter.getXOffsetValue().getLowMin())
 					+ pow2(emitter.getYOffsetValue().getLowMin()));
 
-			float oldAngleMin = (float)toDegrees(atan2(emitter.getYOffsetValue().getLowMin() / lengthMin,
+			float oldAngleMin = (float)toDegrees(atan2(emitter.getYOffsetValue().getLowMin()
+							/ lengthMin,
 					emitter.getXOffsetValue().getLowMin() / lengthMin));
 
 			emitter.getXOffsetValue().setLowMin(lengthMin * cosDeg(angle + oldAngleMin));
@@ -61,7 +62,8 @@ public class ParticleUtil {
 			float lengthMax = (float)sqrt(pow2(emitter.getXOffsetValue().getLowMax())
 					+ pow2(emitter.getYOffsetValue().getLowMax()));
 
-			float oldAngleMax = (float)toDegrees(atan2(emitter.getYOffsetValue().getLowMax() / lengthMax,
+			float oldAngleMax = (float)toDegrees(atan2(emitter.getYOffsetValue().getLowMax()
+							/ lengthMax,
 					emitter.getXOffsetValue().getLowMax() / lengthMax));
 
 			emitter.getXOffsetValue().setLowMax(lengthMax * cosDeg(angle + oldAngleMax));

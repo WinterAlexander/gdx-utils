@@ -75,16 +75,12 @@ public class Vector3i implements IntVector<Vector3i> {
 	}
 
 	public boolean equals(int x, int y, int z) {
-		return this.x == x
-				&& this.y == y
-				&& this.z == z;
+		return this.x == x && this.y == y && this.z == z;
 	}
 
 	@Override
 	public boolean equals(Vector3i other) {
-		return x == other.x
-				&& y == other.y
-				&& z == other.z;
+		return x == other.x && y == other.y && z == other.z;
 	}
 
 	@Override

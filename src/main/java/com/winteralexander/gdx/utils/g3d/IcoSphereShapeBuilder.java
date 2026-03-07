@@ -31,8 +31,8 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	/**
 	 * Missing vertical uv of the undivided icosphere compared to a normal sphere
 	 */
-	private static final float UNDIVIDED_ICOSPHERE_UV_GAP =
-			asin(-(ISOSPHERE_EXTENT_Y / (float)sqrt(1f + pow2(ISOSPHERE_EXTENT_Y)))) / PI + 0.5f;
+	private static final float UNDIVIDED_ICOSPHERE_UV_GAP
+			= asin(-(ISOSPHERE_EXTENT_Y / (float)sqrt(1f + pow2(ISOSPHERE_EXTENT_Y)))) / PI + 0.5f;
 
 	private static final FloatArray tmpVertices = new FloatArray();
 	private static final ShortArray tmpIndices = new ShortArray();
@@ -160,7 +160,7 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpNewIndices.clear();
 		int numTriangles = indices.size / 3;
 
-		for (int i = 0; i < numTriangles; i++) {
+		for(int i = 0; i < numTriangles; i++) {
 			int i1 = indices.get(i * 3);
 			int i2 = indices.get(i * 3 + 1);
 			int i3 = indices.get(i * 3 + 2);
@@ -200,7 +200,9 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 		tmpNewIndices.clear();
 	}
 
-	private static void detectWrappedTriangles(FloatArray vertices, ShortArray indices, ShortArray out) {
+	private static void detectWrappedTriangles(FloatArray vertices,
+			ShortArray indices,
+			ShortArray out) {
 		int numTriangles = indices.size / 3;
 		for(int triangle = 0; triangle < numTriangles; triangle++) {
 			int v1 = indices.get(triangle * 3);
@@ -217,8 +219,8 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	}
 
 	private static void fixWrappedTriangles(ShortArray triangles,
-	                                        FloatArray vertices,
-	                                        ShortArray indices) {
+			FloatArray vertices,
+			ShortArray indices) {
 		tmpAlreadyVisited.clear();
 		for(int i = 0; i < triangles.size; i++) {
 			int triangle = triangles.get(i);

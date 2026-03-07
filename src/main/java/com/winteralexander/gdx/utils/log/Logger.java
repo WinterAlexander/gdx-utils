@@ -32,7 +32,11 @@ public interface Logger {
 	LogLevel getLogLevel();
 
 	enum LogLevel {
-		NONE, ERROR, WARNING, INFO, DEBUG;
+		NONE,
+		ERROR,
+		WARNING,
+		INFO,
+		DEBUG;
 
 		public static final LogLevel[] values = EnumConstantCache.store(values());
 	}

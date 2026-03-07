@@ -52,13 +52,13 @@ public class EnumConstantCacheTest {
 		assertTrue(EnumConstantCache.isCached(ExtendedEnum.class));
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Test
 	public void testAllEnumsCached() throws ClassNotFoundException {
 		Array<String> paths = ReflectionUtil.scanClasspath();
 		Array<String> classNames = getClasses(paths);
-		Array<Class<?>> classes = loadClasses(classNames
-				.select(c -> c.startsWith("com.winteralexander.gdx.utils")));
+		Array<Class<?>> classes = loadClasses(classNames.select(c
+				-> c.startsWith("com.winteralexander.gdx.utils")));
 
 		boolean fail = false;
 		for(Class<?> type : classes) {

@@ -37,9 +37,9 @@ public class StreamUtilTest {
 	@Test
 	public void testBitsetSerialization() throws IOException {
 		Random random = new Random();
-		for(int i = 0; i < 20000; i++) {
+		for(int i = 0; i < 20_000; i++) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			boolean[] bitset = new boolean[random.nextInt(1000)];
+			boolean[] bitset = new boolean[random.nextInt(1_000)];
 
 			for(int j = 0; j < bitset.length; j++)
 				bitset[j] = random.nextBoolean();
@@ -58,12 +58,11 @@ public class StreamUtilTest {
 
 	@Test
 	public void testUTFStringSerialization() throws IOException {
-		String[] strs = new String[] { "Hello world\nhow are you today??",
+		String[] strs = new String[] {"Hello world\nhow are you today??",
 				"你好我叫凯文　こんにちわ私はケヴィンです",
 				"public static void main(String[] args) { System.out.println(\"Hello world!\"); }",
 				"{ data: \"Hello\", value: 15 }",
-				"éè😘"
-		};
+				"éè😘"};
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 		for(String string : strs)

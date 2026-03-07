@@ -3,10 +3,8 @@ package com.winteralexander.gdx.utils.error;
 /**
  * Handles exceptions for methods where exception handling should not necessary stop its execution
  * <p>
- * The best example of that would be an iterative method that doesn't know if should stop on first failure
- * or logs errors and keeps what is working
- * <p>
- * Created on 2017-08-28.
+ * The best example of that would be an iterative method that doesn't know if should stop on first
+ * failure or logs errors and keeps what is working <p> Created on 2017-08-28.
  *
  * @author Alexander Winter
  */

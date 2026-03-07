@@ -13,7 +13,8 @@ import static com.winteralexander.gdx.utils.io.StreamUtil.readAllBytes;
  * @author Alexander Winter
  */
 public class ProcessUtil {
-	public static String execute(String... command) throws ProcessErrorException, IOException, InterruptedException {
+	public static String execute(String... command)
+			throws ProcessErrorException, IOException, InterruptedException {
 		Process process = new ProcessBuilder(command).start();
 		int exitCode = process.waitFor();
 

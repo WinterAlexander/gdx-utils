@@ -32,9 +32,12 @@ public class SerializationUtilTest {
 	@Test
 	public void testColorSerialization() throws IOException {
 		Random random = new Random();
-		for(int i = 0; i < 20000; i++) {
+		for(int i = 0; i < 20_000; i++) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Color color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
+			Color color = new Color(random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat());
 
 			writeColor(baos, color);
 
@@ -54,9 +57,12 @@ public class SerializationUtilTest {
 	@Test
 	public void testRGBSerialization() throws IOException {
 		Random random = new Random();
-		for(int i = 0; i < 20000; i++) {
+		for(int i = 0; i < 20_000; i++) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Color color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
+			Color color = new Color(random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat());
 
 			writeRGB(baos, color);
 
@@ -79,8 +85,10 @@ public class SerializationUtilTest {
 		for(int i = 0; i < 100; i++) {
 			Vector2 vec2 = new Vector2(random.nextFloat(), random.nextFloat());
 			Vector3 vec3 = new Vector3(random.nextFloat(), random.nextFloat(), random.nextFloat());
-			Vector4 vec4 = new Vector4(random.nextFloat(), random.nextFloat(),
-					random.nextFloat(), random.nextFloat());
+			Vector4 vec4 = new Vector4(random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat());
 
 			Vector2i vec2i = new Vector2i(random.nextInt(), random.nextInt());
 			Vector3i vec3i = new Vector3i(random.nextInt(), random.nextInt(), random.nextInt());
@@ -168,7 +176,7 @@ public class SerializationUtilTest {
 
 		intIntMap.put(3, 5);
 		intIntMap.put(-1, -32);
-		intIntMap.put(-2323, 1231234);
+		intIntMap.put(-2_323, 1_231_234);
 
 		intFloatMap.put(1, 23f);
 		intFloatMap.put(13, 12309123f);
@@ -200,7 +208,7 @@ public class SerializationUtilTest {
 		intArray.add(1, 2, 3);
 		intArray.add(4, 21, -190);
 
-		longArray.add(203923L, 130291093L, -1201920912901L);
+		longArray.add(203_923L, 130_291_093L, -1_201_920_912_901L);
 		intSet.addAll(1, 1, 2, 3, 4);
 		intFloatMap.put(1, 203.34f);
 		intFloatMap.put(2, 303.34f);
@@ -221,8 +229,8 @@ public class SerializationUtilTest {
 	}
 
 	private <K, V> void ensureProperSerialization(ObjectMap<K, V> map,
-	                                              Class<K> keyType,
-	                                              Class<V> valueType) throws IOException {
+			Class<K> keyType,
+			Class<V> valueType) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeObjectMap(outputStream, map);
 
@@ -329,6 +337,7 @@ public class SerializationUtilTest {
 			assertEquals(map.get(key), other.get(key));
 		}
 	}
+
 	private void ensureProperSerialization(Object any) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		writeAny(outputStream, any);
@@ -388,7 +397,6 @@ public class SerializationUtilTest {
 			int val = it.next();
 			assertTrue(other.contains(val));
 		}
-
 
 		it = other.iterator();
 		while(it.hasNext) {

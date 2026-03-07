@@ -43,8 +43,8 @@ public class VectorUtil {
 			return vec;
 		}
 
-		throw new UnsupportedOperationException("Type " + vec.getClass() + " not supported by " +
-				"round");
+		throw new UnsupportedOperationException("Type " + vec.getClass() + " not supported by "
+				+ "round");
 	}
 
 	public static Vector2 round(Vector2 vec, int digits) {
@@ -118,23 +118,13 @@ public class VectorUtil {
 	public static float getComponent(Vector3 vec, int component) {
 		ensureInRange(component, 0, 3, "component");
 
-		return component == 0
-				? vec.x
-				: component == 1
-					? vec.y
-					: vec.z;
+		return component == 0 ? vec.x : component == 1 ? vec.y : vec.z;
 	}
 
 	public static float getComponent(Vector4 vec, int component) {
 		ensureInRange(component, 0, 4, "component");
 
-		return component == 0
-				? vec.x
-				: component == 1
-					? vec.y
-					: component == 2
-						? vec.z
-						: vec.w;
+		return component == 0 ? vec.x : component == 1 ? vec.y : component == 2 ? vec.z : vec.w;
 	}
 
 	public static void setFromArray(Vector2 vec, float[] array, int offset) {
@@ -221,8 +211,8 @@ public class VectorUtil {
 	 */
 	public static Vector4 mul(Vector4 vec4, Matrix4 matrix) {
 		float[] mat = matrix.val;
-		return vec4.set(
-				vec4.x * mat[M00] + vec4.y * mat[M01] + vec4.z * mat[M02] + vec4.w * mat[M03],
+		return vec4.set(vec4.x * mat[M00] + vec4.y * mat[M01] + vec4.z * mat[M02]
+						+ vec4.w * mat[M03],
 				vec4.x * mat[M10] + vec4.y * mat[M11] + vec4.z * mat[M12] + vec4.w * mat[M13],
 				vec4.x * mat[M20] + vec4.y * mat[M21] + vec4.z * mat[M22] + vec4.w * mat[M23],
 				vec4.x * mat[M30] + vec4.y * mat[M31] + vec4.z * mat[M32] + vec4.w * mat[M33]);
@@ -237,8 +227,8 @@ public class VectorUtil {
 	 */
 	public static Vector4 traMul(Vector4 vec4, Matrix4 matrix) {
 		float[] mat = matrix.val;
-		return vec4.set(
-				vec4.x * mat[M00] + vec4.y * mat[M10] + vec4.z * mat[M20] + vec4.w * mat[M30],
+		return vec4.set(vec4.x * mat[M00] + vec4.y * mat[M10] + vec4.z * mat[M20]
+						+ vec4.w * mat[M30],
 				vec4.x * mat[M01] + vec4.y * mat[M11] + vec4.z * mat[M21] + vec4.w * mat[M31],
 				vec4.x * mat[M02] + vec4.y * mat[M12] + vec4.z * mat[M22] + vec4.w * mat[M32],
 				vec4.x * mat[M03] + vec4.y * mat[M13] + vec4.z * mat[M23] + vec4.w * mat[M33]);

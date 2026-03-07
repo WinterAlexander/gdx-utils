@@ -19,7 +19,11 @@ public class PhysicsUtil {
 		return push(input, direction, scale, cap, input);
 	}
 
-	public static Vector2 push(Vector2 input, Vector2 direction, float scale, float cap, Vector2 vel) {
+	public static Vector2 push(Vector2 input,
+			Vector2 direction,
+			float scale,
+			float cap,
+			Vector2 vel) {
 		vel.set(input);
 
 		if(vel.x * direction.x < cap) {
@@ -45,7 +49,7 @@ public class PhysicsUtil {
 		velocity -= deceleration * delta * dir;
 
 		if(velocity * dir < 0f) // if velocity switched it's sign by deceleration
-			velocity = 0f; // set it to 0, deceleration don't make you switch side
+			velocity = 0f;		// set it to 0, deceleration don't make you switch side
 
 		return velocity;
 	}

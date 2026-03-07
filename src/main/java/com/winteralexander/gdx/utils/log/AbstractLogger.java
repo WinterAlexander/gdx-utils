@@ -27,7 +27,8 @@ public abstract class AbstractLogger implements Logger {
 	protected synchronized void log(LogLevel logLevel, String message, Throwable ex) {
 		if(this.logLevel.ordinal() >= logLevel.ordinal()) {
 			try {
-				String line = timeFormat.format(new Date()) + " [" + logLevel.name() + "] " + message;
+				String line = timeFormat.format(new Date()) + " [" + logLevel.name() + "] "
+						+ message;
 				if(ex != null) {
 					StringWriter full = new StringWriter();
 

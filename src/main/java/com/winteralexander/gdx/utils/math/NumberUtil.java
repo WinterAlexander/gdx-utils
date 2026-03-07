@@ -101,9 +101,7 @@ public class NumberUtil {
 	 * @return true if specified number is an integer, otherwise false
 	 */
 	public static boolean isInteger(Number number) {
-		return number instanceof Integer
-				|| number instanceof Long
-				|| number instanceof Short
+		return number instanceof Integer || number instanceof Long || number instanceof Short
 				|| number instanceof Byte;
 	}
 
@@ -112,10 +110,8 @@ public class NumberUtil {
 			return defaultVal;
 
 		try {
-			return input.equalsIgnoreCase("true")
-					|| tryParseInt(input, 0) != 0
-					|| input.equalsIgnoreCase("yes")
-					|| input.equalsIgnoreCase("y");
+			return input.equalsIgnoreCase("true") || tryParseInt(input, 0) != 0
+					|| input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y");
 		} catch(NumberFormatException ex) {
 			return defaultVal;
 		}

@@ -49,7 +49,10 @@ public class Circle implements Shape {
 
 	@Override
 	public boolean crossesSegment(float x, float y, float x2, float y2) {
-		return Intersector.intersectSegmentCircle(tmpVec.set(x, y), tmpVec2.set(x2, y2), getPosition(), getRadius());
+		return Intersector.intersectSegmentCircle(tmpVec.set(x, y),
+				tmpVec2.set(x2, y2),
+				getPosition(),
+				getRadius());
 	}
 
 	@Override
@@ -133,7 +136,8 @@ public class Circle implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Circle)shape).getPosition());
 
-			return getPosition().dst2(((Circle)shape).getPosition()) <= pow2(getRadius() - ((Circle)shape).getRadius());
+			return getPosition().dst2(((Circle)shape).getPosition())
+					<= pow2(getRadius() - ((Circle)shape).getRadius());
 		}
 
 		if(shape instanceof Annulus) {
@@ -142,7 +146,8 @@ public class Circle implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Annulus)shape).getPosition());
 
-			return getPosition().dst2(((Annulus)shape).getPosition()) <= pow2(getRadius() - ((Annulus)shape).getOuterRadius());
+			return getPosition().dst2(((Annulus)shape).getPosition())
+					<= pow2(getRadius() - ((Annulus)shape).getOuterRadius());
 		}
 
 		if(shape instanceof MultiShape) {

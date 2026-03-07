@@ -70,9 +70,7 @@ public class VectorUtilTest {
 		Vector2 vec2 = new Vector2();
 		Vector3 vec3 = new Vector3();
 		Vector4 vec4 = new Vector4();
-		float[] array = {
-			1f, 2f, 3f, 4f, 5f, 6f, 7f
-		};
+		float[] array = {1f, 2f, 3f, 4f, 5f, 6f, 7f};
 
 		VectorUtil.setFromArray(vec2, array, 1);
 		assertEquals(2f, vec2.x, 1e-10f);

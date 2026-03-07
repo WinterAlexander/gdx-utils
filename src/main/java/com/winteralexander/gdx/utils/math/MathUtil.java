@@ -13,11 +13,25 @@ import static java.lang.Math.floor;
  * @author Alexander Winter
  */
 public class MathUtil {
-	private static final float[] powers10 = new float[] {
-		0.000_000_001f, 0.000_000_01f, 0.000_000_1f, 0.000_001f, 0.000_01f, -0.000_1f, 0.001f, 0.01f, 0.1f,
-		1f,
-		10f, 100f, 1_000f, 10_000f, 100_000f, 1_000_000f, 10_000_000f, 100_000_000f, 1_000_000_000f
-	};
+	private static final float[] powers10 = new float[] {0.000_000_001f,
+			0.000_000_01f,
+			0.000_000_1f,
+			0.000_001f,
+			0.000_01f,
+			-0.000_1f,
+			0.001f,
+			0.01f,
+			0.1f,
+			1f,
+			10f,
+			100f,
+			1_000f,
+			10_000f,
+			100_000f,
+			1_000_000f,
+			10_000_000f,
+			100_000_000f,
+			1_000_000_000f};
 
 	private MathUtil() {}
 
@@ -42,10 +56,10 @@ public class MathUtil {
 	public static float pow(float base, int exponent) {
 		float result = 1.0f;
 
-		for(int j = -exponent; j-- > 0; )
+		for(int j = -exponent; j-- > 0;)
 			result /= base;
 
-		for(int i = exponent; i-- > 0; )
+		for(int i = exponent; i-- > 0;)
 			result *= base;
 
 		return result;
@@ -210,25 +224,26 @@ public class MathUtil {
 	 * @return value mapped from source to destination range
 	 */
 	public static float map(float value,
-	                        float sourceStart,
-	                        float sourceEnd,
-	                        float destStart,
-	                        float destEnd) {
-		return (value - sourceStart) / (sourceEnd - sourceStart) * (destEnd - destStart) + destStart;
+			float sourceStart,
+			float sourceEnd,
+			float destStart,
+			float destEnd) {
+		return (value - sourceStart) / (sourceEnd - sourceStart) * (destEnd - destStart)
+				+ destStart;
 	}
 
 	/**
-	 * Maps the value from the source range to the destination range and clamps to ensure value is 
+	 * Maps the value from the source range to the destination range and clamps to ensure value is
 	 * destination within destination range
 	 * @see MathUtil#map(float, float, float, float, float)
 	 */
 	public static float clampMap(float value,
-	                             float sourceStart,
-	                             float sourceEnd,
-	                             float destStart,
-	                             float destEnd)
-	{
-		return MathUtils.clamp(MathUtil.map(value, sourceStart, sourceEnd, destStart, destEnd), 
-				Math.min(destStart, destEnd), Math.max(destStart, destEnd));
+			float sourceStart,
+			float sourceEnd,
+			float destStart,
+			float destEnd) {
+		return MathUtils.clamp(MathUtil.map(value, sourceStart, sourceEnd, destStart, destEnd),
+				Math.min(destStart, destEnd),
+				Math.max(destStart, destEnd));
 	}
 }

@@ -96,10 +96,10 @@ public class JLogger implements Logger {
 			case 800:
 				return LogLevel.INFO;
 
-			case 900: //warning
+			case 900: // warning
 				return LogLevel.WARNING;
 
-			case 1000:
+			case 1_000:
 				return LogLevel.ERROR;
 
 			default:

@@ -17,9 +17,8 @@ public class ListenableImpl<L> implements Listenable<L> {
 	private final Array<L> listeners = new Array<>(true, 4);
 
 	private boolean listenersLocked = false;
-	private final Array<L> toAdd = new Array<>(true, 4),
-			toAddWithPriority = new Array<>(true, 4),
-			toRemove = new Array<>(false, 4);
+	private final Array<L> toAdd = new Array<>(true, 4), toAddWithPriority = new Array<>(true, 4),
+						   toRemove = new Array<>(false, 4);
 
 	public void trigger(Consumer<L> event) {
 		ensureNotNull(event, "event");

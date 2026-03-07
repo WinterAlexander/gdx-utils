@@ -15,10 +15,10 @@ import java.time.ZoneId;
  */
 public class TimeUtil {
 	public static String displayFromMillis(long millisInterval) {
-		int hours = (int)(millisInterval / 1000 / 60 / 60);
-		int minutes = (int)(millisInterval / 1000 / 60 % 60);
-		int seconds = (int)(millisInterval / 1000 % 60);
-		int millis = (int)(millisInterval % 1000);
+		int hours = (int)(millisInterval / 1_000 / 60 / 60);
+		int minutes = (int)(millisInterval / 1_000 / 60 % 60);
+		int seconds = (int)(millisInterval / 1_000 % 60);
+		int millis = (int)(millisInterval % 1_000);
 
 		return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
 	}
@@ -35,19 +35,19 @@ public class TimeUtil {
 	}
 
 	public static void displayIntoFromMillis(StringBuilder sb, long millisTimestamp) {
-		int hours = (int)(millisTimestamp / 1000 / 60 / 60);
+		int hours = (int)(millisTimestamp / 1_000 / 60 / 60);
 		sb.setCharAt(0, (char)('0' + hours / 10));
 		sb.setCharAt(1, (char)('0' + hours % 10));
 
-		int minutes = (int)(millisTimestamp / 1000 / 60 % 60);
+		int minutes = (int)(millisTimestamp / 1_000 / 60 % 60);
 		sb.setCharAt(3, (char)('0' + minutes / 10));
 		sb.setCharAt(4, (char)('0' + minutes % 10));
 
-		int seconds = (int)(millisTimestamp / 1000 % 60);
+		int seconds = (int)(millisTimestamp / 1_000 % 60);
 		sb.setCharAt(6, (char)('0' + seconds / 10));
 		sb.setCharAt(7, (char)('0' + seconds % 10));
 
-		int millis = (int)(millisTimestamp % 1000);
+		int millis = (int)(millisTimestamp % 1_000);
 		sb.setCharAt(9, (char)('0' + millis / 100));
 		sb.setCharAt(10, (char)('0' + millis / 10 % 10));
 		sb.setCharAt(11, (char)('0' + millis % 10));
@@ -133,13 +133,15 @@ public class TimeUtil {
 						break;
 
 					default:
-						throw new NumberFormatException("Invalid time unit '" + c + "' in duration");
+						throw new NumberFormatException("Invalid time unit '" + c
+								+ "' in duration");
 				}
 				curNumber = 0L;
 				reachedDecimal = false;
 				numberEntered = false;
 				decimalPosition = 1;
-			} else // means we are seeing a non digit non character char when no number has been entered
+			} else // means we are seeing a non digit non character char when no number has been
+				   // entered
 				throw new NumberFormatException("Invalid duration amount '" + c + "'");
 		}
 

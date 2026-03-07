@@ -31,21 +31,31 @@ public enum GridDirection4 {
 
 	public GridDirection4 nextClockwise() {
 		switch(this) {
-			case RIGHT: return DOWN;
-			case UP: return RIGHT;
-			case DOWN: return LEFT;
-			case LEFT: return UP;
-			default: throw new IllegalStateException();
+			case RIGHT:
+				return DOWN;
+			case UP:
+				return RIGHT;
+			case DOWN:
+				return LEFT;
+			case LEFT:
+				return UP;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
 	public GridDirection4 nextCounterClockwise() {
 		switch(this) {
-			case RIGHT: return UP;
-			case UP: return LEFT;
-			case DOWN: return RIGHT;
-			case LEFT: return DOWN;
-			default: throw new IllegalStateException();
+			case RIGHT:
+				return UP;
+			case UP:
+				return LEFT;
+			case DOWN:
+				return RIGHT;
+			case LEFT:
+				return DOWN;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
@@ -71,11 +81,16 @@ public enum GridDirection4 {
 
 	public GridDirection8 asGridDirection8() {
 		switch(this) {
-			case UP: return GridDirection8.UP;
-			case LEFT: return GridDirection8.LEFT;
-			case RIGHT: return GridDirection8.RIGHT;
-			case DOWN: return GridDirection8.DOWN;
-			default: throw new IllegalStateException();
+			case UP:
+				return GridDirection8.UP;
+			case LEFT:
+				return GridDirection8.LEFT;
+			case RIGHT:
+				return GridDirection8.RIGHT;
+			case DOWN:
+				return GridDirection8.DOWN;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 

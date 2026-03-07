@@ -50,11 +50,10 @@ public class ShapeTest {
 		Vector2 polyPos = new Vector2();
 		Vector2 circlePos = new Vector2();
 
-		Polygon polygonHitbox = new Polygon(polyPos, new Vector2(1f, 1f), 0f, new float[]{
-				0f, 0f,
-				0f, 1f,
-				1f, 0f
-		});
+		Polygon polygonHitbox = new Polygon(polyPos,
+				new Vector2(1f, 1f),
+				0f,
+				new float[] {0f, 0f, 0f, 1f, 1f, 0f});
 
 		Circle circleHitbox = new Circle(circlePos, 1f);
 

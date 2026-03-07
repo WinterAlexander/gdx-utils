@@ -24,7 +24,7 @@ public class PlaneUtilTest {
 		Plane plane = new Plane();
 		Matrix4 transform = new Matrix4();
 		Random random = new Random();
-		Vector3[] points = new Vector3[1000];
+		Vector3[] points = new Vector3[1_000];
 		Plane.PlaneSide[] sides = new Plane.PlaneSide[points.length];
 		float spaceScale = 100f;
 		float epsilon = 0.001f;
@@ -34,18 +34,23 @@ public class PlaneUtilTest {
 			points[j] = new Vector3();
 
 		for(int i = 0; i < 10_000; i++) {
-			plane.set(random.nextFloat(), random.nextFloat(), random.nextFloat(),
+			plane.set(random.nextFloat(),
+					random.nextFloat(),
+					random.nextFloat(),
 					random.nextFloat() * spaceScale - spaceScale / 2f);
 			plane.normal.nor();
 			randDir.set(random.nextFloat(), random.nextFloat(), random.nextFloat());
 			randDir.nor();
 			if(randDir.len2() == 0f)
 				randDir.set(1f, 0f, 0f);
-			transform.idt().translate(random.nextFloat() * spaceScale - spaceScale / 2f,
+			transform.idt()
+					.translate(random.nextFloat() * spaceScale - spaceScale / 2f,
 							random.nextFloat() * spaceScale - spaceScale / 2f,
 							random.nextFloat() * spaceScale - spaceScale / 2f)
 					.scl(random.nextFloat() + 1f, random.nextFloat() + 1f, random.nextFloat() + 1f)
-					.rotateRad(randDir.x, randDir.y, randDir.z,
+					.rotateRad(randDir.x,
+							randDir.y,
+							randDir.z,
 							random.nextFloat() * (float)Math.PI * 2f);
 
 			for(int j = 0; j < points.length; j++) {
@@ -75,12 +80,22 @@ public class PlaneUtilTest {
 		Plane plane1 = new Plane(new Vector3(0f, 1f, 0f), 0.4f);
 		Plane plane2 = new Plane(new Vector3(0f, 1f, 0f), -5.6f);
 		Matrix4 matrix4 = new Matrix4();
-		matrix4.set(new float[] {
-				0.84984475f, 0.0f, 0.0f, 0.0f,
-				0.0f, 0.8380602f, 0.8337162f, 0.83205044f,
-				0.0f, 1.257091f, -0.55581045f, -0.55469996f,
-				0.0f, -9.386282f, 6.724224f, 8.708791f
-		});
+		matrix4.set(new float[] {0.84984475f,
+				0.0f,
+				0.0f,
+				0.0f,
+				0.0f,
+				0.8380602f,
+				0.8337162f,
+				0.83205044f,
+				0.0f,
+				1.257091f,
+				-0.55581045f,
+				-0.55469996f,
+				0.0f,
+				-9.386282f,
+				6.724224f,
+				8.708791f});
 
 		PlaneUtil.mul(plane1, matrix4);
 		PlaneUtil.mul(plane2, matrix4);

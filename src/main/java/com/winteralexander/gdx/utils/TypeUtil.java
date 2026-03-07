@@ -46,13 +46,8 @@ public class TypeUtil {
 	}
 
 	public static boolean isPrimitiveBox(Class<?> clazz) {
-		return clazz == Integer.class
-				|| clazz == Float.class
-				|| clazz == Long.class
-				|| clazz == Short.class
-				|| clazz == Byte.class
-				|| clazz == Double.class
-				|| clazz == Character.class
-				|| clazz == Boolean.class;
+		return clazz == Integer.class || clazz == Float.class || clazz == Long.class
+				|| clazz == Short.class || clazz == Byte.class || clazz == Double.class
+				|| clazz == Character.class || clazz == Boolean.class;
 	}
 }

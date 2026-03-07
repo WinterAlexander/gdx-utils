@@ -33,7 +33,7 @@ public class ArraySelector<T> {
 	}
 
 	public T current() {
-		validateIndex(); //array size can change anytime
+		validateIndex(); // array size can change anytime
 
 		if(index < 0)
 			return null;

@@ -50,7 +50,7 @@ public class SystemUtil {
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static boolean hasOracleSocketBug() {
 		try {
-			int port = 10000;
+			int port = 10_000;
 
 			while(!PortChecker.portAvailable(port))
 				port++;
@@ -118,7 +118,8 @@ public class SystemUtil {
 			NetworkInterface element = net.nextElement();
 			Enumeration<InetAddress> addresses = element.getInetAddresses();
 
-			while(addresses.hasMoreElements() && element.getHardwareAddress() != null && element.getHardwareAddress().length > 0) {
+			while(addresses.hasMoreElements() && element.getHardwareAddress() != null
+					&& element.getHardwareAddress().length > 0) {
 				InetAddress ip = addresses.nextElement();
 				if(ip instanceof Inet4Address) {
 					if(ip.isSiteLocalAddress()) {
@@ -150,7 +151,9 @@ public class SystemUtil {
 		StringBuilder sb = new StringBuilder();
 
 		for(int i = 0; i < macAddress.length; i++)
-			sb.append(String.format("%02X%s", macAddress[i], (i < macAddress.length - 1) ? "-" : ""));
+			sb.append(String.format("%02X%s",
+					macAddress[i],
+					(i < macAddress.length - 1) ? "-" : ""));
 
 		return sb.toString();
 	}
@@ -168,28 +171,29 @@ public class SystemUtil {
 	public static String[] getCPUs() throws IOException, InterruptedException {
 		if(isLinux()) {
 			return Stream.of(ProcessUtil.execute("cat", "/proc/cpuinfo").split("\n\n"))
-					.map(page -> Arrays.stream(page.split("\n"))
-							.filter(line -> line.startsWith("model name"))
-							.findFirst())
+					.map(page
+							-> Arrays.stream(page.split("\n"))
+									.filter(line -> line.startsWith("model name"))
+									.findFirst())
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					.map(s -> s.substring(s.indexOf(":") + 1))
 					.map(String::trim)
 					.distinct()
-					.toArray(String[]::new);
+					.toArray(String[] ::new);
 		}
 
 		if(isWindows()) {
-			return Stream.of(ProcessUtil.execute("powershell",
-							"(Get-WmiObject Win32_Processor).Name").split("\n"))
+			return Stream
+					.of(ProcessUtil.execute("powershell", "(Get-WmiObject Win32_Processor).Name")
+									.split("\n"))
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
-					.toArray(String[]::new);
+					.toArray(String[] ::new);
 		}
 
 		if(isMac()) {
-			return ProcessUtil.execute("sysctl", "-n", "machdep.cpu.brand_string")
-					.split("\n");
+			return ProcessUtil.execute("sysctl", "-n", "machdep.cpu.brand_string").split("\n");
 		}
 
 		throw new UnsupportedOperationException("Operation not supported on this system");
@@ -201,32 +205,34 @@ public class SystemUtil {
 					.filter(line -> line.contains(" VGA "))
 					.map(line -> line.split(" ")[0])
 					.map(id -> unchecked(() -> ProcessUtil.execute("lspci", "-v", "-s", id)))
-					.map(page -> Arrays.stream(page.split("\n"))
-							.filter(line -> line.contains("Subsystem:"))
-							.findFirst())
+					.map(page
+							-> Arrays.stream(page.split("\n"))
+									.filter(line -> line.contains("Subsystem:"))
+									.findFirst())
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					.map(s -> s.substring(s.indexOf(":") + 1))
 					.map(String::trim)
-					.toArray(String[]::new);
-
+					.toArray(String[] ::new);
 		}
 
 		if(isWindows()) {
-			return Stream.of(ProcessUtil.execute("powershell",
-							"(Get-WmiObject Win32_VideoController).Name").split("\n"))
+			return Stream
+					.of(ProcessUtil.execute("powershell",
+										   "(Get-WmiObject Win32_VideoController).Name")
+									.split("\n"))
 					.map(String::trim)
 					.filter(l -> !l.isEmpty())
-					.toArray(String[]::new);
+					.toArray(String[] ::new);
 		}
 
 		if(isMac()) {
-			return Stream.of(ProcessUtil.execute("system_profiler", "SPDisplaysDataType")
-							.split("\n"))
+			return Stream
+					.of(ProcessUtil.execute("system_profiler", "SPDisplaysDataType").split("\n"))
 					.filter(l -> l.startsWith("Chipset Model:"))
 					.map(l -> l.substring(l.indexOf(':') + 1))
 					.map(String::trim)
-					.toArray(String[]::new);
+					.toArray(String[] ::new);
 		}
 
 		throw new UnsupportedOperationException("Operation not supported on this system");
@@ -236,52 +242,62 @@ public class SystemUtil {
 		if(isLinux()) {
 			String[] memInfo = ProcessUtil.execute("cat", "/proc/meminfo").split("\n");
 			long memTotal = Stream.of(memInfo)
-					.filter(line -> line.startsWith("MemTotal:"))
-					.map(l -> l.substring(l.indexOf(":") + 1))
-					.map(String::trim)
-					.map(l -> l.split(" ")[0])
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+									.filter(line -> line.startsWith("MemTotal:"))
+									.map(l -> l.substring(l.indexOf(":") + 1))
+									.map(String::trim)
+									.map(l -> l.split(" ")[0])
+									.map(s -> NumberUtil.tryParseLong(s, -1L))
+									.findFirst()
+									.orElse(-1L);
 			long memFree = Stream.of(memInfo)
-					.filter(line -> line.startsWith("MemFree:"))
-					.map(l -> l.substring(l.indexOf(":") + 1))
-					.map(String::trim)
-					.map(l -> l.split(" ")[0])
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+								   .filter(line -> line.startsWith("MemFree:"))
+								   .map(l -> l.substring(l.indexOf(":") + 1))
+								   .map(String::trim)
+								   .map(l -> l.split(" ")[0])
+								   .map(s -> NumberUtil.tryParseLong(s, -1L))
+								   .findFirst()
+								   .orElse(-1L);
 			long memAvailable = Stream.of(memInfo)
-					.filter(line -> line.startsWith("MemAvailable:"))
-					.map(l -> l.substring(l.indexOf(":") + 1))
-					.map(String::trim)
-					.map(l -> l.split(" ")[0])
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+										.filter(line -> line.startsWith("MemAvailable:"))
+										.map(l -> l.substring(l.indexOf(":") + 1))
+										.map(String::trim)
+										.map(l -> l.split(" ")[0])
+										.map(s -> NumberUtil.tryParseLong(s, -1L))
+										.findFirst()
+										.orElse(-1L);
 
 			if(memTotal < 0L || memFree < 0L || memAvailable < 0L)
 				throw new IOException("Failed to parse output of /proc/meminfo");
 
-			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memAvailable * 1024L);
+			return new SystemMemory(memTotal * 1_024L, memFree * 1_024L, memAvailable * 1_024L);
 		}
 
 		if(isWindows()) {
-			long memTotal = NumberUtil.tryParseLong(ProcessUtil.execute("powershell",
-					"(Get-WmiObject Win32_OperatingSystem).TotalVisibleMemorySize").trim(), -1L);
+			long memTotal = NumberUtil.tryParseLong(
+					ProcessUtil
+							.execute("powershell",
+									"(Get-WmiObject Win32_OperatingSystem).TotalVisibleMemorySize")
+							.trim(),
+					-1L);
 
-			long memFree = NumberUtil.tryParseLong(ProcessUtil.execute("powershell",
-					"(Get-WmiObject Win32_OperatingSystem).FreePhysicalMemory").trim(), -1L);
+			long memFree = NumberUtil.tryParseLong(
+					ProcessUtil
+							.execute("powershell",
+									"(Get-WmiObject Win32_OperatingSystem).FreePhysicalMemory")
+							.trim(),
+					-1L);
 
 			if(memTotal < 0L || memFree < 0L)
 				throw new IOException("Failed to parse output of Get-WmiObject for RAM");
 
-			return new SystemMemory(memTotal * 1024L, memFree * 1024L, memFree * 1024L);
+			return new SystemMemory(memTotal * 1_024L, memFree * 1_024L, memFree * 1_024L);
 		}
 
 		if(isMac()) {
 			String test = ProcessUtil.execute("sysctl", "-n", "hw.memsize")
-					.replaceAll("\n", "")
-					.trim();
-			long totalMemory = NumberUtil.tryParseLong(
-					test, -1L);
+								  .replaceAll("\n", "")
+								  .trim();
+			long totalMemory = NumberUtil.tryParseLong(test, -1L);
 
 			if(totalMemory < 0L)
 				throw new IOException("Failed to retrieve total memory from sysctl");
@@ -289,34 +305,39 @@ public class SystemUtil {
 			String[] vmStat = ProcessUtil.execute("vm_stat").split("\n");
 			String pageSizeStr = "page size of";
 			long pageSize = Stream.of(vmStat)
-					.filter(l -> l.contains(pageSizeStr))
-					.map(l -> l.substring(l.indexOf(pageSizeStr) + pageSizeStr.length()))
-					.map(String::trim)
-					.map(l -> l.split(" ")[0])
-					.map(String::trim)
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+									.filter(l -> l.contains(pageSizeStr))
+									.map(l
+											-> l.substring(l.indexOf(pageSizeStr)
+													+ pageSizeStr.length()))
+									.map(String::trim)
+									.map(l -> l.split(" ")[0])
+									.map(String::trim)
+									.map(s -> NumberUtil.tryParseLong(s, -1L))
+									.findFirst()
+									.orElse(-1L);
 
 			if(pageSize < 0L)
 				throw new IOException("Failed to retrieve page size of vm_stat");
 			long pagesFree = Stream.of(vmStat)
-					.filter(l -> l.contains("Pages free:"))
-					.map(l -> l.substring(l.indexOf(':') + 1))
-					.map(l -> l.split("\\.")[0])
-					.map(String::trim)
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+									 .filter(l -> l.contains("Pages free:"))
+									 .map(l -> l.substring(l.indexOf(':') + 1))
+									 .map(l -> l.split("\\.")[0])
+									 .map(String::trim)
+									 .map(s -> NumberUtil.tryParseLong(s, -1L))
+									 .findFirst()
+									 .orElse(-1L);
 
 			if(pagesFree < 0L)
 				throw new IOException("Failed to retrieve free pages of vm_stat");
 
 			long pagesSpeculative = Stream.of(vmStat)
-					.filter(l -> l.contains("Pages speculative:"))
-					.map(l -> l.substring(l.indexOf(':') + 1))
-					.map(l -> l.split("\\.")[0])
-					.map(String::trim)
-					.map(s -> NumberUtil.tryParseLong(s, -1L))
-					.findFirst().orElse(-1L);
+											.filter(l -> l.contains("Pages speculative:"))
+											.map(l -> l.substring(l.indexOf(':') + 1))
+											.map(l -> l.split("\\.")[0])
+											.map(String::trim)
+											.map(s -> NumberUtil.tryParseLong(s, -1L))
+											.findFirst()
+											.orElse(-1L);
 
 			long freeMem = pagesFree * pageSize;
 			long availableMem = freeMem;

@@ -31,28 +31,37 @@ public class IcoSphereShapeBuilderTest {
 	@Test
 	public void testIcoSphere() {
 		ModelBuilder builder = new ModelBuilder();
-		int attrs = VertexAttributes.Usage.Position
-				| VertexAttributes.Usage.Normal
+		int attrs = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
 				| VertexAttributes.Usage.TextureCoordinates;
 
 		builder.begin();
-		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()), 1f, 0);
+		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()),
+				1f,
+				0);
 		Model ico0 = builder.end();
 		ico0.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 2f));
 		builder.begin();
-		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()), 1f, 1);
+		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()),
+				1f,
+				1);
 		Model ico1 = builder.end();
 		ico1.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 4f));
 		builder.begin();
-		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()), 1f, 2);
+		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()),
+				1f,
+				2);
 		Model ico2 = builder.end();
 		ico2.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 6f));
 		builder.begin();
-		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()), 1f, 3);
+		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()),
+				1f,
+				3);
 		Model ico3 = builder.end();
 		ico3.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 8f));
 		builder.begin();
-		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()), 1f, 4);
+		IcoSphereShapeBuilder.build(builder.part("sphere", GL_TRIANGLES, attrs, new Material()),
+				1f,
+				4);
 		Model ico4 = builder.end();
 		ico4.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 10f));
 

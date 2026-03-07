@@ -16,9 +16,14 @@ import java.util.function.ToDoubleFunction;
  * @author Alexander Winter
  */
 public enum GridDirection8 {
-	UP_LEFT(-1f, 1f), UP(0f, 1f), UP_RIGHT(1f, 1f),
-	LEFT(-1f, 0f), RIGHT(1f, 0f),
-	DOWN_LEFT(-1f, -1f), DOWN(0f, -1f), DOWN_RIGHT(1f, -1f);
+	UP_LEFT(-1f, 1f),
+	UP(0f, 1f),
+	UP_RIGHT(1f, 1f),
+	LEFT(-1f, 0f),
+	RIGHT(1f, 0f),
+	DOWN_LEFT(-1f, -1f),
+	DOWN(0f, -1f),
+	DOWN_RIGHT(1f, -1f);
 
 	public static final GridDirection8[] values = EnumConstantCache.store(values());
 
@@ -74,21 +79,31 @@ public enum GridDirection8 {
 
 	public GridDirection4 asGridDirection4() {
 		switch(this) {
-			case UP: return GridDirection4.UP;
-			case LEFT: return GridDirection4.LEFT;
-			case RIGHT: return GridDirection4.RIGHT;
-			case DOWN: return GridDirection4.DOWN;
-			default: throw new IllegalStateException("Not a GridDirection4: " + this);
+			case UP:
+				return GridDirection4.UP;
+			case LEFT:
+				return GridDirection4.LEFT;
+			case RIGHT:
+				return GridDirection4.RIGHT;
+			case DOWN:
+				return GridDirection4.DOWN;
+			default:
+				throw new IllegalStateException("Not a GridDirection4: " + this);
 		}
 	}
 
 	public GridCorner asGridCorner() {
 		switch(this) {
-			case UP_LEFT: return GridCorner.UP_LEFT;
-			case UP_RIGHT: return GridCorner.UP_RIGHT;
-			case DOWN_LEFT: return GridCorner.DOWN_LEFT;
-			case DOWN_RIGHT: return GridCorner.DOWN_RIGHT;
-			default: throw new IllegalStateException("Not a GridCorner: " + this);
+			case UP_LEFT:
+				return GridCorner.UP_LEFT;
+			case UP_RIGHT:
+				return GridCorner.UP_RIGHT;
+			case DOWN_LEFT:
+				return GridCorner.DOWN_LEFT;
+			case DOWN_RIGHT:
+				return GridCorner.DOWN_RIGHT;
+			default:
+				throw new IllegalStateException("Not a GridCorner: " + this);
 		}
 	}
 
@@ -98,57 +113,93 @@ public enum GridDirection8 {
 
 	public GridDirection8 nextClockwise() {
 		switch(this) {
-			case UP_LEFT: return UP;
-			case UP: return UP_RIGHT;
-			case UP_RIGHT: return RIGHT;
-			case LEFT: return UP_LEFT;
-			case RIGHT: return DOWN_RIGHT;
-			case DOWN_LEFT: return LEFT;
-			case DOWN: return DOWN_LEFT;
-			case DOWN_RIGHT: return DOWN;
-			default: throw new IllegalStateException();
+			case UP_LEFT:
+				return UP;
+			case UP:
+				return UP_RIGHT;
+			case UP_RIGHT:
+				return RIGHT;
+			case LEFT:
+				return UP_LEFT;
+			case RIGHT:
+				return DOWN_RIGHT;
+			case DOWN_LEFT:
+				return LEFT;
+			case DOWN:
+				return DOWN_LEFT;
+			case DOWN_RIGHT:
+				return DOWN;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
 	public GridDirection8 nextCounterClockwise() {
 		switch(this) {
-			case UP_LEFT: return LEFT;
-			case UP: return UP_LEFT;
-			case UP_RIGHT: return UP;
-			case LEFT: return DOWN_LEFT;
-			case RIGHT: return UP_RIGHT;
-			case DOWN_LEFT: return DOWN;
-			case DOWN: return DOWN_RIGHT;
-			case DOWN_RIGHT: return RIGHT;
-			default: throw new IllegalStateException();
+			case UP_LEFT:
+				return LEFT;
+			case UP:
+				return UP_LEFT;
+			case UP_RIGHT:
+				return UP;
+			case LEFT:
+				return DOWN_LEFT;
+			case RIGHT:
+				return UP_RIGHT;
+			case DOWN_LEFT:
+				return DOWN;
+			case DOWN:
+				return DOWN_RIGHT;
+			case DOWN_RIGHT:
+				return RIGHT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
 	public GridDirection8 nextClockwiseOrthogonal() {
 		switch(this) {
-			case UP_LEFT: return UP_RIGHT;
-			case UP: return RIGHT;
-			case UP_RIGHT: return DOWN_RIGHT;
-			case LEFT: return UP;
-			case RIGHT: return DOWN;
-			case DOWN_LEFT: return UP_LEFT;
-			case DOWN: return LEFT;
-			case DOWN_RIGHT: return DOWN_LEFT;
-			default: throw new IllegalStateException();
+			case UP_LEFT:
+				return UP_RIGHT;
+			case UP:
+				return RIGHT;
+			case UP_RIGHT:
+				return DOWN_RIGHT;
+			case LEFT:
+				return UP;
+			case RIGHT:
+				return DOWN;
+			case DOWN_LEFT:
+				return UP_LEFT;
+			case DOWN:
+				return LEFT;
+			case DOWN_RIGHT:
+				return DOWN_LEFT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
 	public GridDirection8 nextCounterClockwiseOrthogonal() {
 		switch(this) {
-			case UP_RIGHT: return UP_LEFT;
-			case RIGHT: return UP;
-			case DOWN_RIGHT: return UP_RIGHT;
-			case UP: return LEFT;
-			case DOWN: return RIGHT;
-			case UP_LEFT: return DOWN_LEFT;
-			case LEFT: return DOWN;
-			case DOWN_LEFT: return DOWN_RIGHT;
-			default: throw new IllegalStateException();
+			case UP_RIGHT:
+				return UP_LEFT;
+			case RIGHT:
+				return UP;
+			case DOWN_RIGHT:
+				return UP_RIGHT;
+			case UP:
+				return LEFT;
+			case DOWN:
+				return RIGHT;
+			case UP_LEFT:
+				return DOWN_LEFT;
+			case LEFT:
+				return DOWN;
+			case DOWN_LEFT:
+				return DOWN_RIGHT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 

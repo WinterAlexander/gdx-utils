@@ -144,21 +144,18 @@ public class StreamUtil {
 		if((val1 | val2 | val3 | val4 | val5 | val6 | val7 | val8) < 0)
 			throw new EOFException();
 
-		return ((long)((byte)val1) << 56) +
-				((long)(((byte)val2) & 255) << 48) +
-				((long)(((byte)val3) & 255) << 40) +
-				((long)(((byte)val4) & 255) << 32) +
-				((long)(((byte)val5) & 255) << 24) +
-				((((byte)val6) & 255) << 16) +
-				((((byte)val7) & 255) << 8) +
-				(((byte)val8) & 255);
+		return ((long)((byte)val1) << 56) + ((long)(((byte)val2) & 255) << 48)
+				+ ((long)(((byte)val3) & 255) << 40) + ((long)(((byte)val4) & 255) << 32)
+				+ ((long)(((byte)val5) & 255) << 24) + ((((byte)val6) & 255) << 16)
+				+ ((((byte)val7) & 255) << 8) + (((byte)val8) & 255);
 	}
 
 	public static double readDouble(InputStream stream) throws IOException {
 		return longBitsToDouble(readLong(stream));
 	}
 
-	public static <T extends Enum<T>> T readEnum(InputStream stream, Class<T> type) throws IOException {
+	public static <T extends Enum<T>> T readEnum(InputStream stream, Class<T> type)
+			throws IOException {
 		int val = readInt(stream);
 		if(val == -1)
 			return null;
@@ -171,7 +168,7 @@ public class StreamUtil {
 		char[] chararr = new char[utflen];
 
 		int c, char2, char3;
-		int chararr_count=0;
+		int chararr_count = 0;
 
 		int n = 0;
 		while(n < utflen) {
@@ -182,53 +179,58 @@ public class StreamUtil {
 		}
 
 		int count = 0;
-		while (count < utflen) {
-			c = (int) bytearr[count] & 0xff;
-			if (c > 127) break;
+		while(count < utflen) {
+			c = (int)bytearr[count] & 0xff;
+			if(c > 127)
+				break;
 			count++;
-			chararr[chararr_count++]=(char)c;
+			chararr[chararr_count++] = (char)c;
 		}
 
-		while (count < utflen) {
-			c = (int) bytearr[count] & 0xff;
-			switch (c >> 4) {
-				case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+		while(count < utflen) {
+			c = (int)bytearr[count] & 0xff;
+			switch(c >> 4) {
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
 					/* 0xxxxxxx*/
 					count++;
-					chararr[chararr_count++]=(char)c;
+					chararr[chararr_count++] = (char)c;
 					break;
-				case 12: case 13:
+				case 12:
+				case 13:
 					/* 110x xxxx   10xx xxxx*/
 					count += 2;
-					if (count > utflen)
-						throw new UTFDataFormatException(
-								"malformed input: partial character at end");
-					char2 = (int) bytearr[count-1];
-					if ((char2 & 0xC0) != 0x80)
-						throw new UTFDataFormatException(
-								"malformed input around byte " + count);
-					chararr[chararr_count++]=(char)(((c & 0x1F) << 6) |
-							(char2 & 0x3F));
+					if(count > utflen)
+						throw new UTFDataFormatException("malformed input: partial character at "
+								+ "end");
+					char2 = (int)bytearr[count - 1];
+					if((char2 & 0xC0) != 0x80)
+						throw new UTFDataFormatException("malformed input around byte " + count);
+					chararr[chararr_count++] = (char)(((c & 0x1F) << 6) | (char2 & 0x3F));
 					break;
 				case 14:
 					/* 1110 xxxx  10xx xxxx  10xx xxxx */
 					count += 3;
-					if (count > utflen)
-						throw new UTFDataFormatException(
-								"malformed input: partial character at end");
-					char2 = (int) bytearr[count-2];
-					char3 = (int) bytearr[count-1];
-					if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
-						throw new UTFDataFormatException(
-								"malformed input around byte " + (count-1));
-					chararr[chararr_count++]=(char)(((c     & 0x0F) << 12) |
-							((char2 & 0x3F) << 6)  |
-							((char3 & 0x3F) << 0));
+					if(count > utflen)
+						throw new UTFDataFormatException("malformed input: partial character at "
+								+ "end");
+					char2 = (int)bytearr[count - 2];
+					char3 = (int)bytearr[count - 1];
+					if(((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
+						throw new UTFDataFormatException("malformed input around byte "
+								+ (count - 1));
+					chararr[chararr_count++] = (char)(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6)
+							| ((char3 & 0x3F) << 0));
 					break;
 				default:
 					/* 10xx xxxx,  1111 xxxx */
-					throw new UTFDataFormatException(
-							"malformed input around byte " + count);
+					throw new UTFDataFormatException("malformed input around byte " + count);
 			}
 		}
 		// The number of chars produced may be less than utflen
@@ -321,56 +323,56 @@ public class StreamUtil {
 		int c, count = 0;
 
 		/* use charAt instead of copying String to char array */
-		for (int i = 0; i < strlen; i++) {
+		for(int i = 0; i < strlen; i++) {
 			c = string.charAt(i);
-			if ((c >= 0x0001) && (c <= 0x007F)) {
+			if((c >= 0x0001) && (c <= 0x007F)) {
 				utflen++;
-			} else if (c > 0x07FF) {
+			} else if(c > 0x07FF) {
 				utflen += 3;
 			} else {
 				utflen += 2;
 			}
 		}
 
-		if (utflen > 65535)
-			throw new UTFDataFormatException(
-					"encoded string too long: " + utflen + " bytes");
+		if(utflen > 65_535)
+			throw new UTFDataFormatException("encoded string too long: " + utflen + " bytes");
 
-		byte[] bytearr = new byte[utflen+2];
+		byte[] bytearr = new byte[utflen + 2];
 
-		bytearr[count++] = (byte) ((utflen >>> 8) & 0xFF);
-		bytearr[count++] = (byte) ((utflen >>> 0) & 0xFF);
+		bytearr[count++] = (byte)((utflen >>> 8) & 0xFF);
+		bytearr[count++] = (byte)((utflen >>> 0) & 0xFF);
 
 		int i;
 		for(i = 0; i < strlen; i++) {
 			c = string.charAt(i);
-			if (!((c >= 0x0001) && (c <= 0x007F)))
+			if(!((c >= 0x0001) && (c <= 0x007F)))
 				break;
-			bytearr[count++] = (byte) c;
+			bytearr[count++] = (byte)c;
 		}
 
-		for (; i < strlen; i++) {
+		for(; i < strlen; i++) {
 			c = string.charAt(i);
-			if ((c >= 0x0001) && (c <= 0x007F)) {
-				bytearr[count++] = (byte) c;
+			if((c >= 0x0001) && (c <= 0x007F)) {
+				bytearr[count++] = (byte)c;
 
-			} else if (c > 0x07FF) {
-				bytearr[count++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
-				bytearr[count++] = (byte) (0x80 | ((c >>  6) & 0x3F));
-				bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+			} else if(c > 0x07FF) {
+				bytearr[count++] = (byte)(0xE0 | ((c >> 12) & 0x0F));
+				bytearr[count++] = (byte)(0x80 | ((c >> 6) & 0x3F));
+				bytearr[count++] = (byte)(0x80 | ((c >> 0) & 0x3F));
 			} else {
-				bytearr[count++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
-				bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+				bytearr[count++] = (byte)(0xC0 | ((c >> 6) & 0x1F));
+				bytearr[count++] = (byte)(0x80 | ((c >> 0) & 0x3F));
 			}
 		}
 		stream.write(bytearr, 0, utflen + 2);
 	}
 
 	/**
-	 * From Java 9 <a href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
+	 * From Java 9 <a
+	 * href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
 	 */
 	public static byte[] readNBytes(InputStream stream, int len) throws IOException {
-		if (len < 0) {
+		if(len < 0) {
 			throw new IllegalArgumentException("len < 0");
 		}
 
@@ -380,25 +382,24 @@ public class StreamUtil {
 		int remaining = len;
 		int n;
 		do {
-			byte[] buf = new byte[Math.min(remaining, 8192)];
+			byte[] buf = new byte[Math.min(remaining, 8_192)];
 			int nread = 0;
 
 			// read to EOF which may read more or less than buffer size
-			while ((n = stream.read(buf, nread,
-					Math.min(buf.length - nread, remaining))) > 0) {
+			while((n = stream.read(buf, nread, Math.min(buf.length - nread, remaining))) > 0) {
 				nread += n;
 				remaining -= n;
 			}
 
-			if (nread > 0) {
-				if (Integer.MAX_VALUE - 8 - total < nread) {
+			if(nread > 0) {
+				if(Integer.MAX_VALUE - 8 - total < nread) {
 					throw new OutOfMemoryError("Required array size too large");
 				}
 				total += nread;
-				if (result == null) {
+				if(result == null) {
 					result = buf;
 				} else {
-					if (bufs == null) {
+					if(bufs == null) {
 						bufs = new ArrayList<>();
 						bufs.add(result);
 					}
@@ -407,20 +408,19 @@ public class StreamUtil {
 			}
 			// if the last call to read returned -1 or the number of bytes
 			// requested have been read then break
-		} while (n >= 0 && remaining > 0);
+		} while(n >= 0 && remaining > 0);
 
-		if (bufs == null) {
-			if (result == null) {
+		if(bufs == null) {
+			if(result == null) {
 				return new byte[0];
 			}
-			return result.length == total ?
-					result : Arrays.copyOf(result, total);
+			return result.length == total ? result : Arrays.copyOf(result, total);
 		}
 
 		result = new byte[total];
 		int offset = 0;
 		remaining = total;
-		for (byte[] b : bufs) {
+		for(byte[] b : bufs) {
 			int count = Math.min(b.length, remaining);
 			System.arraycopy(b, 0, result, offset, count);
 			offset += count;
@@ -431,7 +431,8 @@ public class StreamUtil {
 	}
 
 	/**
-	 * From Java 9 <a href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
+	 * From Java 9 <a
+	 * href="https://github.com/AdoptOpenJDK/openjdk-jdk11/blob/master/src/java.base/share/classes/java/io/InputStream.java">InputStream.java</a>
 	 */
 	public static byte[] readAllBytes(InputStream stream) throws IOException {
 		return readNBytes(stream, Integer.MAX_VALUE);

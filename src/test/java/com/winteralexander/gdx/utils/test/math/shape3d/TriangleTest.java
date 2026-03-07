@@ -55,7 +55,7 @@ public class TriangleTest {
 
 		Random random = new Random();
 
-		for(int i = 0; i < 1000; i++) {
+		for(int i = 0; i < 1_000; i++) {
 			triangle.p1.set(random.nextFloat() * 10f - 5f,
 					random.nextFloat() * 10f - 5f,
 					random.nextFloat() * 10f - 5f);
@@ -68,8 +68,7 @@ public class TriangleTest {
 				triangle.p3.set(random.nextFloat() * 10f - 5f,
 						random.nextFloat() * 10f - 5f,
 						random.nextFloat() * 10f - 5f);
-			} while(triangle.p3.dst2(triangle.p1) < 1e-3f
-				|| triangle.p3.dst2(triangle.p2) < 1e-3f);
+			} while(triangle.p3.dst2(triangle.p1) < 1e-3f || triangle.p3.dst2(triangle.p2) < 1e-3f);
 
 			float alpha = random.nextFloat();
 			float beta = random.nextFloat() * (1f - alpha);
@@ -124,14 +123,18 @@ public class TriangleTest {
 		Random random = new Random();
 		Matrix4 transform = new Matrix4();
 
-		for(int i = 0; i < 1000; i++) {
+		for(int i = 0; i < 1_000; i++) {
 			triangle.p1.set(0f, 0f, 0f);
 			triangle.p2.set(0f, 0f, 6f);
 			triangle.p3.set(0f, 8f, 0f);
-			transform.idt().translate(random.nextFloat() * 100f - 50f,
-					random.nextFloat() * 100f - 50f,
-					random.nextFloat() * 100f - 50f)
-					.rotate(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() * 360f);
+			transform.idt()
+					.translate(random.nextFloat() * 100f - 50f,
+							random.nextFloat() * 100f - 50f,
+							random.nextFloat() * 100f - 50f)
+					.rotate(random.nextFloat(),
+							random.nextFloat(),
+							random.nextFloat(),
+							random.nextFloat() * 360f);
 
 			triangle.p1.mul(transform);
 			triangle.p2.mul(transform);
