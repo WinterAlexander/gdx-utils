@@ -151,12 +151,11 @@ public class AsyncCall<R> {
 	 * @param <T>      base type of the exceptions
 	 * @return this AsyncCaller, for chaining
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
 			Class<? extends T> type2,
 			Consumer<T> callback) {
-		// noinspection unchecked
 		except((Class<T>)type1, callback);
-		// noinspection unchecked
 		except((Class<T>)type2, callback);
 		return this;
 	}
@@ -172,12 +171,11 @@ public class AsyncCall<R> {
 	 * @param <T>      base type of the exceptions
 	 * @return this AsyncCaller, for chaining
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
 			Class<? extends T> type2,
 			Runnable callback) {
-		// noinspection unchecked
 		except((Class<T>)type1, callback);
-		// noinspection unchecked
 		except((Class<T>)type2, callback);
 		return this;
 	}
@@ -209,15 +207,13 @@ public class AsyncCall<R> {
 	/**
 	 * @see #except(Class, Class, Consumer)
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
 			Class<? extends T> type2,
 			Class<? extends T> type3,
 			Consumer<T> callback) {
-		// noinspection unchecked
 		except((Class<T>)type1, callback);
-		// noinspection unchecked
 		except((Class<T>)type2, callback);
-		// noinspection unchecked
 		except((Class<T>)type3, callback);
 		return this;
 	}
@@ -225,15 +221,13 @@ public class AsyncCall<R> {
 	/**
 	 * @see #except(Class, Class, Consumer)
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T> type1,
 			Class<? extends T> type2,
 			Class<? extends T> type3,
 			Runnable callback) {
-		// noinspection unchecked
 		except((Class<T>)type1, callback);
-		// noinspection unchecked
 		except((Class<T>)type2, callback);
-		// noinspection unchecked
 		except((Class<T>)type3, callback);
 		return this;
 	}
@@ -259,21 +253,19 @@ public class AsyncCall<R> {
 		return except(type1, type2, type3, wrapper.wrap(ex -> callback.run()));
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T>[] types,
 			Consumer<T> callback) {
-		for(Class<? extends T> type : types) {
-			// noinspection unchecked
+		for(Class<? extends T> type : types)
 			except((Class<T>)type, callback);
-		}
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> except(Class<? extends T>[] types,
 			Runnable callback) {
-		for(Class<? extends T> type : types) {
-			// noinspection unchecked
+		for(Class<? extends T> type : types)
 			except((Class<T>)type, callback);
-		}
 		return this;
 	}
 
@@ -378,21 +370,19 @@ public class AsyncCall<R> {
 		return exceptRetry(type, wrapper.wrap(ex -> retryCallback.run()));
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
 			Consumer<T> callback) {
-		for(Class<? extends T> type : types) {
-			// noinspection unchecked
+		for(Class<? extends T> type : types)
 			exceptRetry((Class<T>)type, callback);
-		}
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
 			Runnable callback) {
-		for(Class<? extends T> type : types) {
-			// noinspection unchecked
+		for(Class<? extends T> type : types)
 			exceptRetry((Class<T>)type, callback);
-		}
 		return this;
 	}
 
