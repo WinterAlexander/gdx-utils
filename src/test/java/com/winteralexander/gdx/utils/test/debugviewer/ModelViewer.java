@@ -1,6 +1,6 @@
 package com.winteralexander.gdx.utils.test.debugviewer;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -22,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import com.winteralexander.gdx.utils.input.InputUtil;
+import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import org.lwjgl.opengl.Display;
 
 import java.nio.FloatBuffer;
@@ -41,7 +41,7 @@ import static com.badlogic.gdx.graphics.VertexAttributes.Usage.*;
  *
  * @author Alexander Winter
  */
-public class ModelViewer implements ApplicationListener {
+public class ModelViewer extends ApplicationAdapter {
 	public static final Queue<Consumer<ShapeRenderer>> __debugOnlyRenderables = new Queue<>();
 
 	private ModelBatch modelBatch;
@@ -54,7 +54,7 @@ public class ModelViewer implements ApplicationListener {
 
 	private final Array<Model> models = new Array<>();
 
-	private Array<ModelInstance> instances = new Array<>();
+	private final Array<ModelInstance> instances = new Array<>();
 	private PerspectiveCamera cam;
 	private ShapeRenderer debugRenderer;
 
@@ -239,15 +239,6 @@ public class ModelViewer implements ApplicationListener {
 			debugRenderer.end();
 		}
 	}
-
-	@Override
-	public void pause() {}
-
-	@Override
-	public void resume() {}
-
-	@Override
-	public void dispose() {}
 
 	public static void start(Model... models) {
 		Display.destroy();

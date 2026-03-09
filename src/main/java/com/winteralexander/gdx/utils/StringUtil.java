@@ -175,7 +175,7 @@ public class StringUtil {
 	}
 
 	public static String quote(String value) {
-		return "\"" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"") + "\"";
+		return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
 	}
 
 	/**
