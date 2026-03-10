@@ -209,7 +209,7 @@ public class StreamUtil {
 					if(count > utflen)
 						throw new UTFDataFormatException("malformed input: partial character at "
 								+ "end");
-					char2 = (int)bytearr[count - 1];
+					char2 = bytearr[count - 1];
 					if((char2 & 0xC0) != 0x80)
 						throw new UTFDataFormatException("malformed input around byte " + count);
 					chararr[chararr_count++] = (char)(((c & 0x1F) << 6) | (char2 & 0x3F));
@@ -220,13 +220,13 @@ public class StreamUtil {
 					if(count > utflen)
 						throw new UTFDataFormatException("malformed input: partial character at "
 								+ "end");
-					char2 = (int)bytearr[count - 2];
-					char3 = (int)bytearr[count - 1];
+					char2 = bytearr[count - 2];
+					char3 = bytearr[count - 1];
 					if(((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
 						throw new UTFDataFormatException("malformed input around byte "
 								+ (count - 1));
 					chararr[chararr_count++] = (char)(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6)
-							| ((char3 & 0x3F)));
+							| (char3 & 0x3F));
 					break;
 				default:
 					/* 10xx xxxx,  1111 xxxx */
@@ -325,7 +325,7 @@ public class StreamUtil {
 		/* use charAt instead of copying String to char array */
 		for(int i = 0; i < strlen; i++) {
 			c = string.charAt(i);
-			if((c >= 0x0001) && (c <= 0x007F)) {
+			if(c >= 0x0001 && c <= 0x007F) {
 				utflen++;
 			} else if(c > 0x07FF) {
 				utflen += 3;
@@ -340,28 +340,28 @@ public class StreamUtil {
 		byte[] bytearr = new byte[utflen + 2];
 
 		bytearr[count++] = (byte)((utflen >>> 8) & 0xFF);
-		bytearr[count++] = (byte)((utflen >>> 0) & 0xFF);
+		bytearr[count++] = (byte)(utflen & 0xFF);
 
 		int i;
 		for(i = 0; i < strlen; i++) {
 			c = string.charAt(i);
-			if(!((c >= 0x0001) && (c <= 0x007F)))
+			if(!(c >= 0x0001 && c <= 0x007F))
 				break;
 			bytearr[count++] = (byte)c;
 		}
 
 		for(; i < strlen; i++) {
 			c = string.charAt(i);
-			if((c >= 0x0001) && (c <= 0x007F)) {
+			if(c >= 0x0001 && c <= 0x007F) {
 				bytearr[count++] = (byte)c;
 
 			} else if(c > 0x07FF) {
 				bytearr[count++] = (byte)(0xE0 | ((c >> 12) & 0x0F));
 				bytearr[count++] = (byte)(0x80 | ((c >> 6) & 0x3F));
-				bytearr[count++] = (byte)(0x80 | ((c >> 0) & 0x3F));
+				bytearr[count++] = (byte)(0x80 | (c & 0x3F));
 			} else {
 				bytearr[count++] = (byte)(0xC0 | ((c >> 6) & 0x1F));
-				bytearr[count++] = (byte)(0x80 | ((c >> 0) & 0x3F));
+				bytearr[count++] = (byte)(0x80 | (c & 0x3F));
 			}
 		}
 		stream.write(bytearr, 0, utflen + 2);
@@ -408,7 +408,7 @@ public class StreamUtil {
 			}
 			// if the last call to read returned -1 or the number of bytes
 			// requested have been read then break
-		} while(n >= 0 && remaining > 0);
+		} while(n == 0 && remaining > 0);
 
 		if(bufs == null) {
 			if(result == null) {
