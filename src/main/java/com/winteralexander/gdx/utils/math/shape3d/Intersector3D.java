@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Segment;
 import com.winteralexander.gdx.utils.EnumConstantCache;
-import com.winteralexander.gdx.utils.log.Logger;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 import static com.winteralexander.gdx.utils.math.shape3d.Intersector3D.LineIntersectionResult.*;
@@ -27,7 +26,7 @@ public class Intersector3D {
 	private static final Vector3 tmpIntersection1 = new Vector3(), tmpIntersection2 = new Vector3(),
 								 tmpIntersection3 = new Vector3();
 	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus();
-	private static final Vector3 tmpSegmentDir1 = new Vector3(), tmpSegmentDir2 = new Vector3();
+	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
 
 	private Intersector3D() {}
@@ -149,13 +148,13 @@ public class Intersector3D {
 			Vector3 secondEnd,
 			float tol,
 			Vector3 out) {
-		tmpSegmentDir1.set(firstEnd).sub(firstStart);
-		tmpSegmentDir2.set(secondEnd).sub(secondStart);
+		tmpSegDir1.set(firstEnd).sub(firstStart);
+		tmpSegDir2.set(secondEnd).sub(secondStart);
 
 		LineIntersectionResult result = intersectRayRay(firstStart,
-				tmpSegmentDir1,
+				tmpSegDir1,
 				secondStart,
-				tmpSegmentDir2,
+				tmpSegDir2,
 				tol,
 				out);
 
@@ -163,14 +162,14 @@ public class Intersector3D {
 			return NONE;
 
 		if(result == COLLINEAR) {
-			float t1 = tmpSegmentDir1.dot(secondStart.x - firstStart.x,
+			float t1 = tmpSegDir1.dot(secondStart.x - firstStart.x,
 							   secondStart.y - firstStart.y,
 							   secondStart.z - firstStart.z)
-					/ tmpSegmentDir1.len2();
-			float t2 = tmpSegmentDir1.dot(secondEnd.x - firstStart.x,
+					/ tmpSegDir1.len2();
+			float t2 = tmpSegDir1.dot(secondEnd.x - firstStart.x,
 							   secondEnd.y - firstStart.y,
 							   secondEnd.z - firstStart.z)
-					/ tmpSegmentDir1.len2();
+					/ tmpSegDir1.len2();
 
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
@@ -181,14 +180,12 @@ public class Intersector3D {
 			return tMin < 1f - tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = tmpSegmentDir1.dot(out.x - firstStart.x,
-						   out.y - firstStart.y,
-						   out.z - firstStart.z)
-				/ tmpSegmentDir1.len2();
-		float t2 = tmpSegmentDir2.dot(out.x - secondStart.x,
+		float t1 = tmpSegDir1.dot(out.x - firstStart.x, out.y - firstStart.y, out.z - firstStart.z)
+				/ tmpSegDir1.len2();
+		float t2 = tmpSegDir2.dot(out.x - secondStart.x,
 						   out.y - secondStart.y,
 						   out.z - secondStart.z)
-				/ tmpSegmentDir2.len2();
+				/ tmpSegDir2.len2();
 
 		if(t1 < -tol || t1 > 1f + tol || t2 < -tol || t2 > 1f + tol)
 			return NONE;
@@ -280,8 +277,8 @@ public class Intersector3D {
 				Vector3 a2 = tmpIntersection2.set(first.getPoint((i + 2) % 3 + 1)).sub(a);
 				for(int j = 0; j < 3; j++) {
 					Vector3 b = second.getPoint(j + 1);
-					Vector3 b1 = tmpSegmentDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
-					Vector3 b2 = tmpSegmentDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
+					Vector3 b1 = tmpSegDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
+					Vector3 b2 = tmpSegDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
 
 					if(a.epsilonEquals(b, tol)) {
 						boolean overlap = isBetween(a1, a2, b1, tol) || isBetween(a1, a2, b2, tol)
@@ -511,41 +508,10 @@ public class Intersector3D {
 	public static boolean intersectTriangleRay(Triangle triangle, Ray ray, float tol, Segment out) {
 		Vector3 normal = triangle.getNormal();
 		float d = -normal.dot(triangle.p1);
-		float denom = ray.direction.dot(triangle.getNormal());
-		if(abs(denom) > tol) {
+		float denom = ray.direction.dot(normal);
+		if(abs(denom) > tol)
 			// not coplanar, single point intersection
-			float t = -(ray.origin.dot(normal) + d) / denom;
-			if(t < -tol)
-				return false;
-
-			tmpSegmentDir1.set(triangle.p2).sub(triangle.p1);
-			tmpSegmentDir2.set(tmpSegmentDir1).crs(normal);
-
-			float len2 = tmpSegmentDir1.len2();
-			float height2 = tmpSegmentDir2.dot(triangle.p3.x - triangle.p1.x,
-					triangle.p3.y - triangle.p1.y,
-					triangle.p3.z - triangle.p1.z);
-
-			float x = ray.origin.x + ray.direction.x * t;
-			float y = ray.origin.y + ray.direction.y * t;
-			float z = ray.origin.z + ray.direction.z * t;
-
-			float pU = tmpSegmentDir1.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z)
-					/ len2;
-			float pV = tmpSegmentDir2.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z)
-					/ height2;
-
-			float p3U = tmpSegmentDir1.dot(triangle.p3.x - triangle.p1.x,
-								triangle.p3.y - triangle.p1.y,
-								triangle.p3.z - triangle.p1.z)
-					/ len2;
-
-			if(!inTriangle(pU, pV, p3U, tol))
-				return false;
-
-			out.b.set(out.a.set(x, y, z));
-			return true;
-		}
+			return intersectTriangleRayNonCoplanar(triangle, ray, tol, out, normal, d, denom);
 
 		if(abs(normal.dot(ray.origin) + d) > tol)
 			return false; // parallel but not coplanar
@@ -577,17 +543,18 @@ public class Intersector3D {
 				&& tmpIntersection3.epsilonEquals(tmpIntersection2, tol))
 			result3 = NONE;
 
+		int collinearCount = (result1 == COLLINEAR ? 1 : 0) + (result2 == COLLINEAR ? 1 : 0)
+				+ (result3 == COLLINEAR ? 1 : 0);
+		if(collinearCount > 1)
+			throw new IllegalStateException("Multiple triangle edges collinear with ray");
+
 		if(result1 == COLLINEAR) {
-			if(result2 == COLLINEAR || result3 == COLLINEAR)
-				throw new IllegalStateException("Multiple triangle edges collinear with ray");
 			out.a.set(triangle.p1);
 			out.b.set(triangle.p2);
 			return true;
 		}
 
 		if(result2 == COLLINEAR) {
-			if(result3 == COLLINEAR)
-				throw new IllegalStateException("Multiple triangle edges collinear with ray");
 			out.a.set(triangle.p2);
 			out.b.set(triangle.p3);
 			return true;
@@ -654,41 +621,73 @@ public class Intersector3D {
 		return true;
 	}
 
+	private static boolean intersectTriangleRayNonCoplanar(Triangle triangle,
+			Ray ray,
+			float tol,
+			Segment out,
+			Vector3 normal,
+			float d,
+			float denom) {
+		float t = -(ray.origin.dot(normal) + d) / denom;
+		if(t < -tol)
+			return false;
+
+		tmpSegDir1.set(triangle.p2).sub(triangle.p1);
+		tmpSegDir2.set(tmpSegDir1).crs(normal);
+
+		float len2 = tmpSegDir1.len2();
+		float h2 = tmpSegDir2.dot(triangle.p3.x - triangle.p1.x,
+				triangle.p3.y - triangle.p1.y,
+				triangle.p3.z - triangle.p1.z);
+
+		float x = ray.origin.x + ray.direction.x * t;
+		float y = ray.origin.y + ray.direction.y * t;
+		float z = ray.origin.z + ray.direction.z * t;
+
+		float pU = tmpSegDir1.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / len2;
+		float pV = tmpSegDir2.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / h2;
+
+		float p3U = tmpSegDir1.dot(triangle.p3.x - triangle.p1.x,
+							triangle.p3.y - triangle.p1.y,
+							triangle.p3.z - triangle.p1.z)
+				/ len2;
+
+		if(!inTriangle(pU, pV, p3U, tol))
+			return false;
+
+		out.b.set(out.a.set(x, y, z));
+		return true;
+	}
+
 	private static boolean inTriangle(float pU, float pV, float p3U, float tol) {
 		// check pV > 0 (point is above the floor), applies to all cases
 		if(pV < -tol)
 			return false;
 
 		if(p3U < tol) {
-			if(p3U > -tol) {
+			if(p3U > -tol)
 				// .
 				// |\
 				// ._\
 				// this is for the case where p3U is on top of p1 so close to 0, in this case
 				// check pU > 0 and pV < 1 - pU (under the diagonal)
-				if(pU < -tol || pV - (1f - pU) > tol)
-					return false;
-			} else {
-				// ._
-				//  \ - _
-				//   \____- .
-				// this is for the case where p3U is to the left of p1, in this case check
-				// for both diagonals
-				if(pV - pU / p3U < tol || pV - (1 - pU) / (1 - p3U) > tol)
-					return false;
-			}
-		} else {
-			if(pU < -tol || pV - pU / p3U > tol)
-				return false;
+				return pU >= -tol && pV - (1f - pU) <= tol;
 
-			if(Math.abs(p3U - 1f) > tol) {
-				if((p3U < 1f ? 1f : -1f) * (pV - (1 - pU) / (1 - p3U)) > tol)
-					return false;
-			} else if(pU - 1f > tol)
-				return false;
+			// ._
+			//  \ - _
+			//   \____- .
+			// this is for the case where p3U is to the left of p1, in this case check
+			// for both diagonals
+			return pV - pU / p3U >= tol && pV - (1 - pU) / (1 - p3U) <= tol;
 		}
 
-		return true;
+		if(pU < -tol || pV - pU / p3U > tol)
+			return false;
+
+		if(Math.abs(p3U - 1f) > tol)
+			return (p3U < 1f ? 1f : -1f) * (pV - (1 - pU) / (1 - p3U)) <= tol;
+
+		return pU - 1f <= tol;
 	}
 
 	/**
@@ -701,10 +700,10 @@ public class Intersector3D {
 	 * @return true if they are intersecting, otherwise false
 	 */
 	public static boolean intersectCoplanarTriangles(Triangle first, Triangle second, float tol) {
-		tmpSegmentDir1.set(first.p2).sub(first.p1);
-		tmpSegmentDir2.set(first.p3).sub(first.p1);
+		tmpSegDir1.set(first.p2).sub(first.p1);
+		tmpSegDir2.set(first.p3).sub(first.p1);
 
-		float longestSide1 = Math.max(tmpSegmentDir1.len2(), tmpSegmentDir2.len2());
+		float longestSide1 = Math.max(tmpSegDir1.len2(), tmpSegDir2.len2());
 		longestSide1 = Math.max(longestSide1,
 				pow2(first.p2.x - first.p3.x) + pow2(first.p2.y - first.p3.y)
 						+ pow2(first.p2.z - first.p3.z));
@@ -726,26 +725,26 @@ public class Intersector3D {
 		// otherwise the first triangle can't fit into the second one
 
 		tmpTriangle.set(second).sub(first.p1);
-		tmpSegmentDir2.set(tmpSegmentDir1).crs(first.getNormal()).scl(-1f);
+		tmpSegDir2.set(tmpSegDir1).crs(first.getNormal()).scl(-1f);
 
-		float len2 = tmpSegmentDir1.len2();
-		float height2 = tmpSegmentDir2.dot(first.p3.x - first.p1.x,
+		float len2 = tmpSegDir1.len2();
+		float height2 = tmpSegDir2.dot(first.p3.x - first.p1.x,
 				first.p3.y - first.p1.y,
 				first.p3.z - first.p1.z);
 
-		float peakU = tmpSegmentDir1.dot(first.p3.x - first.p1.x,
+		float peakU = tmpSegDir1.dot(first.p3.x - first.p1.x,
 							  first.p3.y - first.p1.y,
 							  first.p3.z - first.p1.z)
 				/ len2;
 
-		float p1U = tmpSegmentDir1.dot(tmpTriangle.p1) / len2;
-		float p1V = tmpSegmentDir2.dot(tmpTriangle.p1) / height2;
+		float p1U = tmpSegDir1.dot(tmpTriangle.p1) / len2;
+		float p1V = tmpSegDir2.dot(tmpTriangle.p1) / height2;
 
-		float p2U = tmpSegmentDir1.dot(tmpTriangle.p2) / len2;
-		float p2V = tmpSegmentDir2.dot(tmpTriangle.p2) / height2;
+		float p2U = tmpSegDir1.dot(tmpTriangle.p2) / len2;
+		float p2V = tmpSegDir2.dot(tmpTriangle.p2) / height2;
 
-		float p3U = tmpSegmentDir1.dot(tmpTriangle.p3) / len2;
-		float p3V = tmpSegmentDir2.dot(tmpTriangle.p3) / height2;
+		float p3U = tmpSegDir1.dot(tmpTriangle.p3) / len2;
+		float p3V = tmpSegDir2.dot(tmpTriangle.p3) / height2;
 
 		if(inTriangle(p1U, p1V, peakU, tol))
 			return true;

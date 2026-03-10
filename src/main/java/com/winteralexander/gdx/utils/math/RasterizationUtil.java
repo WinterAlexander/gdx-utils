@@ -120,7 +120,7 @@ public class RasterizationUtil {
 	 * line. Results may not look great for rendering, but are great for drawing pixels on a grid
 	 * with a brush. Algorithm is inspired from bresenham and operates in O(n) where n is the number
 	 * of output tiles. This algorithm works with real inputs instead of integers and the line
-	 * will be considered from it's real coordinates when checking for intersection. If the
+	 * will be considered from its real coordinates when checking for intersection. If the
 	 * resolution need to be different, the input may be scaled.
 	 *
 	 * @param startX x coordinate of the start of the line

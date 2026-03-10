@@ -19,7 +19,10 @@ public class SegmentPlus extends Segment {
 		super(a, b);
 	}
 
-	public SegmentPlus(float aX, float aY, float aZ, float bX, float bY, float bZ) {
+	// clang-format off
+	public SegmentPlus(float aX, float aY, float aZ,
+	                   float bX, float bY, float bZ) {
+		// clang-format on
 		super(aX, aY, aZ, bX, bY, bZ);
 	}
 

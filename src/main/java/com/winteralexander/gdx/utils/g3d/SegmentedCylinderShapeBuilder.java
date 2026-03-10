@@ -61,45 +61,25 @@ public class SegmentedCylinderShapeBuilder {
 		if(!closed)
 			return;
 
+		// clang-format off
 		EllipseShapeBuilder.build(builder,
-				width,
-				depth,
-				0f,
-				0f,
+				width, depth,
+				0f, 0f,
 				divisions,
-				0f,
-				height / 2f,
-				0f,
-				0f,
-				1f,
-				0f,
-				1f,
-				0f,
-				0f,
-				0f,
-				0f,
-				1f,
-				0f,
-				360f);
+				0f, height / 2f, 0f,
+				0f, 1f, 0f,
+				1f, 0f, 0f,
+				0f, 0f, 1f,
+				0f, 360f);
 		EllipseShapeBuilder.build(builder,
-				width,
-				depth,
-				0f,
-				0f,
+				width, depth,
+				0f, 0f,
 				divisions,
-				0f,
-				-height / 2f,
-				0f,
-				0f,
-				-1f,
-				0f,
-				-1f,
-				0f,
-				0f,
-				0f,
-				0f,
-				1f,
-				-180f,
-				180f);
+				0f, -height / 2f, 0f,
+				0f, -1f, 0f,
+				-1f, 0f, 0f,
+				0f, 0f, 1f,
+				-180f, 180f);
+		// clang-format on
 	}
 }

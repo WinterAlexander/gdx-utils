@@ -117,14 +117,30 @@ public class VectorUtil {
 
 	public static float getComponent(Vector3 vec, int component) {
 		ensureInRange(component, 0, 3, "component");
-
-		return component == 0 ? vec.x : component == 1 ? vec.y : vec.z;
+		
+		switch(component) {
+			case 0:
+				return vec.x;
+			case 1:
+				return vec.y;
+			default:
+				return vec.z;
+		}
 	}
 
 	public static float getComponent(Vector4 vec, int component) {
 		ensureInRange(component, 0, 4, "component");
 
-		return component == 0 ? vec.x : component == 1 ? vec.y : component == 2 ? vec.z : vec.w;
+		switch(component) {
+			case 0:
+				return vec.x;
+			case 1:
+				return vec.y;
+			case 2:
+				return vec.z;
+			default:
+				return vec.w;
+		}
 	}
 
 	public static void setFromArray(Vector2 vec, float[] array, int offset) {

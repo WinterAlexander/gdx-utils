@@ -80,22 +80,13 @@ public class PlaneUtilTest {
 		Plane plane1 = new Plane(new Vector3(0f, 1f, 0f), 0.4f);
 		Plane plane2 = new Plane(new Vector3(0f, 1f, 0f), -5.6f);
 		Matrix4 matrix4 = new Matrix4();
-		matrix4.set(new float[] {0.84984475f,
-				0.0f,
-				0.0f,
-				0.0f,
-				0.0f,
-				0.8380602f,
-				0.8337162f,
-				0.83205044f,
-				0.0f,
-				1.257091f,
-				-0.55581045f,
-				-0.55469996f,
-				0.0f,
-				-9.386282f,
-				6.724224f,
-				8.708791f});
+		// clang-format off
+		matrix4.set(new float[] {
+				0.84984475f, 0.0f, 0.0f, 0.0f,
+				0.0f, 0.8380602f, 0.8337162f, 0.83205044f,
+				0.0f, 1.257091f, -0.55581045f, -0.55469996f,
+				0.0f, -9.386282f, 6.724224f, 8.708791f});
+		// clang-format on
 
 		PlaneUtil.mul(plane1, matrix4);
 		PlaneUtil.mul(plane2, matrix4);

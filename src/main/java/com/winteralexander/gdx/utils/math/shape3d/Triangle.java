@@ -36,15 +36,11 @@ public class Triangle {
 		set(array, offset);
 	}
 
-	public Triangle(float x1,
-			float y1,
-			float z1,
-			float x2,
-			float y2,
-			float z2,
-			float x3,
-			float y3,
-			float z3) {
+	// clang-format off
+	public Triangle(float x1, float y1, float z1,
+			float x2, float y2, float z2,
+			float x3, float y3, float z3) {
+		// clang-format on
 		set(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 	}
 
@@ -64,15 +60,11 @@ public class Triangle {
 		return normal;
 	}
 
-	public Triangle set(float x1,
-			float y1,
-			float z1,
-			float x2,
-			float y2,
-			float z2,
-			float x3,
-			float y3,
-			float z3) {
+	// clang-format off
+	public Triangle set(float x1, float y1, float z1,
+			float x2, float y2, float z2,
+			float x3, float y3, float z3) {
+		// clang-format on
 		p1.set(x1, y1, z1);
 		p2.set(x2, y2, z2);
 		p3.set(x3, y3, z3);
