@@ -27,9 +27,9 @@ public class PropertiesFileLoader
 
 	@Override
 	public Properties load(AssetManager assetManager,
-	                       String fileName,
-	                       FileHandle fileHandle,
-	                       AssetLoaderParameters<Properties> param) {
+			String fileName,
+			FileHandle fileHandle,
+			AssetLoaderParameters<Properties> param) {
 		Properties properties = new Properties();
 		try {
 			properties.load(fileHandle.reader());
@@ -44,8 +44,8 @@ public class PropertiesFileLoader
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
-	                                              FileHandle fileHandle,
-	                                              AssetLoaderParameters<Properties> param) {
+			FileHandle fileHandle,
+			AssetLoaderParameters<Properties> param) {
 		return null;
 	}
 }

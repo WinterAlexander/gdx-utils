@@ -20,7 +20,8 @@ public class SimpleLogger implements Logger {
 
 	public void log(LogLevel logLevel, String message, Throwable ex) {
 		if(this.logLevel.ordinal() >= logLevel.ordinal()) {
-			System.out.println(timeFormat.format(new Date()) + " [" + logLevel.name() + "] " + message);
+			System.out.println(timeFormat.format(new Date()) + " [" + logLevel.name() + "] "
+					+ message);
 			if(ex != null)
 				ex.printStackTrace(System.out);
 		}

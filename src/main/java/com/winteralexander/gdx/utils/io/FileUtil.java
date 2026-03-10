@@ -57,7 +57,8 @@ public class FileUtil {
 				return;
 
 			if(!directory.delete())
-				throw new IOException("Can't delete file " + directory.getAbsolutePath() + " to get equivalent directory");
+				throw new IOException("Can't delete file " + directory.getAbsolutePath()
+						+ " to get equivalent directory");
 		}
 
 		if(!directory.mkdirs() && (!directory.isDirectory()))
@@ -81,7 +82,8 @@ public class FileUtil {
 				return;
 
 			if(!file.delete())
-				throw new IOException("Can't delete directory " + file.getAbsolutePath() + " to get equivalent file");
+				throw new IOException("Can't delete directory " + file.getAbsolutePath()
+						+ " to get equivalent file");
 		}
 
 		if(!file.createNewFile() && (!file.isFile()))
@@ -167,7 +169,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Gets the file of the "AppData" directory, the folder in which application data should be saved
+	 * Gets the file of the "AppData" directory, the folder in which application data should be
+	 * saved
 	 *
 	 * @return file representing AppData directory
 	 */
@@ -185,7 +188,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Gets the path of the "AppData" directory, the folder in which application data should be saved
+	 * Gets the path of the "AppData" directory, the folder in which application data should be
+	 * saved
 	 *
 	 * @return path ot AppData directory
 	 */
@@ -256,7 +260,8 @@ public class FileUtil {
 		if(!classPath.startsWith("jar"))
 			throw new IOException("class does not come from jar");
 
-		return new URL(classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF");
+		return new URL(classPath.substring(0, classPath.lastIndexOf("!") + 1)
+				+ "/META-INF/MANIFEST.MF");
 	}
 
 	/**
@@ -373,8 +378,9 @@ public class FileUtil {
 		return out;
 	}
 
-	private static void listResourcesFromJar(File jarFile, Predicate<String> condition, List<String> out)
-			throws IOException {
+	private static void listResourcesFromJar(File jarFile,
+			Predicate<String> condition,
+			List<String> out) throws IOException {
 		try(ZipFile zf = new ZipFile(jarFile)) {
 			Enumeration<? extends ZipEntry> e = zf.entries();
 			while(e.hasMoreElements()) {
@@ -386,11 +392,14 @@ public class FileUtil {
 		}
 	}
 
-	private static void listResourcesFromDir(File root, File directory, Predicate<String> condition, List<String> out)
-			throws IOException {
+	private static void listResourcesFromDir(File root,
+			File directory,
+			Predicate<String> condition,
+			List<String> out) throws IOException {
 		File[] fileList = directory.listFiles();
 		if(fileList == null)
-			throw new IOException("listFiles returned null for file " + directory + " in listResourcesFromDir");
+			throw new IOException("listFiles returned null for file " + directory
+					+ " in listResourcesFromDir");
 		for(File file : fileList) {
 			if(file.isDirectory()) {
 				listResourcesFromDir(root, file, condition, out);

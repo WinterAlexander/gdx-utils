@@ -17,15 +17,21 @@ public class SegmentedCylinderShapeBuilder {
 	private static final Matrix4 vertexTransform = new Matrix4();
 
 	public static void build(MeshPartBuilder builder,
-	                         float width, float height, float depth,
-	                         int segments, int divisions) {
+			float width,
+			float height,
+			float depth,
+			int segments,
+			int divisions) {
 		build(builder, width, height, depth, segments, divisions, true);
 	}
 
 	public static void build(MeshPartBuilder builder,
-	                         float width, float height, float depth,
-	                         int segments, int divisions,
-	                         boolean closed) {
+			float width,
+			float height,
+			float depth,
+			int segments,
+			int divisions,
+			boolean closed) {
 
 		float segmentHeight = height / segments;
 
@@ -33,11 +39,20 @@ public class SegmentedCylinderShapeBuilder {
 		builder.getVertexTransform(prevVertexTransform);
 
 		for(int i = 0; i < segments; i++) {
-			vertexTransform.setToTranslation(0f, height / 2f - segmentHeight * (i + 1f) + segmentHeight / 2f, 0f);
+			vertexTransform.setToTranslation(0f,
+					height / 2f - segmentHeight * (i + 1f) + segmentHeight / 2f,
+					0f);
 			vertexTransform.mul(prevVertexTransform);
 			builder.setVertexTransform(vertexTransform);
 			builder.setUVRange(0f, (float)i / segments, 1f, (i + 1f) / segments);
-			CylinderShapeBuilder.build(builder, width, segmentHeight, depth, divisions, 0, 360, false);
+			CylinderShapeBuilder.build(builder,
+					width,
+					segmentHeight,
+					depth,
+					divisions,
+					0,
+					360,
+					false);
 		}
 		builder.setVertexTransform(prevVertexTransform);
 		builder.setVertexTransformationEnabled(transform);
@@ -46,6 +61,7 @@ public class SegmentedCylinderShapeBuilder {
 		if(!closed)
 			return;
 
+		// clang-format off
 		EllipseShapeBuilder.build(builder,
 				width, depth,
 				0f, 0f,
@@ -64,5 +80,6 @@ public class SegmentedCylinderShapeBuilder {
 				-1f, 0f, 0f,
 				0f, 0f, 1f,
 				-180f, 180f);
+		// clang-format on
 	}
 }

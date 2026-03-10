@@ -19,8 +19,7 @@ import java.net.SocketException;
  */
 public class SocketUtil {
 	public static void applyHints(Socket socket, SocketHints hints) throws SocketException {
-		socket.setPerformancePreferences(
-				hints.performancePrefConnectionTime,
+		socket.setPerformancePreferences(hints.performancePrefConnectionTime,
 				hints.performancePrefLatency,
 				hints.performancePrefBandwidth);
 		socket.setTrafficClass(hints.trafficClass);
@@ -32,9 +31,9 @@ public class SocketUtil {
 		socket.setSoTimeout(hints.socketTimeout);
 	}
 
-	public static void applyHints(ServerSocket serverSocket, ServerSocketHints hints) throws SocketException {
-		serverSocket.setPerformancePreferences(
-				hints.performancePrefConnectionTime,
+	public static void applyHints(ServerSocket serverSocket, ServerSocketHints hints)
+			throws SocketException {
+		serverSocket.setPerformancePreferences(hints.performancePrefConnectionTime,
 				hints.performancePrefLatency,
 				hints.performancePrefBandwidth);
 		serverSocket.setReuseAddress(hints.reuseAddress);

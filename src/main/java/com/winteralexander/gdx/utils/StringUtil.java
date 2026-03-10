@@ -12,6 +12,7 @@ import java.util.Locale;
  * @author Alexander Winter
  */
 public class StringUtil {
+	// clang-format off
 	private static final char[] HEX_LOOKUP_TABLE_LOWER = new char[] {
 			0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 			0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66
@@ -20,6 +21,7 @@ public class StringUtil {
 			0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 			0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46
 	};
+	// clang-format on
 
 	private StringUtil() {}
 
@@ -55,10 +57,7 @@ public class StringUtil {
 	}
 
 	public static boolean matchesFilter(String input, String filter) {
-		if(filter == null
-				|| filter.isEmpty()
-				|| input == null
-				|| input.isEmpty())
+		if(filter == null || filter.isEmpty() || input == null || input.isEmpty())
 			return true;
 
 		return containsIgnoreCase(input, filter);
@@ -66,7 +65,8 @@ public class StringUtil {
 
 	public static String toString(long value, String digitSeparator) {
 		char[] chars = Long.toString(value).toCharArray();
-		StringBuilder sb = new StringBuilder(Math.round(chars.length * 1.25f)); //one digit separator every 4 chars
+		StringBuilder sb = new StringBuilder(Math.round(chars.length
+				* 1.25f)); // one digit separator every 4 chars
 
 		for(int a = 0, i = chars.length - 1; i >= 0; a++, i--) {
 			sb.insert(0, chars[i]);
@@ -85,9 +85,7 @@ public class StringUtil {
 	 * @return english parameter in ordinal conversion
 	 */
 	public static int ordinalEnglishParam(int value) {
-		return value % 100 >= 11 && value % 100 <= 13
-				? 0
-				: value % 10;
+		return value % 100 >= 11 && value % 100 <= 13 ? 0 : value % 10;
 	}
 
 	/**
@@ -97,9 +95,7 @@ public class StringUtil {
 	 * @return swedish parameter in ordinal conversion
 	 */
 	public static int ordinalSwedishParam(int value) {
-		return value % 100 >= 11 && value % 100 <= 12
-				? 0
-				: value % 10;
+		return value % 100 >= 11 && value % 100 <= 12 ? 0 : value % 10;
 	}
 
 	/**
@@ -126,8 +122,7 @@ public class StringUtil {
 	}
 
 	public static boolean containsIgnoreCase(String container, String element) {
-		return container.toLowerCase(Locale.ENGLISH)
-				.contains(element.toLowerCase(Locale.ENGLISH));
+		return container.toLowerCase(Locale.ENGLISH).contains(element.toLowerCase(Locale.ENGLISH));
 	}
 
 	public static boolean containsIgnoreCase(String[] array, String element) {
@@ -158,8 +153,7 @@ public class StringUtil {
 	}
 
 	public static String quote(String value) {
-		return "\"" + value.replaceAll("\\\\", "\\\\\\\\")
-				.replaceAll("\"", "\\\\\"") + "\"";
+		return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
 	}
 
 	/**

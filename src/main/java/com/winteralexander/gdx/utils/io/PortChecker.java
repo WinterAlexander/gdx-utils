@@ -11,8 +11,8 @@ import java.net.ServerSocket;
  * @author Alexander Winter
  */
 public class PortChecker {
-	public static final int MIN_PORT_NUMBER = 1100;
-	public static final int MAX_PORT_NUMBER = 49151;
+	public static final int MIN_PORT_NUMBER = 1_100;
+	public static final int MAX_PORT_NUMBER = 49_151;
 
 	private PortChecker() {}
 

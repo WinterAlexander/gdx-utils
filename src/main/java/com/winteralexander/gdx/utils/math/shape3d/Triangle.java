@@ -36,9 +36,11 @@ public class Triangle {
 		set(array, offset);
 	}
 
+	// clang-format off
 	public Triangle(float x1, float y1, float z1,
-	                float x2, float y2, float z2,
-	                float x3, float y3, float z3) {
+			float x2, float y2, float z2,
+			float x3, float y3, float z3) {
+		// clang-format on
 		set(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 	}
 
@@ -58,9 +60,11 @@ public class Triangle {
 		return normal;
 	}
 
+	// clang-format off
 	public Triangle set(float x1, float y1, float z1,
-	                    float x2, float y2, float z2,
-	                    float x3, float y3, float z3) {
+			float x2, float y2, float z2,
+			float x3, float y3, float z3) {
+		// clang-format on
 		p1.set(x1, y1, z1);
 		p2.set(x2, y2, z2);
 		p3.set(x3, y3, z3);
@@ -72,9 +76,15 @@ public class Triangle {
 	}
 
 	public Triangle set(float[] array, int offset) {
-		return set(array[offset], array[offset + 1], array[offset + 2],
-				array[offset + 3], array[offset + 4], array[offset + 5],
-				array[offset + 6], array[offset + 7], array[offset + 8]);
+		return set(array[offset],
+				array[offset + 1],
+				array[offset + 2],
+				array[offset + 3],
+				array[offset + 4],
+				array[offset + 5],
+				array[offset + 6],
+				array[offset + 7],
+				array[offset + 8]);
 	}
 
 	public Triangle set(Vector3 p1, Vector3 p2, Vector3 p3) {
@@ -112,8 +122,7 @@ public class Triangle {
 	}
 
 	public boolean epsilonEquals(Triangle other, float epsilon) {
-		return p1.epsilonEquals(other.p1, epsilon)
-				&& p2.epsilonEquals(other.p2, epsilon)
+		return p1.epsilonEquals(other.p1, epsilon) && p2.epsilonEquals(other.p2, epsilon)
 				&& p3.epsilonEquals(other.p3, epsilon);
 	}
 
@@ -122,9 +131,7 @@ public class Triangle {
 		tmpDir2.set(tmpDir1).crs(getNormal());
 
 		float len2 = tmpDir1.len2();
-		float height2 = tmpDir2.dot(p3.x - p1.x,
-				p3.y - p1.y,
-				p3.z - p1.z);
+		float height2 = tmpDir2.dot(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
 
 		float x = tmpDir1.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / len2;
 		float y = tmpDir2.dot(point.x - p1.x, point.y - p1.y, point.z - p1.z) / height2;
@@ -143,9 +150,7 @@ public class Triangle {
 		tmpDir2.set(tmpDir1).crs(getNormal()).nor();
 
 		float base = tmpDir1.len();
-		float height = Math.abs(tmpDir2.dot(p3.x - p1.x,
-				p3.y - p1.y,
-				p3.z - p1.z));
+		float height = Math.abs(tmpDir2.dot(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z));
 
 		return base * height / 2f;
 	}
@@ -202,10 +207,14 @@ public class Triangle {
 
 	public Vector3 getPoint(int number) {
 		switch(number) {
-			case 1: return p1;
-			case 2: return p2;
-			case 3: return p3;
-			default: throw new IllegalArgumentException("Point number must be 1, 2 or 3");
+			case 1:
+				return p1;
+			case 2:
+				return p2;
+			case 3:
+				return p3;
+			default:
+				throw new IllegalArgumentException("Point number must be 1, 2 or 3");
 		}
 	}
 

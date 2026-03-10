@@ -146,13 +146,15 @@ public class GridDirectionTest {
 	@Test
 	public void testOppositesAreOpposites() {
 		for(GridDirection4 dir : GridDirection4.values)
-			assertEquals("GridDirection4." + dir + " is not opposite to GridDirection4." + dir.opposite(),
+			assertEquals("GridDirection4." + dir + " is not opposite to GridDirection4."
+							+ dir.opposite(),
 					-1f,
 					dir.opposite().asVector().dot(dir.asVector()),
 					0.0001f);
 
 		for(GridDirection8 dir : GridDirection8.values)
-			assertEquals("GridDirection8." + dir + " is not opposite to GridDirection8." + dir.opposite(),
+			assertEquals("GridDirection8." + dir + " is not opposite to GridDirection8."
+							+ dir.opposite(),
 					-1f,
 					dir.opposite().asNormal().dot(dir.asNormal()),
 					0.0001f);
@@ -173,9 +175,16 @@ public class GridDirectionTest {
 
 		for(GridDirection8 dir : GridDirection8.values) {
 			assertEquals(0f, dir.nextClockwiseOrthogonal().asVector().dot(dir.asVector()), 0.0001f);
-			assertEquals(0f, dir.nextCounterClockwiseOrthogonal().asVector().dot(dir.asVector()), 0.0001f);
-			assertEquals(0f, dir.nextClockwise().nextClockwise().asVector().dot(dir.asVector()), 0.0001f);
-			assertEquals(0f, dir.nextCounterClockwise().nextCounterClockwise().asVector().dot(dir.asVector()), 0.0001f);
+			assertEquals(0f,
+					dir.nextCounterClockwiseOrthogonal().asVector().dot(dir.asVector()),
+					0.0001f);
+			assertEquals(0f,
+					dir.nextClockwise().nextClockwise().asVector().dot(dir.asVector()),
+					0.0001f);
+			assertEquals(0f,
+					dir.nextCounterClockwise().nextCounterClockwise().asVector().dot(
+							dir.asVector()),
+					0.0001f);
 		}
 
 		for(GridCorner dir : GridCorner.values) {

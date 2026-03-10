@@ -23,8 +23,8 @@ public class TypePool {
 	}
 
 	/**
-	 * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
-	 * if this is not the first time this pool has been requested.
+	 * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map.
+	 * Note the max size is ignored if this is not the first time this pool has been requested.
 	 */
 	public <T> Pool<T> get(Class<T> type, int max) {
 		Pool<?> pool = typePools.get(type);
@@ -37,8 +37,8 @@ public class TypePool {
 	}
 
 	/**
-	 * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
-	 * is 100.
+	 * Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map.
+	 * The max size of the pool used is 100.
 	 */
 	public <T> Pool<T> get(Class<T> type) {
 		return get(type, 100);
@@ -77,8 +77,8 @@ public class TypePool {
 	}
 
 	/**
-	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
-	 * don't need to be from the same pool.
+	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array
+	 * are silently ignored. Objects don't need to be from the same pool.
 	 *
 	 * @param objects objects to free
 	 */
@@ -87,10 +87,12 @@ public class TypePool {
 	}
 
 	/**
-	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored.
+	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array
+	 * are silently ignored.
 	 *
 	 * @param objects objects to free
-	 * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object.
+	 * @param samePool If true, objects don't need to be from the same pool but the pool must be
+	 *         looked up for each object.
 	 */
 	public void freeAll(Array<?> objects, boolean samePool) {
 		if(objects == null)

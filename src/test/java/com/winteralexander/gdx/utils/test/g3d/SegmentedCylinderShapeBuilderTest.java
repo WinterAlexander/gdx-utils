@@ -32,37 +32,60 @@ public class SegmentedCylinderShapeBuilderTest {
 	@Test
 	public void testSegmentedCylinderSphere() {
 		ModelBuilder builder = new ModelBuilder();
-		int attrs = VertexAttributes.Usage.Position
-				| VertexAttributes.Usage.Normal
+		int attrs = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
 				| VertexAttributes.Usage.TextureCoordinates;
 
 		builder.begin();
 		SegmentedCylinderShapeBuilder.build(
-				builder.part("cyl", GL_TRIANGLES, attrs, new Material()), 0.5f, 1f, 0.5f, 5, 5);
+				builder.part("cyl", GL_TRIANGLES, attrs, new Material()),
+				0.5f,
+				1f,
+				0.5f,
+				5,
+				5);
 		Model ico0 = builder.end();
 		ico0.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 2f));
 		builder.begin();
 		SegmentedCylinderShapeBuilder.build(
-				builder.part("cyl", GL_TRIANGLES, attrs, new Material()), 0.5f, 1f, 0.5f, 8, 8);
+				builder.part("cyl", GL_TRIANGLES, attrs, new Material()),
+				0.5f,
+				1f,
+				0.5f,
+				8,
+				8);
 		Model ico1 = builder.end();
 		ico1.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 4f));
 		builder.begin();
 		SegmentedCylinderShapeBuilder.build(
-				builder.part("cyl", GL_TRIANGLES, attrs, new Material()), 0.5f, 1f, 0.5f, 10, 10);
+				builder.part("cyl", GL_TRIANGLES, attrs, new Material()),
+				0.5f,
+				1f,
+				0.5f,
+				10,
+				10);
 		Model ico2 = builder.end();
 		ico2.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 6f));
 		builder.begin();
 		SegmentedCylinderShapeBuilder.build(
-				builder.part("cyl", GL_TRIANGLES, attrs, new Material()), 0.5f, 1f, 0.5f, 20, 20);
+				builder.part("cyl", GL_TRIANGLES, attrs, new Material()),
+				0.5f,
+				1f,
+				0.5f,
+				20,
+				20);
 		Model ico3 = builder.end();
 		ico3.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 8f));
 		builder.begin();
 		SegmentedCylinderShapeBuilder.build(
-				builder.part("cyl", GL_TRIANGLES, attrs, new Material()), 0.5f, 1f, 0.5f, 50, 50);
+				builder.part("cyl", GL_TRIANGLES, attrs, new Material()),
+				0.5f,
+				1f,
+				0.5f,
+				50,
+				50);
 		Model ico4 = builder.end();
 		ico4.meshes.get(0).transform(new Matrix4().translate(0f, 0f, 10f));
 
 		ModelViewer.start(ico0, ico1, ico2, ico3, ico4);
 	}
-
 }

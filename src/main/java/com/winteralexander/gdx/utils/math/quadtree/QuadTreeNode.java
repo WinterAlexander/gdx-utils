@@ -54,11 +54,9 @@ public class QuadTreeNode<T extends Bounded> {
 		entities.clear();
 
 		// Clear out each child node
-		for(int i = 0; i < childNodes.length; i++)
-		{
+		for(int i = 0; i < childNodes.length; i++) {
 			QuadTreeNode<T> currNode = childNodes[i];
-			if(currNode != null)
-			{
+			if(currNode != null) {
 				currNode.clear();
 				quadTree.pool.free(currNode);
 				childNodes[i] = null;
@@ -148,8 +146,7 @@ public class QuadTreeNode<T extends Bounded> {
 
 		// If we have any child nodes, see if the entity could be contained
 		// completely inside of one of them
-		if(childNodes[0] != null)
-		{
+		if(childNodes[0] != null) {
 			entity.getBounds(quadTree.tmpRectangle);
 			int index = indexOf(getQuadrant(quadTree.tmpRectangle));
 
@@ -170,20 +167,17 @@ public class QuadTreeNode<T extends Bounded> {
 			subdivide();
 
 			int i = 0;
-			while(i < entities.size)
-			{
+			while(i < entities.size) {
 				// Move and insert what we can into the child nodes. If it can't
 				// be fully contained in the child nodes, leave it at this level.
 				T other = entities.get(i);
 				other.getBounds(quadTree.tmpRectangle);
 				int index = indexOf(getQuadrant(quadTree.tmpRectangle));
 
-				if(index != -1)
-				{
+				if(index != -1) {
 					entities.removeIndex(i);
 					childNodes[index].insert(other);
-				}
-				else
+				} else
 					i++;
 			}
 		}
@@ -209,30 +203,31 @@ public class QuadTreeNode<T extends Bounded> {
 				for(QuadTreeNode<T> node : childNodes)
 					node.retrieve(out, rectangle); // then all
 
-			else switch(quadrant) {
-				case ALIGN_TOP:
-					childNodes[0].retrieve(out, rectangle);
-					childNodes[1].retrieve(out, rectangle);
-					break;
+			else
+				switch(quadrant) {
+					case ALIGN_TOP:
+						childNodes[0].retrieve(out, rectangle);
+						childNodes[1].retrieve(out, rectangle);
+						break;
 
-				case ALIGN_BOTTOM:
-					childNodes[2].retrieve(out, rectangle);
-					childNodes[3].retrieve(out, rectangle);
-					break;
+					case ALIGN_BOTTOM:
+						childNodes[2].retrieve(out, rectangle);
+						childNodes[3].retrieve(out, rectangle);
+						break;
 
-				case ALIGN_LEFT:
-					childNodes[0].retrieve(out, rectangle);
-					childNodes[3].retrieve(out, rectangle);
-					break;
+					case ALIGN_LEFT:
+						childNodes[0].retrieve(out, rectangle);
+						childNodes[3].retrieve(out, rectangle);
+						break;
 
-				case ALIGN_RIGHT:
-					childNodes[1].retrieve(out, rectangle);
-					childNodes[2].retrieve(out, rectangle);
-					break;
+					case ALIGN_RIGHT:
+						childNodes[1].retrieve(out, rectangle);
+						childNodes[2].retrieve(out, rectangle);
+						break;
 
-				default:
-					throw new IllegalStateException("Unrecognized quadrant: " + quadrant);
-			}
+					default:
+						throw new IllegalStateException("Unrecognized quadrant: " + quadrant);
+				}
 		}
 
 		// Add all the entities of the node we are in.
@@ -259,8 +254,7 @@ public class QuadTreeNode<T extends Bounded> {
 	}
 
 	private int indexOf(int quadrant) {
-		switch(quadrant)
-		{
+		switch(quadrant) {
 			case ALIGN_TOP | ALIGN_LEFT:
 				return 0;
 			case ALIGN_TOP | ALIGN_RIGHT:

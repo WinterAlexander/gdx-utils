@@ -22,8 +22,8 @@ public class AsyncExecutor implements Executor {
 	@Override
 	public void execute(Runnable command) {
 		asyncManager.async(command::run)
-		.except(Exception.class,
-				ex -> asyncManager.getLogger().error("Exception in AsyncExecutor", ex))
-		.execute();
+				.except(Exception.class,
+						ex -> asyncManager.getLogger().error("Exception in AsyncExecutor", ex))
+				.execute();
 	}
 }

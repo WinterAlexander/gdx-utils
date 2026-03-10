@@ -17,8 +17,8 @@ public class ProcessErrorException extends IOException {
 	private final String output, error;
 
 	public ProcessErrorException(String command, int exitCode, String output, String error) {
-		super("Process `" + command + "` encountered error exit code (" + exitCode + "), " +
-				"Output: " + output + ", Error: " + error);
+		super("Process `" + command + "` encountered error exit code (" + exitCode + "), "
+				+ "Output: " + output + ", Error: " + error);
 		ensureNotNull(command, "command");
 		ensureNotNull(output, "output");
 		ensureNotNull(error, "error");

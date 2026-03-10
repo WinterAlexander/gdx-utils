@@ -1,6 +1,6 @@
 package com.winteralexander.gdx.utils.test.debugviewer;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -22,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import com.winteralexander.gdx.utils.input.InputUtil;
+import com.winteralexander.gdx.utils.math.shape3d.Triangle;
 import org.lwjgl.opengl.Display;
 
 import java.nio.FloatBuffer;
@@ -41,7 +41,7 @@ import static com.badlogic.gdx.graphics.VertexAttributes.Usage.*;
  *
  * @author Alexander Winter
  */
-public class ModelViewer implements ApplicationListener {
+public class ModelViewer extends ApplicationAdapter {
 	public static final Queue<Consumer<ShapeRenderer>> __debugOnlyRenderables = new Queue<>();
 
 	private ModelBatch modelBatch;
@@ -54,7 +54,7 @@ public class ModelViewer implements ApplicationListener {
 
 	private final Array<Model> models = new Array<>();
 
-	private Array<ModelInstance> instances = new Array<>();
+	private final Array<ModelInstance> instances = new Array<>();
 	private PerspectiveCamera cam;
 	private ShapeRenderer debugRenderer;
 
@@ -69,7 +69,12 @@ public class ModelViewer implements ApplicationListener {
 	public void create() {
 		modelBatch = new ModelBatch(new DefaultShaderProvider());
 
-		shadowLight = new DirectionalShadowLight(1920 * 2, 1080 * 2, 16f / 4f, 9f / 4f, 0.01f, 100f);
+		shadowLight = new DirectionalShadowLight(1_920 * 2,
+				1_080 * 2,
+				16f / 4f,
+				9f / 4f,
+				0.01f,
+				100f);
 		shadowLight.set(0.8f, 0.8f, 0.8f, -0.2f, -0.8f, -1f);
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;
@@ -91,23 +96,26 @@ public class ModelViewer implements ApplicationListener {
 		Texture tex1 = new Texture(red);
 		Texture tex2 = new Texture(blue);
 		Texture loadedTex = new Texture(Gdx.files.internal("test_texture.png"), true);
-		loadedTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
+		loadedTex.setFilter(Texture.TextureFilter.MipMapLinearLinear,
+				Texture.TextureFilter.MipMapLinearLinear);
 		loadedTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		int j = 0;
 		for(ModelInstance instance : instances) {
 			if(instance.model.meshes.get(0).getVertexAttribute(ColorPacked) != null
-			|| instance.model.meshes.get(0).getVertexAttribute(ColorUnpacked) != null)
+					|| instance.model.meshes.get(0).getVertexAttribute(ColorUnpacked) != null)
 				continue;
 
-			boolean hasTex =
-					instance.model.meshes.get(0).getVertexAttribute(TextureCoordinates) != null;
+			boolean hasTex = instance.model.meshes.get(0).getVertexAttribute(TextureCoordinates)
+					!= null;
 
 			for(int i = 0; i < instance.materials.size; i++) {
 				if(hasTex)
 					instance.materials.get(i).set(TextureAttribute.createDiffuse(loadedTex));
 				else
-					instance.materials.get(i).set(TextureAttribute.createDiffuse(j % 2 == 0 ? tex1 : tex2));
+					instance.materials.get(i).set(TextureAttribute.createDiffuse(j % 2 == 0
+									? tex1
+									: tex2));
 			}
 			j++;
 		}
@@ -134,7 +142,8 @@ public class ModelViewer implements ApplicationListener {
 					ShortBuffer idxBuffer = mesh.getIndicesBuffer(false);
 
 					int vSize = mesh.getVertexSize() / 4;
-					int norOffset = mesh.getVertexAttribute(VertexAttributes.Usage.Normal).offset / 4;
+					int norOffset = mesh.getVertexAttribute(VertexAttributes.Usage.Normal).offset
+							/ 4;
 
 					for(int tri = 0; tri < mesh.getNumIndices() / 3; tri++) {
 						short v1 = idxBuffer.get(tri * 3);
@@ -175,10 +184,15 @@ public class ModelViewer implements ApplicationListener {
 						r.setColor(Color.WHITE);
 						tmpVec3.set(x1 + x2 + x3, y1 + y2 + y3, z1 + z2 + z3).scl(1f / 3f);
 						Vector3 normal = tmpTriangle.getNormal();
-						r.line(tmpVec3.x, tmpVec3.y, tmpVec3.z, tmpVec3.x + normal.x / 10f, tmpVec3.y + normal.y / 10f, tmpVec3.z + normal.z / 10f);
+						r.line(tmpVec3.x,
+								tmpVec3.y,
+								tmpVec3.z,
+								tmpVec3.x + normal.x / 10f,
+								tmpVec3.y + normal.y / 10f,
+								tmpVec3.z + normal.z / 10f);
 
 						r.setColor(Color.YELLOW);
-						
+
 						r.line(x1, y1, z1, x1 + n1x / 10f, y1 + n1y / 10f, z1 + n1z / 10f);
 						r.line(x2, y2, z2, x2 + n2x / 10f, y2 + n2y / 10f, z2 + n2z / 10f);
 						r.line(x3, y3, z3, x3 + n3x / 10f, y3 + n3y / 10f, z3 + n3z / 10f);
@@ -224,22 +238,6 @@ public class ModelViewer implements ApplicationListener {
 
 			debugRenderer.end();
 		}
-
-	}
-
-	@Override
-	public void pause() {
-
-	}
-
-	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void dispose() {
-
 	}
 
 	public static void start(Model... models) {
@@ -253,15 +251,18 @@ public class ModelViewer implements ApplicationListener {
 
 		try {
 			new LwjglApplication(new ModelViewer(models),
-					new LwjglApplicationConfiguration() {{
-						width = 1600;
-						height = 900;
-						forceExit = false;
-					}}) {
+					new LwjglApplicationConfiguration() {
+						{
+							width = 1_600;
+							height = 900;
+							forceExit = false;
+						}
+					}) {
 				public Thread getMainThread() {
 					return mainLoopThread;
 				}
-			}.getMainThread().join();
+			}.getMainThread()
+					.join();
 		} catch(InterruptedException ex) {
 			throw new RuntimeException(ex);
 		}

@@ -34,8 +34,7 @@ public class IteratorTest {
 		assertNullIterator(it3.iterator());
 	}
 
-	private void assertNullIterator(NullIterator<?> it)
-	{
+	private void assertNullIterator(NullIterator<?> it) {
 		assertFalse(it.hasNext());
 		assertThrows(NoSuchElementException.class, it::next);
 
@@ -47,8 +46,7 @@ public class IteratorTest {
 	public void testUnitIterator() {
 		UnitIterator<String> it = new UnitIterator<>("hello");
 
-		for(int j = 0; j < 2; j++)
-		{
+		for(int j = 0; j < 2; j++) {
 			int i = 0;
 			for(String hello : it) {
 				assertEquals(i, 0);
@@ -70,7 +68,7 @@ public class IteratorTest {
 		Iterable<Integer> ints = new MapIterable<>(array, Integer::parseInt);
 
 		Integer[] intArray = toArray(Integer.class, ints);
-		assertArrayEquals(intArray, new Integer[]{ 1, 2, 3, 4 });
+		assertArrayEquals(intArray, new Integer[] {1, 2, 3, 4});
 	}
 
 	@Test
@@ -83,6 +81,6 @@ public class IteratorTest {
 		Array<Array<String>> arrs = toGdxArray(array1, array2, array3, array4);
 		Iterable<String> flatIt = new FlattenIterable<>(arrs);
 		String[] flat = toArray(String.class, flatIt);
-		assertArrayEquals(new String[] { "1", "2", "3", "4", "5", "6", "7", "8" }, flat);
+		assertArrayEquals(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}, flat);
 	}
 }

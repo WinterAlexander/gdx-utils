@@ -1,6 +1,5 @@
 package com.winteralexander.gdx.utils.io;
 
-
 import com.sun.net.httpserver.HttpExchange;
 import com.winteralexander.gdx.utils.Validation;
 
@@ -35,8 +34,8 @@ public class HttpUtil {
 
 	public static String get(String url, Object... params) throws IOException {
 		if(params.length % 2 == 1)
-			throw new IllegalArgumentException("Http params array must contain an even amount of " +
-					"elements");
+			throw new IllegalArgumentException("Http params array must contain an even amount of "
+					+ "elements");
 
 		StringBuilder urlWithParams = new StringBuilder(url);
 
@@ -100,8 +99,8 @@ public class HttpUtil {
 
 	public static String post(String url, Object... params) throws IOException {
 		if(params.length % 2 == 1)
-			throw new IllegalArgumentException("Http params array must contain an even amount of " +
-					"elements");
+			throw new IllegalArgumentException("Http params array must contain an even amount of "
+					+ "elements");
 
 		Map<String, String> map = new HashMap<>();
 
@@ -111,15 +110,14 @@ public class HttpUtil {
 		return post(url, map);
 	}
 
-	public static String post(String url,
-	                          Map<String, String> parameters) throws IOException {
+	public static String post(String url, Map<String, String> parameters) throws IOException {
 		return post(url, parameters, null, HttpContentType.X_WWW_FORM_URLENCODED);
 	}
 
 	public static String post(String url,
-	                          Map<String, String> parameters,
-	                          Map<String, String> requestProperties,
-	                          HttpContentType contentType) throws IOException {
+			Map<String, String> parameters,
+			Map<String, String> requestProperties,
+			HttpContentType contentType) throws IOException {
 		ensureNotNull(url, "url");
 		ensureNotNull(parameters, "parameters");
 
@@ -128,9 +126,7 @@ public class HttpUtil {
 		if(contentType == HttpContentType.JSON) {
 			paramsBuilder.append("{");
 			for(Entry<String, String> entry : parameters.entrySet()) {
-				paramsBuilder.append("\"")
-						.append(entry.getKey())
-						.append("\":");
+				paramsBuilder.append("\"").append(entry.getKey()).append("\":");
 
 				// don't quote json or already quoted content
 				if(entry.getValue().startsWith("{") || entry.getValue().startsWith("\""))
@@ -153,8 +149,8 @@ public class HttpUtil {
 			if(paramsBuilder.length() > 0)
 				paramsBuilder.deleteCharAt(paramsBuilder.length() - 1);
 		} else
-			throw new UnsupportedOperationException("Content type " + contentType + " is not " +
-					"supported");
+			throw new UnsupportedOperationException("Content type " + contentType + " is not "
+					+ "supported");
 
 		String params = paramsBuilder.toString();
 

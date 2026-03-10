@@ -58,9 +58,11 @@ public class RasterizationUtilTest {
 				fail("Tile " + tile + " not in expected array");
 	}
 
-	private void allIntersectingLine2DBruteforce(float startX, float startY,
-	                                             float endX, float endY,
-	                                             Array<Vector2i> out) {
+	private void allIntersectingLine2DBruteforce(float startX,
+			float startY,
+			float endX,
+			float endY,
+			Array<Vector2i> out) {
 		int x0 = MathUtils.floor(startX);
 		int y0 = MathUtils.floor(startY);
 
@@ -78,14 +80,46 @@ public class RasterizationUtilTest {
 
 		for(int x = x0; x * sx <= x1 * sx; x += sx) {
 			for(int y = y0; y * sy <= y1 * sy; y += sy) {
-				boolean i1 = Intersector.intersectSegments(startX, startY,
-						endX, endY, x, y, x + 1f, y, p) && p.dst2(x, y) > 0f && p.dst2(x + 1f, y) > 0f;
-				boolean i2 = Intersector.intersectSegments(startX, startY,
-						endX, endY, x, y, x, y + 1f, p) && p.dst2(x, y) > 0f && p.dst2(x, y + 1f) > 0f;
-				boolean i3 = Intersector.intersectSegments(startX, startY,
-						endX, endY, x, y + 1f, x + 1f, y + 1f, p) && p.dst2(x, y + 1f) > 0f && p.dst2(x + 1f, y + 1f) > 0f;
-				boolean i4 = Intersector.intersectSegments(startX, startY,
-						endX, endY, x + 1f, y, x + 1f, y + 1f, p) && p.dst2(x + 1f, y) > 0f && p.dst2(x + 1f, y + 1f) > 0f;
+				boolean i1 = Intersector.intersectSegments(startX,
+									 startY,
+									 endX,
+									 endY,
+									 x,
+									 y,
+									 x + 1f,
+									 y,
+									 p)
+						&& p.dst2(x, y) > 0f && p.dst2(x + 1f, y) > 0f;
+				boolean i2 = Intersector.intersectSegments(startX,
+									 startY,
+									 endX,
+									 endY,
+									 x,
+									 y,
+									 x,
+									 y + 1f,
+									 p)
+						&& p.dst2(x, y) > 0f && p.dst2(x, y + 1f) > 0f;
+				boolean i3 = Intersector.intersectSegments(startX,
+									 startY,
+									 endX,
+									 endY,
+									 x,
+									 y + 1f,
+									 x + 1f,
+									 y + 1f,
+									 p)
+						&& p.dst2(x, y + 1f) > 0f && p.dst2(x + 1f, y + 1f) > 0f;
+				boolean i4 = Intersector.intersectSegments(startX,
+									 startY,
+									 endX,
+									 endY,
+									 x + 1f,
+									 y,
+									 x + 1f,
+									 y + 1f,
+									 p)
+						&& p.dst2(x + 1f, y) > 0f && p.dst2(x + 1f, y + 1f) > 0f;
 
 				if(i1 || i2 || i3 || i4) {
 					out.add(new Vector2i(x, y));

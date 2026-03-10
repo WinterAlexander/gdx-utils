@@ -51,11 +51,16 @@ public enum GridCorner {
 
 	public GridDirection8 asGridDirection8() {
 		switch(this) {
-			case UP_LEFT: return GridDirection8.UP_LEFT;
-			case UP_RIGHT: return GridDirection8.UP_RIGHT;
-			case DOWN_LEFT: return GridDirection8.DOWN_LEFT;
-			case DOWN_RIGHT: return GridDirection8.DOWN_RIGHT;
-			default: throw new IllegalStateException();
+			case UP_LEFT:
+				return GridDirection8.UP_LEFT;
+			case UP_RIGHT:
+				return GridDirection8.UP_RIGHT;
+			case DOWN_LEFT:
+				return GridDirection8.DOWN_LEFT;
+			case DOWN_RIGHT:
+				return GridDirection8.DOWN_RIGHT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
@@ -65,21 +70,31 @@ public enum GridCorner {
 
 	public GridCorner nextClockwise() {
 		switch(this) {
-			case DOWN_LEFT: return UP_LEFT;
-			case UP_LEFT: return UP_RIGHT;
-			case DOWN_RIGHT: return DOWN_LEFT;
-			case UP_RIGHT: return DOWN_RIGHT;
-			default: throw new IllegalStateException();
+			case DOWN_LEFT:
+				return UP_LEFT;
+			case UP_LEFT:
+				return UP_RIGHT;
+			case DOWN_RIGHT:
+				return DOWN_LEFT;
+			case UP_RIGHT:
+				return DOWN_RIGHT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
 	public GridCorner nextCounterClockwise() {
 		switch(this) {
-			case UP_LEFT: return DOWN_LEFT;
-			case UP_RIGHT: return UP_LEFT;
-			case DOWN_LEFT: return DOWN_RIGHT;
-			case DOWN_RIGHT: return UP_RIGHT;
-			default: throw new IllegalStateException();
+			case UP_LEFT:
+				return DOWN_LEFT;
+			case UP_RIGHT:
+				return UP_LEFT;
+			case DOWN_LEFT:
+				return DOWN_RIGHT;
+			case DOWN_RIGHT:
+				return UP_RIGHT;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 

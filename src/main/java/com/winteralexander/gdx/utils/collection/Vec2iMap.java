@@ -124,8 +124,9 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 		public int x, y;
 		public @Null V value;
 
-		public String toString () {
-			return "(" + x + ", " + y + ")" + "=" + value;
+		public String toString() {
+			return "(" + x + ", " + y + ")"
+					+ "=" + value;
 		}
 	}
 
@@ -161,7 +162,8 @@ public class Vec2iMap<V> implements Iterable<Vec2iMap.Entry<V>> {
 		}
 	}
 
-	public static class EntriesRedirectIterator<V> implements Iterable<Vec2iMap.Entry<V>>, Iterator<Vec2iMap.Entry<V>> {
+	public static class EntriesRedirectIterator<V>
+			implements Iterable<Vec2iMap.Entry<V>>, Iterator<Vec2iMap.Entry<V>> {
 		private final LongMap<V> map;
 		private LongMap.Entries<V> it = null;
 		private final Vec2iMap.Entry<V> tmpEntry = new Vec2iMap.Entry<>();

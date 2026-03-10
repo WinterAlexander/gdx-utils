@@ -33,8 +33,7 @@ public class AntiRepetionRandomGenerator {
 		int num;
 		do {
 			num = random.nextInt(max - min) + min;
-		}
-		while(prev == num);
+		} while(prev == num);
 		return prev = num;
 	}
 

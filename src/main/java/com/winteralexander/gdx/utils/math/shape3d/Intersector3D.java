@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Segment;
 import com.winteralexander.gdx.utils.EnumConstantCache;
-import com.winteralexander.gdx.utils.log.Logger;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 import static com.winteralexander.gdx.utils.math.shape3d.Intersector3D.LineIntersectionResult.*;
@@ -22,14 +21,12 @@ import static java.lang.Math.*;
  */
 public class Intersector3D {
 	private static final Ray tmpIntersectRay = new Ray();
-	private static final Ray tmpEdgeLine1 = new Ray(),
-			tmpEdgeLine2 = new Ray(),
-			tmpEdgeLine3 = new Ray();
-	private static final Vector3 tmpIntersection1 = new Vector3(),
-			tmpIntersection2 = new Vector3(),
-			tmpIntersection3 = new Vector3();
+	private static final Ray tmpEdgeLine1 = new Ray(), tmpEdgeLine2 = new Ray(),
+							 tmpEdgeLine3 = new Ray();
+	private static final Vector3 tmpIntersection1 = new Vector3(), tmpIntersection2 = new Vector3(),
+								 tmpIntersection3 = new Vector3();
 	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus();
-	private static final Vector3 tmpSegmentDir1 = new Vector3(), tmpSegmentDir2 = new Vector3();
+	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
 
 	private Intersector3D() {}
@@ -46,22 +43,26 @@ public class Intersector3D {
 	 * @return result of the intersection, which is either no intersection, a point or collinear
 	 */
 	public static LineIntersectionResult intersectRayRay(Ray first,
-	                                                     Ray second,
-	                                                     float tolerance,
-	                                                     Vector3 out) {
-		return intersectRayRay(first.origin, first.direction,
-				second.origin, second.direction, tolerance, out);
+			Ray second,
+			float tolerance,
+			Vector3 out) {
+		return intersectRayRay(first.origin,
+				first.direction,
+				second.origin,
+				second.direction,
+				tolerance,
+				out);
 	}
 
 	/**
 	 * @see #intersectRayRay(Ray, Ray, float, Vector3)
 	 */
 	public static LineIntersectionResult intersectRayRay(Vector3 origin1,
-	                                                     Vector3 direction1,
-	                                                     Vector3 origin2,
-	                                                     Vector3 direction2,
-	                                                     float tolerance,
-	                                                     Vector3 out) {
+			Vector3 direction1,
+			Vector3 origin2,
+			Vector3 direction2,
+			float tolerance,
+			Vector3 out) {
 		double sx = origin1.x - origin2.x;
 		double sy = origin1.y - origin2.y;
 		double sz = origin1.z - origin2.z;
@@ -73,8 +74,7 @@ public class Intersector3D {
 		double t;
 
 		// means the rays are collinear
-		if(Math.abs(denom1) <= tolerance
-				&& Math.abs(denom2) <= tolerance
+		if(Math.abs(denom1) <= tolerance && Math.abs(denom2) <= tolerance
 				&& Math.abs(denom3) <= tolerance) {
 			float originDst2 = (pow2((float)sx) + pow2((float)sy) + pow2((float)sz));
 
@@ -82,7 +82,8 @@ public class Intersector3D {
 				return COLLINEAR;
 
 			float len2 = originDst2 * direction1.len2();
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / len2 - 1f) <= tolerance
+			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / len2 - 1f)
+							<= tolerance
 					? COLLINEAR
 					: NONE;
 		}
@@ -132,9 +133,9 @@ public class Intersector3D {
 	 * @return result of the intersection
 	 */
 	public static LineIntersectionResult intersectSegmentSegment(Segment first,
-	                                                             Segment second,
-	                                                             float tol,
-	                                                             Vector3 out) {
+			Segment second,
+			float tol,
+			Vector3 out) {
 		return intersectSegmentSegment(first.a, first.b, second.a, second.b, tol, out);
 	}
 
@@ -142,27 +143,33 @@ public class Intersector3D {
 	 * @see #intersectSegmentSegment(Segment, Segment, float, Vector3)
 	 */
 	public static LineIntersectionResult intersectSegmentSegment(Vector3 firstStart,
-	                                                             Vector3 firstEnd,
-	                                                             Vector3 secondStart,
-	                                                             Vector3 secondEnd,
-	                                                             float tol,
-	                                                             Vector3 out) {
-		tmpSegmentDir1.set(firstEnd).sub(firstStart);
-		tmpSegmentDir2.set(secondEnd).sub(secondStart);
+			Vector3 firstEnd,
+			Vector3 secondStart,
+			Vector3 secondEnd,
+			float tol,
+			Vector3 out) {
+		tmpSegDir1.set(firstEnd).sub(firstStart);
+		tmpSegDir2.set(secondEnd).sub(secondStart);
 
-		LineIntersectionResult result = intersectRayRay(firstStart, tmpSegmentDir1,
-				secondStart, tmpSegmentDir2, tol, out);
+		LineIntersectionResult result = intersectRayRay(firstStart,
+				tmpSegDir1,
+				secondStart,
+				tmpSegDir2,
+				tol,
+				out);
 
 		if(result == NONE)
 			return NONE;
 
 		if(result == COLLINEAR) {
-			float t1 = tmpSegmentDir1.dot(secondStart.x - firstStart.x,
-					secondStart.y - firstStart.y,
-					secondStart.z - firstStart.z) / tmpSegmentDir1.len2();
-			float t2 = tmpSegmentDir1.dot(secondEnd.x - firstStart.x,
-					secondEnd.y - firstStart.y,
-					secondEnd.z - firstStart.z) / tmpSegmentDir1.len2();
+			float t1 = tmpSegDir1.dot(secondStart.x - firstStart.x,
+							   secondStart.y - firstStart.y,
+							   secondStart.z - firstStart.z)
+					/ tmpSegDir1.len2();
+			float t2 = tmpSegDir1.dot(secondEnd.x - firstStart.x,
+							   secondEnd.y - firstStart.y,
+							   secondEnd.z - firstStart.z)
+					/ tmpSegDir1.len2();
 
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
@@ -173,12 +180,12 @@ public class Intersector3D {
 			return tMin < 1f - tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = tmpSegmentDir1.dot(out.x - firstStart.x,
-				out.y - firstStart.y,
-				out.z - firstStart.z) / tmpSegmentDir1.len2();
-		float t2 = tmpSegmentDir2.dot(out.x - secondStart.x,
-				out.y - secondStart.y,
-				out.z - secondStart.z) / tmpSegmentDir2.len2();
+		float t1 = tmpSegDir1.dot(out.x - firstStart.x, out.y - firstStart.y, out.z - firstStart.z)
+				/ tmpSegDir1.len2();
+		float t2 = tmpSegDir2.dot(out.x - secondStart.x,
+						   out.y - secondStart.y,
+						   out.z - secondStart.z)
+				/ tmpSegDir2.len2();
 
 		if(t1 < -tol || t1 > 1f + tol || t2 < -tol || t2 > 1f + tol)
 			return NONE;
@@ -190,9 +197,9 @@ public class Intersector3D {
 	 * @see #intersectTriangleTriangle(Triangle, Triangle, float, Segment)
 	 */
 	public static TriangleIntersectionResult intersectTriangleTriangle(Triangle first,
-	                                                                   Triangle second,
-	                                                                   float tol,
-	                                                                   Segment out) {
+			Triangle second,
+			float tol,
+			Segment out) {
 		return intersectTriangleTriangle(first, second, tol, false, out);
 	}
 
@@ -214,16 +221,16 @@ public class Intersector3D {
 	 * @return result of the intersection
 	 */
 	public static TriangleIntersectionResult intersectTriangleTriangle(Triangle first,
-	                                                                   Triangle second,
-	                                                                   float tol,
-	                                                                   boolean ignoreCoplanar,
-	                                                                   Segment out) {
-		//distance from the face1 vertices to the face2 plane
+			Triangle second,
+			float tol,
+			boolean ignoreCoplanar,
+			Segment out) {
+		// distance from the face1 vertices to the face2 plane
 		float distFace1Vert1 = signedDistanceFromPlane(second, first.p1);
 		float distFace1Vert2 = signedDistanceFromPlane(second, first.p2);
 		float distFace1Vert3 = signedDistanceFromPlane(second, first.p3);
 
-		//distances signs from the face1 vertices to the face2 plane
+		// distances signs from the face1 vertices to the face2 plane
 		int signFace1Vert1 = (distFace1Vert1 > tol ? 1 : (distFace1Vert1 < -tol ? -1 : 0));
 		int signFace1Vert2 = (distFace1Vert2 > tol ? 1 : (distFace1Vert2 < -tol ? -1 : 0));
 		int signFace1Vert3 = (distFace1Vert3 > tol ? 1 : (distFace1Vert3 < -tol ? -1 : 0));
@@ -258,7 +265,7 @@ public class Intersector3D {
 						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
 								== Math.signum(perp.dot(tmpIntersection3));
 						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-								: TriangleIntersectionResult.EDGE_EDGE;
+									   : TriangleIntersectionResult.EDGE_EDGE;
 					}
 				}
 			}
@@ -270,17 +277,14 @@ public class Intersector3D {
 				Vector3 a2 = tmpIntersection2.set(first.getPoint((i + 2) % 3 + 1)).sub(a);
 				for(int j = 0; j < 3; j++) {
 					Vector3 b = second.getPoint(j + 1);
-					Vector3 b1 = tmpSegmentDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
-					Vector3 b2 = tmpSegmentDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
+					Vector3 b1 = tmpSegDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
+					Vector3 b2 = tmpSegDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
 
 					if(a.epsilonEquals(b, tol)) {
-						boolean overlap = isBetween(a1, a2, b1, tol)
-								|| isBetween(a1, a2, b2, tol)
-								|| isBetween(b1, b2, a1, tol)
-								|| isBetween(b1, b2, a2, tol);
-						return overlap
-								? TriangleIntersectionResult.COPLANAR_FACE_FACE
-								: TriangleIntersectionResult.POINT;
+						boolean overlap = isBetween(a1, a2, b1, tol) || isBetween(a1, a2, b2, tol)
+								|| isBetween(b1, b2, a1, tol) || isBetween(b1, b2, a2, tol);
+						return overlap ? TriangleIntersectionResult.COPLANAR_FACE_FACE
+									   : TriangleIntersectionResult.POINT;
 					}
 				}
 			}
@@ -307,7 +311,7 @@ public class Intersector3D {
 						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
 								== Math.signum(perp.dot(tmpIntersection3));
 						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-								: TriangleIntersectionResult.POINT;
+									   : TriangleIntersectionResult.POINT;
 					}
 
 					if(intersectSegmentSegment(e1a, e2a, b, e2b, tol, tmpIntersection1) == POINT
@@ -322,7 +326,7 @@ public class Intersector3D {
 						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
 								== Math.signum(perp.dot(tmpIntersection3));
 						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-								: TriangleIntersectionResult.POINT;
+									   : TriangleIntersectionResult.POINT;
 					}
 				}
 			}
@@ -339,29 +343,61 @@ public class Intersector3D {
 			return TriangleIntersectionResult.NONE;
 
 		boolean firstIsEdge = !tmpSegment1.a.epsilonEquals(tmpSegment1.b, tol)
-				&& (intersectSegmentSegment(tmpSegment1.a, tmpSegment1.b, first.p1, first.p2, tol, tmpIntersection1) == COLLINEAR
-				|| intersectSegmentSegment(tmpSegment1.a, tmpSegment1.b, first.p2, first.p3, tol, tmpIntersection1) == COLLINEAR
-				|| intersectSegmentSegment(tmpSegment1.a, tmpSegment1.b, first.p3, first.p1, tol, tmpIntersection1) == COLLINEAR);
+				&& (intersectSegmentSegment(tmpSegment1.a,
+							tmpSegment1.b,
+							first.p1,
+							first.p2,
+							tol,
+							tmpIntersection1)
+								== COLLINEAR
+						|| intersectSegmentSegment(tmpSegment1.a,
+								   tmpSegment1.b,
+								   first.p2,
+								   first.p3,
+								   tol,
+								   tmpIntersection1)
+								== COLLINEAR
+						|| intersectSegmentSegment(tmpSegment1.a,
+								   tmpSegment1.b,
+								   first.p3,
+								   first.p1,
+								   tol,
+								   tmpIntersection1)
+								== COLLINEAR);
 		boolean secondIsEdge = !tmpSegment2.a.epsilonEquals(tmpSegment2.b, tol)
-				&& (intersectSegmentSegment(tmpSegment2.a, tmpSegment2.b, second.p1, second.p2, tol, tmpIntersection2) == COLLINEAR
-				|| intersectSegmentSegment(tmpSegment2.a, tmpSegment2.b, second.p2, second.p3, tol, tmpIntersection2) == COLLINEAR
-				|| intersectSegmentSegment(tmpSegment2.a, tmpSegment2.b, second.p3, second.p1, tol, tmpIntersection2) == COLLINEAR);
+				&& (intersectSegmentSegment(tmpSegment2.a,
+							tmpSegment2.b,
+							second.p1,
+							second.p2,
+							tol,
+							tmpIntersection2)
+								== COLLINEAR
+						|| intersectSegmentSegment(tmpSegment2.a,
+								   tmpSegment2.b,
+								   second.p2,
+								   second.p3,
+								   tol,
+								   tmpIntersection2)
+								== COLLINEAR
+						|| intersectSegmentSegment(tmpSegment2.a,
+								   tmpSegment2.b,
+								   second.p3,
+								   second.p1,
+								   tol,
+								   tmpIntersection2)
+								== COLLINEAR);
 
-		float dist1A = tmpIntersectRay.direction.dot(
-				tmpSegment1.a.x - tmpIntersectRay.origin.x,
+		float dist1A = tmpIntersectRay.direction.dot(tmpSegment1.a.x - tmpIntersectRay.origin.x,
 				tmpSegment1.a.y - tmpIntersectRay.origin.y,
 				tmpSegment1.a.z - tmpIntersectRay.origin.z);
-		float dist1B = tmpIntersectRay.direction.dot(
-				tmpSegment1.b.x - tmpIntersectRay.origin.x,
+		float dist1B = tmpIntersectRay.direction.dot(tmpSegment1.b.x - tmpIntersectRay.origin.x,
 				tmpSegment1.b.y - tmpIntersectRay.origin.y,
 				tmpSegment1.b.z - tmpIntersectRay.origin.z);
 
-		float dist2A = tmpIntersectRay.direction.dot(
-				tmpSegment2.a.x - tmpIntersectRay.origin.x,
+		float dist2A = tmpIntersectRay.direction.dot(tmpSegment2.a.x - tmpIntersectRay.origin.x,
 				tmpSegment2.a.y - tmpIntersectRay.origin.y,
 				tmpSegment2.a.z - tmpIntersectRay.origin.z);
-		float dist2B = tmpIntersectRay.direction.dot(
-				tmpSegment2.b.x - tmpIntersectRay.origin.x,
+		float dist2B = tmpIntersectRay.direction.dot(tmpSegment2.b.x - tmpIntersectRay.origin.x,
 				tmpSegment2.b.y - tmpIntersectRay.origin.y,
 				tmpSegment2.b.z - tmpIntersectRay.origin.z);
 
@@ -400,10 +436,7 @@ public class Intersector3D {
 		return Math.abs(first.dst(second) - first.dst(between) - second.dst(between)) < tol;
 	}
 
-	private static void rayFromIntersection(Triangle first,
-	                                        Triangle second,
-	                                        float tol,
-	                                        Ray out) {
+	private static void rayFromIntersection(Triangle first, Triangle second, float tol, Ray out) {
 		Vector3 normalFace1 = first.getNormal();
 		Vector3 normalFace2 = second.getNormal();
 
@@ -442,9 +475,7 @@ public class Intersector3D {
 	 * @param tolerance tolerance to use for computations
 	 * @return true if coplanar, otherwise false
 	 */
-	public static boolean areCoplanar(Plane plane,
-	                                  Ray ray,
-	                                  float tolerance) {
+	public static boolean areCoplanar(Plane plane, Ray ray, float tolerance) {
 		return abs(plane.normal.dot(ray.direction)) <= tolerance
 				&& abs(plane.normal.dot(ray.origin) + plane.getD()) <= tolerance;
 	}
@@ -457,14 +488,11 @@ public class Intersector3D {
 	 * @param tolerance tolerance to use for computations
 	 * @return true if coplanar, otherwise false
 	 */
-	public static boolean areCoplanar(Triangle triangle,
-	                                  Ray ray,
-	                                  float tolerance) {
+	public static boolean areCoplanar(Triangle triangle, Ray ray, float tolerance) {
 		Vector3 normal = triangle.getNormal();
 		return abs(normal.dot(ray.direction)) <= tolerance
 				&& abs(normal.dot(ray.origin) - normal.dot(triangle.p1)) <= tolerance;
 	}
-
 
 	/**
 	 * Finds the intersection between a ray and a triangle. This intersection can be either a point
@@ -477,44 +505,13 @@ public class Intersector3D {
 	 * @param out segment of the intersection, both ends the same if the intersection is a point
 	 * @return true if the triangle and the ray intersect, otherwise false
 	 */
-	public static boolean intersectTriangleRay(Triangle triangle,
-	                                           Ray ray,
-	                                           float tol,
-	                                           Segment out) {
+	public static boolean intersectTriangleRay(Triangle triangle, Ray ray, float tol, Segment out) {
 		Vector3 normal = triangle.getNormal();
 		float d = -normal.dot(triangle.p1);
-		float denom = ray.direction.dot(triangle.getNormal());
-		if(abs(denom) > tol) {
+		float denom = ray.direction.dot(normal);
+		if(abs(denom) > tol)
 			// not coplanar, single point intersection
-			float t = -(ray.origin.dot(normal) + d) / denom;
-			if(t < -tol)
-				return false;
-
-			tmpSegmentDir1.set(triangle.p2).sub(triangle.p1);
-			tmpSegmentDir2.set(tmpSegmentDir1).crs(normal);
-
-			float len2 = tmpSegmentDir1.len2();
-			float height2 = tmpSegmentDir2.dot(triangle.p3.x - triangle.p1.x,
-					triangle.p3.y - triangle.p1.y,
-					triangle.p3.z - triangle.p1.z);
-
-			float x = ray.origin.x + ray.direction.x * t;
-			float y = ray.origin.y + ray.direction.y * t;
-			float z = ray.origin.z + ray.direction.z * t;
-
-			float pU = tmpSegmentDir1.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / len2;
-			float pV = tmpSegmentDir2.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / height2;
-
-			float p3U = tmpSegmentDir1.dot(triangle.p3.x - triangle.p1.x,
-					triangle.p3.y - triangle.p1.y,
-					triangle.p3.z - triangle.p1.z) / len2;
-
-			if(!inTriangle(pU, pV, p3U, tol))
-				return false;
-
-			out.b.set(out.a.set(x, y, z));
-			return true;
-		}
+			return intersectTriangleRayNonCoplanar(triangle, ray, tol, out, normal, d, denom);
 
 		if(abs(normal.dot(ray.origin) + d) > tol)
 			return false; // parallel but not coplanar
@@ -530,39 +527,34 @@ public class Intersector3D {
 
 		int countIntersections = 0;
 
-		LineIntersectionResult result1 = intersectRayRay(ray, tmpEdgeLine1, tol,
-				tmpIntersection1);
-		LineIntersectionResult result2 = intersectRayRay(ray, tmpEdgeLine2, tol,
-				tmpIntersection2);
-		LineIntersectionResult result3 = intersectRayRay(ray, tmpEdgeLine3, tol,
-				tmpIntersection3);
+		LineIntersectionResult result1 = intersectRayRay(ray, tmpEdgeLine1, tol, tmpIntersection1);
+		LineIntersectionResult result2 = intersectRayRay(ray, tmpEdgeLine2, tol, tmpIntersection2);
+		LineIntersectionResult result3 = intersectRayRay(ray, tmpEdgeLine3, tol, tmpIntersection3);
 
-		if(result1 != NONE
-				&& result2 != NONE
+		if(result1 != NONE && result2 != NONE
 				&& tmpIntersection2.epsilonEquals(tmpIntersection1, tol))
 			result2 = NONE;
 
-		if(result1 != NONE
-				&& result3 != NONE
+		if(result1 != NONE && result3 != NONE
 				&& tmpIntersection3.epsilonEquals(tmpIntersection1, tol))
 			result3 = NONE;
 
-		if(result2 != NONE
-				&& result3 != NONE
+		if(result2 != NONE && result3 != NONE
 				&& tmpIntersection3.epsilonEquals(tmpIntersection2, tol))
 			result3 = NONE;
 
+		int collinearCount = (result1 == COLLINEAR ? 1 : 0) + (result2 == COLLINEAR ? 1 : 0)
+				+ (result3 == COLLINEAR ? 1 : 0);
+		if(collinearCount > 1)
+			throw new IllegalStateException("Multiple triangle edges collinear with ray");
+
 		if(result1 == COLLINEAR) {
-			if(result2 == COLLINEAR || result3 == COLLINEAR)
-				throw new IllegalStateException("Multiple triangle edges collinear with ray");
 			out.a.set(triangle.p1);
 			out.b.set(triangle.p2);
 			return true;
 		}
 
 		if(result2 == COLLINEAR) {
-			if(result3 == COLLINEAR)
-				throw new IllegalStateException("Multiple triangle edges collinear with ray");
 			out.a.set(triangle.p2);
 			out.b.set(triangle.p3);
 			return true;
@@ -629,41 +621,73 @@ public class Intersector3D {
 		return true;
 	}
 
+	private static boolean intersectTriangleRayNonCoplanar(Triangle triangle,
+			Ray ray,
+			float tol,
+			Segment out,
+			Vector3 normal,
+			float d,
+			float denom) {
+		float t = -(ray.origin.dot(normal) + d) / denom;
+		if(t < -tol)
+			return false;
+
+		tmpSegDir1.set(triangle.p2).sub(triangle.p1);
+		tmpSegDir2.set(tmpSegDir1).crs(normal);
+
+		float len2 = tmpSegDir1.len2();
+		float h2 = tmpSegDir2.dot(triangle.p3.x - triangle.p1.x,
+				triangle.p3.y - triangle.p1.y,
+				triangle.p3.z - triangle.p1.z);
+
+		float x = ray.origin.x + ray.direction.x * t;
+		float y = ray.origin.y + ray.direction.y * t;
+		float z = ray.origin.z + ray.direction.z * t;
+
+		float pU = tmpSegDir1.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / len2;
+		float pV = tmpSegDir2.dot(x - triangle.p1.x, y - triangle.p1.y, z - triangle.p1.z) / h2;
+
+		float p3U = tmpSegDir1.dot(triangle.p3.x - triangle.p1.x,
+							triangle.p3.y - triangle.p1.y,
+							triangle.p3.z - triangle.p1.z)
+				/ len2;
+
+		if(!inTriangle(pU, pV, p3U, tol))
+			return false;
+
+		out.b.set(out.a.set(x, y, z));
+		return true;
+	}
+
 	private static boolean inTriangle(float pU, float pV, float p3U, float tol) {
 		// check pV > 0 (point is above the floor), applies to all cases
 		if(pV < -tol)
 			return false;
 
 		if(p3U < tol) {
-			if(p3U > -tol) {
+			if(p3U > -tol)
 				// .
 				// |\
 				// ._\
 				// this is for the case where p3U is on top of p1 so close to 0, in this case
 				// check pU > 0 and pV < 1 - pU (under the diagonal)
-				if(pU < -tol || pV - (1f - pU) > tol)
-					return false;
-			} else {
-				// ._
-				//  \ - _
-				//   \____- .
-				// this is for the case where p3U is to the left of p1, in this case check
-				// for both diagonals
-				if(pV - pU / p3U < tol || pV - (1 - pU) / (1 - p3U) > tol)
-					return false;
-			}
-		} else {
-			if(pU < -tol || pV - pU / p3U > tol)
-				return false;
+				return pU >= -tol && pV - (1f - pU) <= tol;
 
-			if(Math.abs(p3U - 1f) > tol) {
-				if((p3U < 1f ? 1f : -1f) * (pV - (1 - pU) / (1 - p3U)) > tol)
-					return false;
-			} else if(pU - 1f > tol)
-				return false;
+			// ._
+			//  \ - _
+			//   \____- .
+			// this is for the case where p3U is to the left of p1, in this case check
+			// for both diagonals
+			return pV - pU / p3U >= tol && pV - (1 - pU) / (1 - p3U) <= tol;
 		}
 
-		return true;
+		if(pU < -tol || pV - pU / p3U > tol)
+			return false;
+
+		if(Math.abs(p3U - 1f) > tol)
+			return (p3U < 1f ? 1f : -1f) * (pV - (1 - pU) / (1 - p3U)) <= tol;
+
+		return pU - 1f <= tol;
 	}
 
 	/**
@@ -675,27 +699,23 @@ public class Intersector3D {
 	 * @param tol distance at which 2 floating points are considered to be the same
 	 * @return true if they are intersecting, otherwise false
 	 */
-	public static boolean intersectCoplanarTriangles(Triangle first,
-	                                                 Triangle second,
-	                                                 float tol) {
-		tmpSegmentDir1.set(first.p2).sub(first.p1);
-		tmpSegmentDir2.set(first.p3).sub(first.p1);
+	public static boolean intersectCoplanarTriangles(Triangle first, Triangle second, float tol) {
+		tmpSegDir1.set(first.p2).sub(first.p1);
+		tmpSegDir2.set(first.p3).sub(first.p1);
 
-		float longestSide1 = Math.max(tmpSegmentDir1.len2(), tmpSegmentDir2.len2());
+		float longestSide1 = Math.max(tmpSegDir1.len2(), tmpSegDir2.len2());
 		longestSide1 = Math.max(longestSide1,
-				pow2(first.p2.x - first.p3.x) +
-						pow2(first.p2.y - first.p3.y) +
-						pow2(first.p2.z - first.p3.z));
+				pow2(first.p2.x - first.p3.x) + pow2(first.p2.y - first.p3.y)
+						+ pow2(first.p2.z - first.p3.z));
 
-		float longestSide2 = pow2(second.p2.x - second.p3.x) +
-				pow2(second.p2.y - second.p3.y) +
-				pow2(second.p2.z - second.p3.z);
-		longestSide2 = Math.max(longestSide2, pow2(second.p1.x - second.p2.x) +
-				pow2(second.p1.y - second.p2.y) +
-				pow2(second.p1.z - second.p2.z));
-		longestSide2 = Math.max(longestSide2, pow2(second.p1.x - second.p3.x) +
-				pow2(second.p1.y - second.p3.y) +
-				pow2(second.p1.z - second.p3.z));
+		float longestSide2 = pow2(second.p2.x - second.p3.x) + pow2(second.p2.y - second.p3.y)
+				+ pow2(second.p2.z - second.p3.z);
+		longestSide2 = Math.max(longestSide2,
+				pow2(second.p1.x - second.p2.x) + pow2(second.p1.y - second.p2.y)
+						+ pow2(second.p1.z - second.p2.z));
+		longestSide2 = Math.max(longestSide2,
+				pow2(second.p1.x - second.p3.x) + pow2(second.p1.y - second.p3.y)
+						+ pow2(second.p1.z - second.p3.z));
 
 		// if the second triangle's longest side is larger than the largest side of the first one,
 		// we know for sure the second triangle can't fit into the first one
@@ -705,25 +725,26 @@ public class Intersector3D {
 		// otherwise the first triangle can't fit into the second one
 
 		tmpTriangle.set(second).sub(first.p1);
-		tmpSegmentDir2.set(tmpSegmentDir1).crs(first.getNormal()).scl(-1f);
+		tmpSegDir2.set(tmpSegDir1).crs(first.getNormal()).scl(-1f);
 
-		float len2 = tmpSegmentDir1.len2();
-		float height2 = tmpSegmentDir2.dot(first.p3.x - first.p1.x,
+		float len2 = tmpSegDir1.len2();
+		float height2 = tmpSegDir2.dot(first.p3.x - first.p1.x,
 				first.p3.y - first.p1.y,
 				first.p3.z - first.p1.z);
 
-		float peakU = tmpSegmentDir1.dot(first.p3.x - first.p1.x,
-				first.p3.y - first.p1.y,
-				first.p3.z - first.p1.z) / len2;
+		float peakU = tmpSegDir1.dot(first.p3.x - first.p1.x,
+							  first.p3.y - first.p1.y,
+							  first.p3.z - first.p1.z)
+				/ len2;
 
-		float p1U = tmpSegmentDir1.dot(tmpTriangle.p1) / len2;
-		float p1V = tmpSegmentDir2.dot(tmpTriangle.p1) / height2;
+		float p1U = tmpSegDir1.dot(tmpTriangle.p1) / len2;
+		float p1V = tmpSegDir2.dot(tmpTriangle.p1) / height2;
 
-		float p2U = tmpSegmentDir1.dot(tmpTriangle.p2) / len2;
-		float p2V = tmpSegmentDir2.dot(tmpTriangle.p2) / height2;
+		float p2U = tmpSegDir1.dot(tmpTriangle.p2) / len2;
+		float p2V = tmpSegDir2.dot(tmpTriangle.p2) / height2;
 
-		float p3U = tmpSegmentDir1.dot(tmpTriangle.p3) / len2;
-		float p3V = tmpSegmentDir2.dot(tmpTriangle.p3) / height2;
+		float p3U = tmpSegDir1.dot(tmpTriangle.p3) / len2;
+		float p3V = tmpSegDir2.dot(tmpTriangle.p3) / height2;
 
 		if(inTriangle(p1U, p1V, peakU, tol))
 			return true;

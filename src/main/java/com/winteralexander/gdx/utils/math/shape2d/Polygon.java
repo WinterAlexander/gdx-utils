@@ -26,7 +26,8 @@ public class Polygon implements Shape {
 	private final FloatSupplier angle;
 	private final com.badlogic.gdx.math.Polygon polygon;
 
-	private final com.badlogic.gdx.math.Polygon tmpRectPolygon = new com.badlogic.gdx.math.Polygon(new float[8]);
+	private final com.badlogic.gdx.math.Polygon tmpRectPolygon = new com.badlogic.gdx.math.Polygon(
+			new float[8]);
 	private final Vector2 tmpCircleCenter = new Vector2();
 	private final Vector2 tmpStart = new Vector2(), tmpEnd = new Vector2();
 
@@ -36,15 +37,27 @@ public class Polygon implements Shape {
 		this(position, scale, angle, new com.badlogic.gdx.math.Polygon(vertices));
 	}
 
-	public Polygon(Supplier<Vector2> position, Supplier<Vector2> scale, FloatSupplier angle, float[] vertices) {
+	public Polygon(Supplier<Vector2> position,
+			Supplier<Vector2> scale,
+			FloatSupplier angle,
+			float[] vertices) {
 		this(position, scale, angle, new com.badlogic.gdx.math.Polygon(vertices));
 	}
 
-	public Polygon(Vector2 position, Vector2 scale, float angle, com.badlogic.gdx.math.Polygon polygon) {
-		this(ConstSupplier.asConst(position), ConstSupplier.asConst(scale), new ConstFloatSupplier(angle), polygon);
+	public Polygon(Vector2 position,
+			Vector2 scale,
+			float angle,
+			com.badlogic.gdx.math.Polygon polygon) {
+		this(ConstSupplier.asConst(position),
+				ConstSupplier.asConst(scale),
+				new ConstFloatSupplier(angle),
+				polygon);
 	}
 
-	public Polygon(Supplier<Vector2> position, Supplier<Vector2> scale, FloatSupplier angle, com.badlogic.gdx.math.Polygon polygon) {
+	public Polygon(Supplier<Vector2> position,
+			Supplier<Vector2> scale,
+			FloatSupplier angle,
+			com.badlogic.gdx.math.Polygon polygon) {
 		Validation.ensureNotNull(position, "position");
 		Validation.ensureNotNull(scale, "scale");
 		Validation.ensureNotNull(angle, "angle");
@@ -75,7 +88,8 @@ public class Polygon implements Shape {
 		if(shape instanceof Polygon)
 			return overlapConvexPolygons(polygon, ((Polygon)shape).polygon);
 		else if(shape instanceof Rectangle) {
-			tmpRectPolygon.setPosition(((Rectangle)shape).getPosition().x - ((Rectangle)shape).getSize().x / 2f,
+			tmpRectPolygon.setPosition(((Rectangle)shape).getPosition().x
+							- ((Rectangle)shape).getSize().x / 2f,
 					((Rectangle)shape).getPosition().y - ((Rectangle)shape).getSize().y / 2f);
 			tmpRectPolygon.getVertices()[2] = ((Rectangle)shape).getSize().x;
 
@@ -91,8 +105,8 @@ public class Polygon implements Shape {
 					((Circle)shape).getRadius());
 		else if(shape instanceof Annulus) {
 			if(!overlapsCircle(((Annulus)shape).getPosition().x,
-					((Annulus)shape).getPosition().y,
-					((Annulus)shape).getOuterRadius()))
+					   ((Annulus)shape).getPosition().y,
+					   ((Annulus)shape).getOuterRadius()))
 				return false;
 
 			for(int i = 0; i < polygon.getTransformedVertices().length / 2; i++) {

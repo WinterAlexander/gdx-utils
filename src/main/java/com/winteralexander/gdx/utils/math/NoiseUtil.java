@@ -16,10 +16,10 @@ public class NoiseUtil {
 	private static final Vector3 tmpVec3 = new Vector3();
 
 	private static final int M = 0x5bd1e995;
-	private static final int A = 1190494759;
-	private static final int B = 2147483647;
-	private static final int C = -735179117;
-	private static final int D = 179424673;
+	private static final int A = 1_190_494_759;
+	private static final int B = 2_147_483_647;
+	private static final int C = -735_179_117;
+	private static final int D = 179_424_673;
 
 	public static Vector2 murmurHash22(float srcX, float srcY) {
 		return murmurHash22(srcX, srcY, tmpVec2);

@@ -31,7 +31,8 @@ public class DebugArray<T> extends Array<T> {
 		return iterable.iterator();
 	}
 
-	public static class ArrayIterator<T> extends Array.ArrayIterator<T> implements Iterator<T>, Iterable<T> {
+	public static class ArrayIterator<T>
+			extends Array.ArrayIterator<T> implements Iterator<T>, Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;
 		int index;

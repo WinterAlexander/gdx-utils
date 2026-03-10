@@ -16,8 +16,7 @@ public class FlattenIterable<T> implements ReusableIterator<T> {
 	private Iterator<? extends Iterable<T>> iterator;
 	private Iterator<T> current;
 
-	public FlattenIterable(Iterable<? extends Iterable<T>> iterable)
-	{
+	public FlattenIterable(Iterable<? extends Iterable<T>> iterable) {
 		ensureNotNull(iterable, "iterable");
 		this.iterable = iterable;
 		reset();
@@ -27,14 +26,12 @@ public class FlattenIterable<T> implements ReusableIterator<T> {
 	public void reset() {
 		iterator = iterable.iterator();
 
-		do
-		{
+		do {
 			if(iterator.hasNext())
 				current = iterator.next().iterator();
 			else
 				current = null;
-		}
-		while(current != null && !current.hasNext());
+		} while(current != null && !current.hasNext());
 	}
 
 	@Override
@@ -46,8 +43,7 @@ public class FlattenIterable<T> implements ReusableIterator<T> {
 	public T next() {
 		T next = current.next();
 
-		while(current != null && !current.hasNext())
-		{
+		while(current != null && !current.hasNext()) {
 			if(iterator.hasNext())
 				current = iterator.next().iterator();
 			else

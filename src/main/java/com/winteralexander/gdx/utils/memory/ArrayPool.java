@@ -19,10 +19,7 @@ public class ArrayPool<T> extends Pool<Array<T>> {
 		this.initialArrayCapacity = initialArrayCapacity;
 	}
 
-	public ArrayPool(boolean ordered,
-	                 int initialArrayCapacity,
-	                 int initialPoolCapacity,
-	                 int max) {
+	public ArrayPool(boolean ordered, int initialArrayCapacity, int initialPoolCapacity, int max) {
 		super(initialPoolCapacity, max);
 		this.ordered = ordered;
 		this.initialArrayCapacity = initialArrayCapacity;

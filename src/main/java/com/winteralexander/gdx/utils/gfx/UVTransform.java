@@ -25,29 +25,28 @@ public enum UVTransform {
 
 	static {
 		for(UVTransform transform : values)
-			for(UVTransform transform2 : values)
-			{
+			for(UVTransform transform2 : values) {
 				if(transform == transform2)
 					continue;
 
-				if(transform.p1u == transform2.p1u
-						&& transform.p1v == transform2.p1v
-						&& transform.p2u == transform2.p2u
-						&& transform.p2v == transform2.p2v
-						&& transform.p3u == transform2.p3u
-						&& transform.p3v == transform2.p3v
-						&& transform.p4u == transform2.p4u
-						&& transform.p4v == transform2.p4v)
+				if(transform.p1u == transform2.p1u && transform.p1v == transform2.p1v
+						&& transform.p2u == transform2.p2u && transform.p2v == transform2.p2v
+						&& transform.p3u == transform2.p3u && transform.p3v == transform2.p3v
+						&& transform.p4u == transform2.p4u && transform.p4v == transform2.p4v)
 					throw new IllegalStateException("Duplicates in UVTransform");
 			}
 	}
 
 	private final boolean p1u, p1v, p2u, p2v, p3u, p3v, p4u, p4v;
 
-	UVTransform(boolean p1u, boolean p1v,
-	            boolean p2u, boolean p2v,
-	            boolean p3u, boolean p3v,
-	            boolean p4u, boolean p4v) {
+	UVTransform(boolean p1u,
+			boolean p1v,
+			boolean p2u,
+			boolean p2v,
+			boolean p3u,
+			boolean p3v,
+			boolean p4u,
+			boolean p4v) {
 		this.p1u = p1u;
 		this.p1v = p1v;
 		this.p2u = p2u;
@@ -116,15 +115,23 @@ public enum UVTransform {
 
 	public UVTransform rotateCounterClockwise() {
 		switch(this) {
-			case NONE: return COUNTER_CLOCKWISE;
-			case COUNTER_CLOCKWISE: return UPSIDE_DOWN;
-			case UPSIDE_DOWN: return CLOCKWISE;
-			case CLOCKWISE: return NONE;
+			case NONE:
+				return COUNTER_CLOCKWISE;
+			case COUNTER_CLOCKWISE:
+				return UPSIDE_DOWN;
+			case UPSIDE_DOWN:
+				return CLOCKWISE;
+			case CLOCKWISE:
+				return NONE;
 
-			case FLIPPED_X: return FLIPPED_COUNTER_CLOCKWISE;
-			case FLIPPED_COUNTER_CLOCKWISE: return FLIPPED_Y;
-			case FLIPPED_Y: return FLIPPED_CLOCKWISE;
-			case FLIPPED_CLOCKWISE: return FLIPPED_X;
+			case FLIPPED_X:
+				return FLIPPED_COUNTER_CLOCKWISE;
+			case FLIPPED_COUNTER_CLOCKWISE:
+				return FLIPPED_Y;
+			case FLIPPED_Y:
+				return FLIPPED_CLOCKWISE;
+			case FLIPPED_CLOCKWISE:
+				return FLIPPED_X;
 
 			default:
 				throw new Error("Unreachable switch case");

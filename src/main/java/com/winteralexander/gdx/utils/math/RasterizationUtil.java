@@ -33,10 +33,12 @@ public class RasterizationUtil {
 	 * @param tileConsumer consumer receiving the tiles processed by the algorithm
 	 * @param tmpTile temporary object to avoid allocation
 	 */
-	public static void bresenhamLine2D(int startX, int startY,
-	                                   int endX, int endY,
-	                                   Consumer<Vector2i> tileConsumer,
-	                                   Vector2i tmpTile) {
+	public static void bresenhamLine2D(int startX,
+			int startY,
+			int endX,
+			int endY,
+			Consumer<Vector2i> tileConsumer,
+			Vector2i tmpTile) {
 
 		int dx = abs(endX - startX);
 		int dy = -abs(endY - startY);
@@ -68,28 +70,29 @@ public class RasterizationUtil {
 	 *
 	 * @see #bresenhamLine2D(int, int, int, int, Consumer, Vector2i)
 	 */
-	public static void bresenhamLine2D(int startX, int startY,
-	                                   int endX, int endY,
-	                                   Array<Vector2i> tilesOut) {
+	public static void bresenhamLine2D(int startX,
+			int startY,
+			int endX,
+			int endY,
+			Array<Vector2i> tilesOut) {
 		bresenhamLine2D(startX, startY, endX, endY, vector2i -> tilesOut.add(vector2i.cpy()));
 	}
-
 
 	/**
 	 * @see #bresenhamLine2D(int, int, int, int, Consumer, Vector2i)
 	 */
-	public static void bresenhamLine2D(int startX, int startY,
-	                                   int endX, int endY,
-	                                   Consumer<Vector2i> tileConsumer) {
+	public static void bresenhamLine2D(int startX,
+			int startY,
+			int endX,
+			int endY,
+			Consumer<Vector2i> tileConsumer) {
 		bresenhamLine2D(startX, startY, endX, endY, tileConsumer, new Vector2i());
 	}
 
 	/**
 	 * @see #bresenhamLine2D(int, int, int, int, Consumer, Vector2i)
 	 */
-	public static void bresenhamLine2D(Vector2i start,
-	                                   Vector2i end,
-	                                   Array<Vector2i> tilesOut) {
+	public static void bresenhamLine2D(Vector2i start, Vector2i end, Array<Vector2i> tilesOut) {
 		bresenhamLine2D(start.x, start.y, end.x, end.y, tilesOut);
 	}
 
@@ -97,8 +100,8 @@ public class RasterizationUtil {
 	 * @see #bresenhamLine2D(int, int, int, int, Consumer, Vector2i)
 	 */
 	public static void bresenhamLine2D(Vector2i start,
-	                                   Vector2i end,
-	                                   Consumer<Vector2i> tileConsumer) {
+			Vector2i end,
+			Consumer<Vector2i> tileConsumer) {
 		bresenhamLine2D(start.x, start.y, end.x, end.y, tileConsumer, new Vector2i());
 	}
 
@@ -106,9 +109,9 @@ public class RasterizationUtil {
 	 * @see #bresenhamLine2D(int, int, int, int, Consumer, Vector2i)
 	 */
 	public static void bresenhamLine2D(Vector2i start,
-	                                   Vector2i end,
-	                                   Consumer<Vector2i> tileConsumer,
-	                                   Vector2i tmpTile) {
+			Vector2i end,
+			Consumer<Vector2i> tileConsumer,
+			Vector2i tmpTile) {
 		bresenhamLine2D(start.x, start.y, end.x, end.y, tileConsumer, tmpTile);
 	}
 
@@ -117,7 +120,7 @@ public class RasterizationUtil {
 	 * line. Results may not look great for rendering, but are great for drawing pixels on a grid
 	 * with a brush. Algorithm is inspired from bresenham and operates in O(n) where n is the number
 	 * of output tiles. This algorithm works with real inputs instead of integers and the line
-	 * will be considered from it's real coordinates when checking for intersection. If the
+	 * will be considered from its real coordinates when checking for intersection. If the
 	 * resolution need to be different, the input may be scaled.
 	 *
 	 * @param startX x coordinate of the start of the line
@@ -127,10 +130,12 @@ public class RasterizationUtil {
 	 * @param tileConsumer consumer for tiles as they are processed by the algorithm
 	 * @param tmpTile temporary object to avoid allocation
 	 */
-	public static void completeLine2D(float startX, float startY,
-	                                  float endX, float endY,
-	                                  Consumer<Vector2i> tileConsumer,
-	                                  Vector2i tmpTile) {
+	public static void completeLine2D(float startX,
+			float startY,
+			float endX,
+			float endY,
+			Consumer<Vector2i> tileConsumer,
+			Vector2i tmpTile) {
 		int x = MathUtils.floor(startX);
 		int y = MathUtils.floor(startY);
 
@@ -173,36 +178,36 @@ public class RasterizationUtil {
 	/**
 	 * @see #completeLine2D(float, float, float, float, Consumer, Vector2i)
 	 */
-	public static void completeLine2D(float startX, float startY,
-	                                  float endX, float endY,
-	                                  Array<Vector2i> tilesOut) {
+	public static void completeLine2D(float startX,
+			float startY,
+			float endX,
+			float endY,
+			Array<Vector2i> tilesOut) {
 		completeLine2D(startX, startY, endX, endY, vector2i -> tilesOut.add(vector2i.cpy()));
 	}
 
 	/**
 	 * @see #completeLine2D(float, float, float, float, Consumer, Vector2i)
 	 */
-	public static void completeLine2D(float startX, float startY,
-	                                  float endX, float endY,
-	                                  Consumer<Vector2i> tileConsumer) {
+	public static void completeLine2D(float startX,
+			float startY,
+			float endX,
+			float endY,
+			Consumer<Vector2i> tileConsumer) {
 		completeLine2D(startX, startY, endX, endY, tileConsumer, new Vector2i());
 	}
 
 	/**
 	 * @see #completeLine2D(float, float, float, float, Consumer, Vector2i)
 	 */
-	public static void completeLine2D(Vector2 start,
-	                                  Vector2 end,
-	                                  Array<Vector2i> tilesOut) {
+	public static void completeLine2D(Vector2 start, Vector2 end, Array<Vector2i> tilesOut) {
 		completeLine2D(start.x, start.y, end.x, end.y, tilesOut);
 	}
 
 	/**
 	 * @see #completeLine2D(float, float, float, float, Consumer, Vector2i)
 	 */
-	public static void completeLine2D(Vector2 start,
-	                                  Vector2 end,
-	                                  Consumer<Vector2i> tileConsumer) {
+	public static void completeLine2D(Vector2 start, Vector2 end, Consumer<Vector2i> tileConsumer) {
 		completeLine2D(start.x, start.y, end.x, end.y, tileConsumer, new Vector2i());
 	}
 
@@ -210,9 +215,9 @@ public class RasterizationUtil {
 	 * @see #completeLine2D(float, float, float, float, Consumer, Vector2i)
 	 */
 	public static void completeLine2D(Vector2 start,
-	                                  Vector2 end,
-	                                  Consumer<Vector2i> tileConsumer,
-	                                  Vector2i tmpTile) {
+			Vector2 end,
+			Consumer<Vector2i> tileConsumer,
+			Vector2i tmpTile) {
 		completeLine2D(start.x, start.y, end.x, end.y, tileConsumer, tmpTile);
 	}
 }

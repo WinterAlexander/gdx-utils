@@ -153,19 +153,21 @@ public class Intersector2DTest {
 		rect2.width = 10f;
 		rect2.height = 100f;
 		assertEquals(MathUtil.pow2(15f),
-				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2),
+				1e-10f);
 		assertEquals(MathUtil.pow2(15f),
-				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
-
+				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1),
+				1e-10f);
 
 		rect2.x = 115f;
 		rect2.y = 30f;
 		rect2.width = 30f;
 		rect2.height = 100f;
 		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
-				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2), 1e-10f);
+				Intersector2D.distanceSquaredAABBToAABB(rect1, rect2),
+				1e-10f);
 		assertEquals(MathUtil.pow2(15f) + MathUtil.pow2(10f),
-				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1), 1e-10f);
-
+				Intersector2D.distanceSquaredAABBToAABB(rect2, rect1),
+				1e-10f);
 	}
 }

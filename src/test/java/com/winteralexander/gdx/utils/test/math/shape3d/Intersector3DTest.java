@@ -88,8 +88,7 @@ public class Intersector3DTest {
 
 		Vector3 intersection = new Vector3();
 
-		assertEquals(POINT,
-				intersectRayRay(ray1, ray2, 1e-4f, intersection));
+		assertEquals(POINT, intersectRayRay(ray1, ray2, 1e-4f, intersection));
 
 		float precision = 0f;
 
@@ -117,15 +116,19 @@ public class Intersector3DTest {
 					r.nextFloat() * 2f - 1f,
 					r.nextFloat() * 2f - 1f);
 			do
-				ray1.direction.set(r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f).nor();
+				ray1.direction
+						.set(r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f)
+						.nor();
 			while(ray1.direction.len2() == 0f);
 
 			do
-				ray2.direction.set(r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f).nor();
+				ray2.direction
+						.set(r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f)
+						.nor();
 			while(ray2.direction.len2() == 0f
 					|| Math.abs(ray2.direction.dot(ray1.direction)) > 0.90f);
 
@@ -135,14 +138,16 @@ public class Intersector3DTest {
 			ray2.origin.set(tmpIntersection);
 			ray2.origin.mulAdd(ray2.direction, posRay2);
 
-			assertEquals(POINT,
-					intersectRayRay(ray1, ray2, 1e-6f, tmpComputedIntersection));
+			assertEquals(POINT, intersectRayRay(ray1, ray2, 1e-6f, tmpComputedIntersection));
 
 			float precision = 0f;
 
-			precision = Math.max(precision, Math.abs(tmpIntersection.x - tmpComputedIntersection.x));
-			precision = Math.max(precision, Math.abs(tmpIntersection.y - tmpComputedIntersection.y));
-			precision = Math.max(precision, Math.abs(tmpIntersection.z - tmpComputedIntersection.z));
+			precision = Math.max(precision,
+					Math.abs(tmpIntersection.x - tmpComputedIntersection.x));
+			precision = Math.max(precision,
+					Math.abs(tmpIntersection.y - tmpComputedIntersection.y));
+			precision = Math.max(precision,
+					Math.abs(tmpIntersection.z - tmpComputedIntersection.z));
 			worstPrecision = Math.max(worstPrecision, precision);
 
 			if(precision > 1e-5f)
@@ -151,6 +156,7 @@ public class Intersector3DTest {
 
 		System.out.println("Worst precision: " + worstPrecision);
 	}
+
 	@Test
 	public void testSegmentSegmentCollinearRandom() {
 		Ray ray = new Ray();
@@ -159,14 +165,16 @@ public class Intersector3DTest {
 		Random r = new Random();
 		Vector3 tmpIntersection = new Vector3();
 
-		for(int i = 0; i < 100_0000; i++) {
+		for(int i = 0; i < 1_000_000; i++) {
 			ray.origin.set(r.nextFloat() * 2f - 1f,
 					r.nextFloat() * 2f - 1f,
 					r.nextFloat() * 2f - 1f);
 			do
-				ray.direction.set(r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f,
-						r.nextFloat() * 2f - 1f).nor();
+				ray.direction
+						.set(r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f,
+								r.nextFloat() * 2f - 1f)
+						.nor();
 			while(ray.direction.len2() == 0f);
 
 			boolean shouldIntersect = r.nextBoolean();
@@ -184,14 +192,14 @@ public class Intersector3DTest {
 			segment2.a.set(ray.getEndPoint(tmpIntersection, startRay2));
 			segment2.b.set(ray.getEndPoint(tmpIntersection, endRay2));
 
-			LineIntersectionResult result = intersectSegmentSegment(segment1, segment2, 1e-5f, tmpIntersection);
-			LineIntersectionResult expected = shouldIntersect
-					? COLLINEAR
-					: NONE;
+			LineIntersectionResult result = intersectSegmentSegment(segment1,
+					segment2,
+					1e-5f,
+					tmpIntersection);
+			LineIntersectionResult expected = shouldIntersect ? COLLINEAR : NONE;
 
 			assertEquals(expected, result);
 		}
-
 	}
 
 	@Test
@@ -210,8 +218,7 @@ public class Intersector3DTest {
 		segment2.a.set(0f, 5f, 0f);
 		segment2.b.set(5f, 0f, 0f);
 
-		assertEquals(NONE, intersectSegmentSegment(segment1,
-				segment2, 1e-5f, intersection));
+		assertEquals(NONE, intersectSegmentSegment(segment1, segment2, 1e-5f, intersection));
 
 		segment1.a.set(0f, 0f, 0f);
 		segment1.b.set(1f, 1f, 0f);
@@ -219,8 +226,7 @@ public class Intersector3DTest {
 		segment2.a.set(0.5f, 0.5f, 0f);
 		segment2.b.set(6f, 6f, 0f);
 
-		assertEquals(COLLINEAR, intersectSegmentSegment(segment1,
-				segment2, 1e-5f, intersection));
+		assertEquals(COLLINEAR, intersectSegmentSegment(segment1, segment2, 1e-5f, intersection));
 
 		segment1.a.set(0f, 0f, 0f);
 		segment1.b.set(1f, 1f, 0f);
@@ -228,8 +234,7 @@ public class Intersector3DTest {
 		segment2.a.set(5f, 5f, 0f);
 		segment2.b.set(6f, 6f, 0f);
 
-		assertEquals(NONE, intersectSegmentSegment(segment1,
-				segment2, 1e-5f, intersection));
+		assertEquals(NONE, intersectSegmentSegment(segment1, segment2, 1e-5f, intersection));
 
 		segment1.a.set(-0.5f, 0.45f, -0.4f);
 		segment1.b.set(-0.5f, 0.45f, -0.35499996f);
@@ -250,9 +255,7 @@ public class Intersector3DTest {
 
 	@Test
 	public void testTriangleRay() {
-		Triangle triangle = new Triangle(0f, 0f, 0f,
-				0f, 1f, 0f,
-				0f, 1f, 1f);
+		Triangle triangle = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 0f, 1f, 1f);
 
 		Ray ray = new Ray();
 		ray.origin.set(0f, 0.5f, 0f);
@@ -268,7 +271,7 @@ public class Intersector3DTest {
 		ray.origin.set(-1f, 0.5f, 0.25f);
 		ray.direction.set(1f, 0f, 0f);
 
-		//TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
 
 		assertTrue(intersectTriangleRay(triangle, ray, 1e-5f, segment));
 
@@ -287,65 +290,55 @@ public class Intersector3DTest {
 		ray.origin.set(0.0f, 0.5f, -0.4f);
 		ray.direction.set(0.92391634f, 0.0f, -0.38259482f);
 
-		//TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
 
 		// super thin triangle case
-		//assertTrue(IntersectorPlus.intersectTriangleRay(triangle, ray, 1e-5f, segment));
+		// assertTrue(IntersectorPlus.intersectTriangleRay(triangle, ray, 1e-5f, segment));
 
-		triangle.set(0.4089327f, -0.4089327f, 0.5f,
-				0.5f, -0.5f, 0.5f,
-				2.9802322E-8f, 0.5f, 0.5f);
+		triangle.set(0.4089327f, -0.4089327f, 0.5f, 0.5f, -0.5f, 0.5f, 2.9802322E-8f, 0.5f, 0.5f);
 
 		ray.set(0.0f, 0.39349112f, 0.5f, 0.4540586f, -0.8909718f, 0.0f);
 
-		//TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
 
 		assertTrue(intersectTriangleRay(triangle, ray, 1e-6f, segment));
 
 		triangle.set(-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
 		ray.set(0.6545632f, 0.5f, 0.9755105f, 0.0f, 1.0f, 0.0f);
-		//TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
 		assertFalse(intersectTriangleRay(triangle, ray, 1e-5f, segment));
 
-		triangle.set(0.22423086f, -0.07930406f, -0.079304114f,
-				0.20224862f, -0.14695412f, -0.99999994f,
-				0.25f, -7.1054274E-15f, -1.1920929E-7f);
+		triangle.set(0.22423086f,
+				-0.07930406f,
+				-0.079304114f,
+				0.20224862f,
+				-0.14695412f,
+				-0.99999994f,
+				0.25f,
+				-7.1054274E-15f,
+				-1.1920929E-7f);
 		ray.set(0.23374009f, -0.20375702f, -0.12407229f, 0.0f, 1.0f, 0.0f);
-		//TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ triangle }, new Ray[]{ ray });
 		assertTrue(intersectTriangleRay(triangle, ray, 1e-5f, segment));
 	}
 
 	@Test
 	public void testCoplanarTriangleIntersection() {
-		Triangle tri1 = new Triangle(
-				0f, 0f, 0f,
-				0f, 1f, 0f,
-				0f, 0f, 1f
-		);
+		Triangle tri1 = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f);
 
-		Triangle tri2 = new Triangle(
-				0f, 1f, 1f,
-				0f, -0.5f, 1f,
-				0f, 1f, -0.5f
-		);
+		Triangle tri2 = new Triangle(0f, 1f, 1f, 0f, -0.5f, 1f, 0f, 1f, -0.5f);
 
 		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
 
-		tri2.set(0f, 1f, 1f,
-				0f, 0.2f, 1f,
-				0f, 1f, 0.2f);
+		tri2.set(0f, 1f, 1f, 0f, 0.2f, 1f, 0f, 1f, 0.2f);
 
 		assertFalse(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
 
-		tri2.set(0f, 1f, 1f,
-				0f, 0f, 1f,
-				0f, 1f, 0f);
+		tri2.set(0f, 1f, 1f, 0f, 0f, 1f, 0f, 1f, 0f);
 
 		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
 
-		tri2.set(0f, 0f, 0f,
-				0f, 0f, -1f,
-				0f, -1f, 0f);
+		tri2.set(0f, 0f, 0f, 0f, 0f, -1f, 0f, -1f, 0f);
 
 		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
 
@@ -373,51 +366,99 @@ public class Intersector3DTest {
 		tri1.set(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 		tri2.set(0.49824142f, 0.0f, 0.0f, 0.14803512f, 1.0f, 0.0f, 0.14803512f, 0.0f, 1.0f);
 
-		assertEquals(TriangleIntersectionResult.NONE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+		assertEquals(TriangleIntersectionResult.NONE,
+				intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
 		tri1.set(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-		tri2.set(0.15553457f, 0.0f, 0.1826436f,
-				1.0338287f, 1.0f, 0.1826436f,
-				1.0338287f, 0.0f, 1.1826437f);
+		tri2.set(0.15553457f,
+				0.0f,
+				0.1826436f,
+				1.0338287f,
+				1.0f,
+				0.1826436f,
+				1.0338287f,
+				0.0f,
+				1.1826437f);
 
-		assertEquals(TriangleIntersectionResult.NONE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+		assertEquals(TriangleIntersectionResult.NONE,
+				intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
-		tri1.set(2f, 2f, 0.9423616295572568f,
-				0.9685134704003172f, 2f, 0.9678422992674797f,
-				2f, 1.124710354419025f, 1.068692504586136f);
-		tri2.set(2.5f, 1.624710354419025f, 1.568692504586136f,
-				2.5f, 2.5f, 1.442361629557257f,
-				1.588259113885977f, 2.5f, 0.5f);
+		tri1.set(2f,
+				2f,
+				0.9423616295572568f,
+				0.9685134704003172f,
+				2f,
+				0.9678422992674797f,
+				2f,
+				1.124710354419025f,
+				1.068692504586136f);
+		tri2.set(2.5f,
+				1.624710354419025f,
+				1.568692504586136f,
+				2.5f,
+				2.5f,
+				1.442361629557257f,
+				1.588259113885977f,
+				2.5f,
+				0.5f);
 
-		assertEquals(TriangleIntersectionResult.NONE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+		assertEquals(TriangleIntersectionResult.NONE,
+				intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
 		expected.a.set(0.0f, 0.100607894f, 0.77444464f);
 		expected.b.set(0.0f, 0.45588672f, 0.4191658f);
 		tri1.set(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-		tri2.set(-0.18178494f, 0.100607894f, 0.41916582f,
-				0.3298834f, 1.1006078f, 0.41916582f,
-				0.3298834f, 0.100607894f, 1.4191657f);
+		tri2.set(-0.18178494f,
+				0.100607894f,
+				0.41916582f,
+				0.3298834f,
+				1.1006078f,
+				0.41916582f,
+				0.3298834f,
+				0.100607894f,
+				1.4191657f);
 
 		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 		assertTrue(expected.epsilonEquals(segment, 1e-5f));
 
 		tri1.set(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-		tri2.set(-4.5360066E-4f, 1.5718032f, 0.0f,
-				0.9995464f, 0.571803f, 0.0f,
-				0.9995464f, 1.5718032f, 0.0f);
-		assertEquals(TriangleIntersectionResult.NONE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+		tri2.set(-4.5360066E-4f,
+				1.5718032f,
+				0.0f,
+				0.9995464f,
+				0.571803f,
+				0.0f,
+				0.9995464f,
+				1.5718032f,
+				0.0f);
+		assertEquals(TriangleIntersectionResult.NONE,
+				intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
 		tri1.set(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-		tri2.set(-0.14996159f, 0.83515376f, 0.14882556f,
-				0.85003835f, -0.16484623f, 0.14882556f,
-				0.85003835f, 0.83515376f, 0.14882556f);
+		tri2.set(-0.14996159f,
+				0.83515376f,
+				0.14882556f,
+				0.85003835f,
+				-0.16484623f,
+				0.14882556f,
+				0.85003835f,
+				0.83515376f,
+				0.14882556f);
 
 		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
-		tri1.set(0.013628483f, 0.44765303f, 0.396547f, 0.013628453f, 0.49999997f, 0.5f, 0.013628453f, 0.5523469f, 0.5f);
+		tri1.set(0.013628483f,
+				0.44765303f,
+				0.396547f,
+				0.013628453f,
+				0.49999997f,
+				0.5f,
+				0.013628453f,
+				0.5523469f,
+				0.5f);
 		tri2.set(-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
 
-		//TriangleViewer.start(new Triangle[]{ tri1, tri2 }, new Ray[]{});
+		// TriangleViewer.start(new Triangle[]{ tri1, tri2 }, new Ray[]{});
 
 		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 	}
@@ -425,19 +466,23 @@ public class Intersector3DTest {
 	@Test
 	public void testTriangleTriangleEdgeCase() throws InterruptedException {
 		Triangle tri1 = new Triangle(), tri2 = new Triangle();
-		tri1.set(new Vector3(-0.3f,0.3f,0.5f),
-				new Vector3(-0.20710671f,0.3f,0.5f),
-				new Vector3(-0.20710675f,0.33049607f,0.5f));
-		tri2.set(new Vector3(-0.70710677f,1.3f,5.9604645E-8f),
-				new Vector3(-0.70710677f,0.3f,5.9604645E-8f),
-				new Vector3(5.9604645E-8f,0.3f,0.70710677f));
+		tri1.set(new Vector3(-0.3f, 0.3f, 0.5f),
+				new Vector3(-0.20710671f, 0.3f, 0.5f),
+				new Vector3(-0.20710675f, 0.33049607f, 0.5f));
+		tri2.set(new Vector3(-0.70710677f, 1.3f, 5.9604645E-8f),
+				new Vector3(-0.70710677f, 0.3f, 5.9604645E-8f),
+				new Vector3(5.9604645E-8f, 0.3f, 0.70710677f));
 
 		SegmentPlus segment = new SegmentPlus();
 
 		assertEquals(EDGE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 
-		tri1.set(new Vector3(1.08245f, 0.0f,1.7132657f), new Vector3(1.1869159f, 0.0f, 1.7459112f), new Vector3(1.231845f, 0.0f, 1.7132657f));
-		tri2.set(new Vector3(1.6067458f, 0.1f, 1.4408622f), new Vector3(1.2318448f, 0.1f, 1.7132657f), new Vector3(1.2318448f, -0.1f, 1.7132657f));
+		tri1.set(new Vector3(1.08245f, 0.0f, 1.7132657f),
+				new Vector3(1.1869159f, 0.0f, 1.7459112f),
+				new Vector3(1.231845f, 0.0f, 1.7132657f));
+		tri2.set(new Vector3(1.6067458f, 0.1f, 1.4408622f),
+				new Vector3(1.2318448f, 0.1f, 1.7132657f),
+				new Vector3(1.2318448f, -0.1f, 1.7132657f));
 
 		assertEquals(TriangleIntersectionResult.POINT,
 				intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
@@ -449,8 +494,7 @@ public class Intersector3DTest {
 				new Vector3(5.9604645E-8f, 1.3f, 0.70710677f),
 				new Vector3(0.70710677f, 1.3f, -5.9604645E-8f));
 
-		Ray ray = new Ray(new Vector3(-0.5f, 0.5f,-0.5f),
-				new Vector3(0.0f, 1.0f, 0.0f));
+		Ray ray = new Ray(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.0f, 1.0f, 0.0f));
 
 		SegmentPlus segment = new SegmentPlus();
 		assertFalse(intersectTriangleRay(tri, ray, 1e-5f, segment));
@@ -461,7 +505,7 @@ public class Intersector3DTest {
 
 		ray.set(-0.5f, -0.5f, -0.5f, 0f, 1f, 0f);
 
-		//TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
 
 		assertFalse(intersectTriangleRay(tri, ray, 1e-5f, segment));
 
@@ -473,21 +517,27 @@ public class Intersector3DTest {
 
 		assertFalse(intersectTriangleRay(tri, ray, 1e-5f, segment));
 
-		tri.set(new Vector3(-0.09085471f,0.3955028f,-0.2795128f),
-				new Vector3(-0.23777002f,0.3955028f,-0.17276402f),
-				new Vector3(-0.327236f,0.50609183f,-0.23777011f));
+		tri.set(new Vector3(-0.09085471f, 0.3955028f, -0.2795128f),
+				new Vector3(-0.23777002f, 0.3955028f, -0.17276402f),
+				new Vector3(-0.327236f, 0.50609183f, -0.23777011f));
 		ray.set(-0.31519663f, 0.5f, -0.23935616f, 0f, 1f, 0f);
 
-		//TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
 
 		assertTrue(intersectTriangleRay(tri, ray, 1e-5f, segment));
 
-		tri.set(0.090854734f, 0.3955028f, 0.2795128f,
-				0.23777005f, 0.3955028f, 0.17276399f,
-				0.32723603f, 0.50609183f, 0.23777007f);
+		tri.set(0.090854734f,
+				0.3955028f,
+				0.2795128f,
+				0.23777005f,
+				0.3955028f,
+				0.17276399f,
+				0.32723603f,
+				0.50609183f,
+				0.23777007f);
 
 		ray.set(0.32230777f, 0.5f, 0.23418921f, 0f, 1f, 0f);
-		//TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
+		// TriangleViewer.start(new Triangle[]{ tri }, new Ray[]{ ray });
 
 		assertTrue(intersectTriangleRay(tri, ray, 1e-5f, segment));
 	}
@@ -504,12 +554,18 @@ public class Intersector3DTest {
 
 		assertEquals(COPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, out));
 
-		tri1.set(new Vector3(0.0f, -0.19999999f, -0.5f), new Vector3(0.0f, -0.19999999f, 0.5f), new Vector3(-0.5f, -0.19999999f, 0.5f));
-		tri2.set(new Vector3(-0.5f, -0.19999999f, 0.5f), new Vector3(0.5f, -0.5f, 0.5f), new Vector3(0.5f, -0.19999999f, 0.5f));
+		tri1.set(new Vector3(0.0f, -0.19999999f, -0.5f),
+				new Vector3(0.0f, -0.19999999f, 0.5f),
+				new Vector3(-0.5f, -0.19999999f, 0.5f));
+		tri2.set(new Vector3(-0.5f, -0.19999999f, 0.5f),
+				new Vector3(0.5f, -0.5f, 0.5f),
+				new Vector3(0.5f, -0.19999999f, 0.5f));
 
 		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-5f, out));
 
-		tri2.set(new Vector3(0.5f, -0.19999999f, 0.5f), new Vector3(0.5f, -0.19999999f, -0.5f), new Vector3(0.0f, -0.19999999f, 0.5f));
+		tri2.set(new Vector3(0.5f, -0.19999999f, 0.5f),
+				new Vector3(0.5f, -0.19999999f, -0.5f),
+				new Vector3(0.0f, -0.19999999f, 0.5f));
 
 		assertEquals(TriangleIntersectionResult.POINT,
 				intersectTriangleTriangle(tri1, tri2, 1e-5f, out));
@@ -547,19 +603,35 @@ public class Intersector3DTest {
 				tris.get(0),
 				tris.get(1),
 				tris.get(2),
-				new Ray(plane.getNormal().cpy().scl(-plane.getD()), plane.getNormal().cpy().crs(0f, 1f, 0f)),
-				new Ray(plane.getNormal().cpy().scl(-plane.getD()), plane.getNormal().cpy().crs(plane.getNormal().cpy().crs(0f, 1f, 0f))));
+				new Ray(plane.getNormal().cpy().scl(-plane.getD()),
+						plane.getNormal().cpy().crs(0f, 1f, 0f)),
+				new Ray(plane.getNormal().cpy().scl(-plane.getD()),
+						plane.getNormal().cpy().crs(plane.getNormal().cpy().crs(0f, 1f, 0f))));
 	}
 
 	@Test
 	public void testTrianglePointIntersection() {
-		Triangle tri1 = new Triangle(-0.5f, 0.5f, -0.4209333f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f);
-		Triangle tri2 = new Triangle(-0.49999997f, -0.19087355f, -0.45090222f,
-				-0.5f, -0.34360337f, -0.48763424f,
-				-0.5f, -0.49999994f, 0.5f);
+		Triangle tri1 = new Triangle(-0.5f,
+				0.5f,
+				-0.4209333f,
+				-0.5f,
+				0.5f,
+				-0.5f,
+				-0.5f,
+				-0.5f,
+				-0.5f);
+		Triangle tri2 = new Triangle(-0.49999997f,
+				-0.19087355f,
+				-0.45090222f,
+				-0.5f,
+				-0.34360337f,
+				-0.48763424f,
+				-0.5f,
+				-0.49999994f,
+				0.5f);
 
 		Segment out = new SegmentPlus();
-		//TriangleViewer.start(tri1, tri2);
+		// TriangleViewer.start(tri1, tri2);
 
 		assertEquals(TriangleIntersectionResult.POINT,
 				intersectTriangleTriangle(tri1, tri2, 1e-5f, out));
@@ -567,27 +639,61 @@ public class Intersector3DTest {
 
 	@Test
 	public void testTriangleEdgeIntersection() {
-		Triangle tri1 = new Triangle(0.49999994f,-0.5f,-0.5f, 0.42672676f,-0.5f,-0.4267268f, -0.5f,-0.49999994f,-0.5f);
-		Triangle tri2 = new Triangle(-0.5f,-0.5f,-0.5f, -0.3436038f,-0.5f,-0.48769438f, -0.5f,-0.5f,0.5f);
+		Triangle tri1 = new Triangle(0.49999994f,
+				-0.5f,
+				-0.5f,
+				0.42672676f,
+				-0.5f,
+				-0.4267268f,
+				-0.5f,
+				-0.49999994f,
+				-0.5f);
+		Triangle tri2 = new Triangle(-0.5f,
+				-0.5f,
+				-0.5f,
+				-0.3436038f,
+				-0.5f,
+				-0.48769438f,
+				-0.5f,
+				-0.5f,
+				0.5f);
 
 		Segment out = new SegmentPlus();
-		//TriangleViewer.start(tri1, tri2);
+		// TriangleViewer.start(tri1, tri2);
 
-		assertEquals(EDGE_EDGE,
-				intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
+		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
 
-		tri1 = new Triangle(-0.34360343f,-0.49999994f,-0.48763424f, 0.42672676f,-0.5f,-0.4267268f, 0.3264776f,-0.5f,-0.32647762f);
-		tri2 = new Triangle(-0.3436038f,-0.5f,-0.48769438f, -0.19087377f,-0.5f,-0.45102096f, -0.5f,-0.5f,0.5f);
-		//TriangleViewer.start(tri1, tri2);
+		tri1 = new Triangle(-0.34360343f,
+				-0.49999994f,
+				-0.48763424f,
+				0.42672676f,
+				-0.5f,
+				-0.4267268f,
+				0.3264776f,
+				-0.5f,
+				-0.32647762f);
+		tri2 = new Triangle(-0.3436038f,
+				-0.5f,
+				-0.48769438f,
+				-0.19087377f,
+				-0.5f,
+				-0.45102096f,
+				-0.5f,
+				-0.5f,
+				0.5f);
+		// TriangleViewer.start(tri1, tri2);
 
-		assertEquals(EDGE_EDGE,
-				intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
-
+		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
 	}
 
 	@Test
 	public void testFailingCollinearSegmentIntersection() {
-		Segment segment1 = new SegmentPlus(0.42672676f, -0.5f, -0.4267268f, -0.5f,-0.49999994f,-0.5f);
+		Segment segment1 = new SegmentPlus(0.42672676f,
+				-0.5f,
+				-0.4267268f,
+				-0.5f,
+				-0.49999994f,
+				-0.5f);
 		Segment segment2 = new SegmentPlus(-0.5f, -0.5f, -0.5f, -0.3436038f, -0.5f, -0.48769438f);
 
 		Vector3 out = new Vector3();

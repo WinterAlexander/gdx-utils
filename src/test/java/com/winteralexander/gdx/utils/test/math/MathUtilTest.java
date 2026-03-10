@@ -28,7 +28,7 @@ public class MathUtilTest {
 
 	@Test
 	public void testNegModComparison() {
-		for(int i = Integer.MIN_VALUE / 1000; i < Integer.MAX_VALUE / 1000; i += 461) {
+		for(int i = Integer.MIN_VALUE / 1_000; i < Integer.MAX_VALUE / 1_000; i += 461) {
 			float val = Float.intBitsToFloat(i);
 			assertEquals("Value: " + val, slowNegMod(val, 360f), negMod(val, 360f), FLOAT_ERROR);
 		}

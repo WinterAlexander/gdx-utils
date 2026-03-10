@@ -19,8 +19,8 @@ public class EnumConstantCache {
 
 	public static <T extends Enum<T>> T[] store(T[] values) {
 		if(values.length == 0)
-			throw new IllegalArgumentException("Received empty array, to use store with an empty " +
-					"array provide class type");
+			throw new IllegalArgumentException("Received empty array, to use store with an empty "
+					+ "array provide class type");
 
 		Class<?> type = values[0].getClass();
 		if(!type.isEnum()) // in case the enum value is extended in-place e.g. VALUE {}

@@ -93,10 +93,8 @@ public class MultiShape implements Shape {
 
 	@Override
 	public Rectangle getBoundingRectangle() {
-		float minX = Float.POSITIVE_INFINITY,
-				minY = Float.POSITIVE_INFINITY,
-				maxX = Float.NEGATIVE_INFINITY,
-				maxY = Float.NEGATIVE_INFINITY;
+		float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY,
+			  maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
 
 		for(Shape shape : getShapes()) {
 			Rectangle rect = shape.getBoundingRectangle();

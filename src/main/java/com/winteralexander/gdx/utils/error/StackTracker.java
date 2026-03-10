@@ -52,7 +52,7 @@ public class StackTracker {
 		Thread thread = Thread.currentThread();
 
 		if(!trackers.containsKey(thread) || trackers.get(thread).size == 0)
-			return; //not tracked
+			return; // not tracked
 
 		appendCause(ex, trackers.get(thread).last().get());
 	}
@@ -61,7 +61,7 @@ public class StackTracker {
 		Thread thread = Thread.currentThread();
 
 		if(!trackers.containsKey(thread) || trackers.get(thread).size == 0)
-			return null; //not tracked
+			return null; // not tracked
 
 		return trackers.get(thread).last().getName();
 	}

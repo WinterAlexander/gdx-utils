@@ -20,9 +20,7 @@ public class ListenableTest {
 	public void testSimpleInvocation() {
 		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
 		MutableBox<Boolean> hasRun = new MutableBox<>(false);
-		listenable.addListener(() -> {
-			hasRun.set(true);
-		});
+		listenable.addListener(() -> { hasRun.set(true); });
 
 		listenable.trigger(Runnable::run);
 		assertTrue("Listenable did not run", hasRun.get());
@@ -45,8 +43,10 @@ public class ListenableTest {
 		listenable.addListener(secondListener);
 
 		listenable.trigger(Runnable::run);
-		assertEquals("Value must be updated by the second listener as removal while invocation " +
-				"should be delayed until end of invocation", 10, (int)value.get());
+		assertEquals("Value must be updated by the second listener as removal while invocation "
+						+ "should be delayed until end of invocation",
+				10,
+				(int)value.get());
 		assertFalse("Listenable must no longer have listener active",
 				listenable.hasListener(secondListener));
 	}
@@ -67,8 +67,10 @@ public class ListenableTest {
 		});
 
 		listenable.trigger(Runnable::run);
-		assertEquals("Value must not be updated by the second listener as add while invocation " +
-				"should be delayed until end of invocation", 1, (int)value.get());
+		assertEquals("Value must not be updated by the second listener as add while invocation "
+						+ "should be delayed until end of invocation",
+				1,
+				(int)value.get());
 		assertTrue("Listenable must now have listener active",
 				listenable.hasListener(secondListener));
 	}
@@ -77,9 +79,7 @@ public class ListenableTest {
 	public void testAddPriority() {
 		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
 		MutableBox<Integer> value = new MutableBox<>(0);
-		listenable.addListener(() -> {
-			value.set(10);
-		});
+		listenable.addListener(() -> { value.set(10); });
 		listenable.addPriorityListener(() -> {
 			value.set(1); // will execute before, so overwritten
 		});
@@ -93,9 +93,7 @@ public class ListenableTest {
 		ListenableImpl<Runnable> listenable = new ListenableImpl<>();
 		MutableBox<Integer> value = new MutableBox<>(0);
 		listenable.lockListeners();
-		listenable.addListener(() -> {
-			value.set(1);
-		});
+		listenable.addListener(() -> { value.set(1); });
 
 		listenable.trigger(Runnable::run);
 		listenable.unlockListeners();

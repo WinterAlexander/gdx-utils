@@ -19,14 +19,16 @@ import static org.junit.Assert.*;
  */
 public class PriorityListenableTest {
 	private enum Priority {
-		HIGH, MED, LOW;
+		HIGH,
+		MED,
+		LOW;
 		public static final Priority[] values = EnumConstantCache.store(values());
 	}
 
 	@Test
 	public void testSimpleInvocation() {
-		PriorityListenableImpl<BooleanSupplier, Priority> listenable =
-				new PriorityListenableImpl<>(Priority.MED);
+		PriorityListenableImpl<BooleanSupplier, Priority>
+				listenable = new PriorityListenableImpl<>(Priority.MED);
 		IntArray array = new IntArray();
 		listenable.addListener(() -> {
 			array.add(1);
@@ -51,8 +53,8 @@ public class PriorityListenableTest {
 
 	@Test
 	public void testHandleEvent() {
-		PriorityListenableImpl<BooleanSupplier, Priority> listenable =
-				new PriorityListenableImpl<>(Priority.MED);
+		PriorityListenableImpl<BooleanSupplier, Priority>
+				listenable = new PriorityListenableImpl<>(Priority.MED);
 		IntArray array = new IntArray();
 		listenable.addListener(() -> {
 			array.add(1);

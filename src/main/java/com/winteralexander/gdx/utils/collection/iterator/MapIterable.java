@@ -13,8 +13,7 @@ import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
  *
  * @author Alexander Winter
  */
-public class MapIterable<P, R> implements ReusableIterator<R>
-{
+public class MapIterable<P, R> implements ReusableIterator<R> {
 	private final Iterable<P> iterable;
 	private final Function<P, R> mapping;
 	private Iterator<P> iterator;

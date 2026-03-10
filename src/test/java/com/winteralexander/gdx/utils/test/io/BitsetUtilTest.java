@@ -29,6 +29,7 @@ public class BitsetUtilTest {
 		assertEquals((byte)128, toByte(false, false, false, false, false, false, false, true));
 		assertEquals((byte)255, toByte(true, true, true, true, true, true, true, true));
 
+		// clang-format off
 		assertEquals((short)256, toShort(false, false, false, false, false, false, false, false,
 				true));
 		assertEquals((short)65535, toShort(true, true, true, true, true, true, true, true,
@@ -59,25 +60,22 @@ public class BitsetUtilTest {
 		try {
 			toByte(new boolean[9]);
 			fail("toByte() did not throw IllegalArgumentException when providing bitset too large");
-		} catch(IllegalArgumentException expected) {}
-
+		} catch(IllegalArgumentException ignored) {}
 
 		try {
 			toShort(new boolean[17]);
 			fail("toShort() did not throw IllegalArgumentException when providing bitset too large");
-		} catch(IllegalArgumentException expected) {}
-
+		} catch(IllegalArgumentException ignored) {}
 
 		try {
 			toInt(new boolean[33]);
 			fail("toInt() did not throw IllegalArgumentException when providing bitset too large");
-		} catch(IllegalArgumentException expected) {}
-
+		} catch(IllegalArgumentException ignored) {}
 
 		try {
 			toLong(new boolean[65]);
 			fail("toByte() did not throw IllegalArgumentException when providing bitset too large");
-		} catch(IllegalArgumentException expected) {}
+		} catch(IllegalArgumentException ignored) {}
+		// clang-format on
 	}
-
 }

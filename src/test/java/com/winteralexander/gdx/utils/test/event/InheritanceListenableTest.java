@@ -16,21 +16,22 @@ import static org.junit.Assert.assertEquals;
 public class InheritanceListenableTest {
 	@Test
 	public void testBasic() {
-		InheritanceListenable<BaseListener, ChildListener> inheritanceListenable =
-				new InheritanceListenable<BaseListener, ChildListener>(ChildListener.class) {
-			@Override
-			protected ChildListener wrapListener(BaseListener listener) {
-				return new ChildListener() {
+		InheritanceListenable<BaseListener, ChildListener>
+				inheritanceListenable = new InheritanceListenable<BaseListener,
+						ChildListener>(ChildListener.class) {
 					@Override
-					public void addedThing(Object thing) {}
+					protected ChildListener wrapListener(BaseListener listener) {
+						return new ChildListener() {
+							@Override
+							public void addedThing(Object thing) {}
 
-					@Override
-					public void changed() {
-						listener.changed();
+							@Override
+							public void changed() {
+								listener.changed();
+							}
+						};
 					}
 				};
-			}
-		};
 
 		MutableBox<Integer> changedCount = new MutableBox<>(0);
 		MutableBox<Integer> addedCount = new MutableBox<>(0);
@@ -38,8 +39,8 @@ public class InheritanceListenableTest {
 		BaseListener baseListener;
 		ChildListener childListener;
 
-		inheritanceListenable.addListener(baseListener =
-				() -> changedCount.set(changedCount.get() + 1));
+		inheritanceListenable.addListener(baseListener = ()
+												  -> changedCount.set(changedCount.get() + 1));
 
 		inheritanceListenable.addListener(childListener = new ChildListener() {
 			@Override

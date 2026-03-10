@@ -30,7 +30,9 @@ public class Annulus implements Shape {
 		this(() -> position, () -> innerRadius, () -> outerRadius);
 	}
 
-	public Annulus(Supplier<Vector2> position, FloatSupplier innerRadius, FloatSupplier outerRadius) {
+	public Annulus(Supplier<Vector2> position,
+			FloatSupplier innerRadius,
+			FloatSupplier outerRadius) {
 		Validation.ensureNotNull(position, "position");
 		this.position = position;
 		this.innerRadius = innerRadius;
@@ -39,7 +41,8 @@ public class Annulus implements Shape {
 		tmpInnerCircle = new Circle(position, innerRadius);
 
 		boundingRectangle = new Rectangle(position,
-				new Vec2Supplier(v -> v.set(outerRadius.getAsFloat(), outerRadius.getAsFloat()).scl(2f)));
+				new Vec2Supplier(v
+						-> v.set(outerRadius.getAsFloat(), outerRadius.getAsFloat()).scl(2f)));
 	}
 
 	@Override
@@ -157,7 +160,8 @@ public class Annulus implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Circle)shape).getPosition());
 
-			if(getPosition().dst2(((Circle)shape).getPosition()) > pow2(getOuterRadius() - ((Circle)shape).getRadius()))
+			if(getPosition().dst2(((Circle)shape).getPosition())
+					> pow2(getOuterRadius() - ((Circle)shape).getRadius()))
 				return false;
 
 			return !shape.overlaps(tmpInnerCircle);
@@ -169,7 +173,8 @@ public class Annulus implements Shape {
 
 			tmpVec2.set(getPosition()).sub(((Annulus)shape).getPosition());
 
-			if(getPosition().dst2(((Annulus)shape).getPosition()) > pow2(getOuterRadius() - ((Annulus)shape).getOuterRadius()))
+			if(getPosition().dst2(((Annulus)shape).getPosition())
+					> pow2(getOuterRadius() - ((Annulus)shape).getOuterRadius()))
 				return false;
 
 			return !shape.overlaps(tmpInnerCircle);

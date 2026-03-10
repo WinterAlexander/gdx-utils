@@ -547,7 +547,7 @@ public class CollectionUtil {
 	}
 
 	public static <K, V> void putAll(IdentityMap<K, V> into,
-	                                 IdentityMap<? extends K, ? extends V> content) {
+			IdentityMap<? extends K, ? extends V> content) {
 		into.ensureCapacity(content.size);
 		for(Entry<? extends K, ? extends V> entry : content)
 			into.put(entry.key, entry.value);
@@ -602,7 +602,8 @@ public class CollectionUtil {
 		for(V value : values) {
 			K key = keyFromValue.apply(value);
 			if(map.containsKey(key))
-				throw new IllegalArgumentException("Two values with the same key in call to toGdxMap");
+				throw new IllegalArgumentException("Two values with the same key in call to "
+						+ "toGdxMap");
 			map.put(key, value);
 		}
 		return map;
@@ -668,7 +669,7 @@ public class CollectionUtil {
 		return output;
 	}
 
-	@SuppressWarnings({ "rawtypes", "RedundantCast", "unchecked" })
+	@SuppressWarnings({"rawtypes", "RedundantCast", "unchecked"})
 	public static <T> Iterable<T> castIterable(Iterable<?> other) {
 		return (Iterable<T>)(Iterable)other;
 	}

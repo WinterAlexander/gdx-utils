@@ -46,11 +46,14 @@ public class TextureUtil {
 	}
 
 	public static Pixmap getPixmap(TextureRegion region) {
-		Pixmap pixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), Format.RGBA8888);
+		Pixmap pixmap = new Pixmap(region.getRegionWidth(),
+				region.getRegionHeight(),
+				Format.RGBA8888);
 
 		Pixmap texPixmap = getPixmap(region.getTexture());
 
-		pixmap.drawPixmap(texPixmap, region.getRegionX(),
+		pixmap.drawPixmap(texPixmap,
+				region.getRegionX(),
 				region.getRegionY(),
 				region.getRegionWidth(),
 				region.getRegionHeight(),
@@ -69,26 +72,26 @@ public class TextureUtil {
 		int w = p.getWidth();
 		int h = p.getHeight();
 
-		//change blending to 'none' so that alpha areas will not show
-		//previous orientation of image
+		// change blending to 'none' so that alpha areas will not show
+		// previous orientation of image
 		p.setBlending(Pixmap.Blending.None);
 
 		for(int y = 0; y < h / 2; y++)
 			for(int x = 0; x < w / 2; x++) {
-				//get color of current pixel
+				// get color of current pixel
 				int hold = p.getPixel(x, y);
-				//draw color of pixel from opposite side of pixmap to current position
+				// draw color of pixel from opposite side of pixmap to current position
 				p.drawPixel(x, y, p.getPixel(w - x - 1, y));
-				//draw saved color to other side of pixmap
+				// draw saved color to other side of pixmap
 				p.drawPixel(w - x - 1, y, hold);
 
-				//repeat for height/width inverted pixels
+				// repeat for height/width inverted pixels
 				hold = p.getPixel(x, h - y - 1);
 				p.drawPixel(x, h - y - 1, p.getPixel(w - x - 1, h - y - 1));
 				p.drawPixel(w - x - 1, h - y - 1, hold);
 			}
 
-		//set blending back to default
+		// set blending back to default
 		p.setBlending(Pixmap.Blending.SourceOver);
 	}
 

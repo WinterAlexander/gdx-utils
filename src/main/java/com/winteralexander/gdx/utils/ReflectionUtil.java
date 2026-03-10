@@ -1,6 +1,5 @@
 package com.winteralexander.gdx.utils;
 
-
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -207,8 +206,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new IllegalArgumentException("Field " + field + " not found for type " +
-				object.getClass());
+		throw new IllegalArgumentException("Field " + field + " not found for type "
+				+ object.getClass());
 	}
 
 	public static boolean has(Class<?> type, String field) {
@@ -310,8 +309,8 @@ public class ReflectionUtil {
 			t = t.getSuperclass();
 		}
 
-		throw new IllegalArgumentException("Method " + method + " not found for type " +
-				object.getClass());
+		throw new IllegalArgumentException("Method " + method + " not found for type "
+				+ object.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -324,7 +323,8 @@ public class ReflectionUtil {
 					constructor.setAccessible(true);
 
 				return (T)constructor.newInstance(params);
-			} catch(InstantiationException | IllegalArgumentException | IllegalAccessException ignored) {
+			} catch(InstantiationException | IllegalArgumentException
+					| IllegalAccessException ignored) {
 				// continue
 			} catch(InvocationTargetException ex) {
 				throw new RuntimeException(ex);
@@ -338,16 +338,14 @@ public class ReflectionUtil {
 		return toPrettyString(object, Integer.MAX_VALUE, 0, new Array<>());
 	}
 
-	public static String toPrettyString(Object object,
-	                                     int maxDepth,
-	                                     int indentationLevel) {
+	public static String toPrettyString(Object object, int maxDepth, int indentationLevel) {
 		return toPrettyString(object, maxDepth, indentationLevel, new Array<>());
 	}
 
 	private static String toPrettyString(Object object,
-										 int maxDepth,
-	                                     int indentationLevel,
-	                                     Array<Object> objects) {
+			int maxDepth,
+			int indentationLevel,
+			Array<Object> objects) {
 		objects.add(object);
 
 		if(maxDepth <= 0)
@@ -392,8 +390,7 @@ public class ReflectionUtil {
 					else if(obj.getClass().isAssignableFrom(String.class))
 						sb.append("\"").append(obj).append("\"").append(newLine);
 
-					else if(obj.getClass().isPrimitive()
-							|| obj.getClass().isEnum()
+					else if(obj.getClass().isPrimitive() || obj.getClass().isEnum()
 							|| isPrimitiveBox(obj.getClass()))
 						sb.append(obj).append(newLine);
 
@@ -452,10 +449,16 @@ public class ReflectionUtil {
 									.append(newLine);
 
 						else {
-							sb.append(toPrettyString(obj, maxDepth - 1, indentationLevel + 1, objects));
+							sb.append(toPrettyString(obj,
+									maxDepth - 1,
+									indentationLevel + 1,
+									objects));
 						}
 					} catch(Throwable ex) {
-						sb.append("(").append(ex.getClass().getSimpleName()).append(")").append(newLine);
+						sb.append("(")
+								.append(ex.getClass().getSimpleName())
+								.append(")")
+								.append(newLine);
 					}
 				}
 
@@ -479,7 +482,9 @@ public class ReflectionUtil {
 			Object unsafe = field.get(null);
 
 			Method putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile",
-					Object.class, long.class, Object.class);
+					Object.class,
+					long.class,
+					Object.class);
 			Method staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset",
 					Field.class);
 
@@ -507,12 +512,13 @@ public class ReflectionUtil {
 		int index = 1 + parent;
 
 		if(elements.length <= index)
-			throw new IllegalStateException("Thread stack not big enough to retrieve the parent " +
-					"with depth " + parent);
+			throw new IllegalStateException("Thread stack not big enough to retrieve the parent "
+					+ "with depth " + parent);
 
-		return last(elements[index].getClassName().split(Pattern.quote("."))) +
-				"#" + elements[index].getMethodName() + "() " +
-				"(" + elements[index].getFileName() + ":" + elements[index].getLineNumber() + ")";
+		return last(elements[index].getClassName().split(Pattern.quote("."))) + "#"
+				+ elements[index].getMethodName() + "() "
+				+ "(" + elements[index].getFileName() + ":" + elements[index].getLineNumber()
+				+ ")";
 	}
 
 	/**
@@ -578,9 +584,8 @@ public class ReflectionUtil {
 		Array<String> classes = new Array<>();
 		classpathScanResult.forEach(c -> {
 			if(c.endsWith(".class"))
-				classes.add(c.replace(File.separatorChar, '.')
-						.replace('/', '.')
-						.replace(".class", ""));
+				classes.add(
+						c.replace(File.separatorChar, '.').replace('/', '.').replace(".class", ""));
 		});
 		return classes;
 	}
