@@ -117,7 +117,7 @@ public class VectorUtil {
 
 	public static float getComponent(Vector3 vec, int component) {
 		ensureInRange(component, 0, 3, "component");
-		
+
 		switch(component) {
 			case 0:
 				return vec.x;
