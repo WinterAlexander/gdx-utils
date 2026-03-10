@@ -25,7 +25,8 @@ public class Intersector3D {
 							 tmpEdgeLine3 = new Ray();
 	private static final Vector3 tmpIntersection1 = new Vector3(), tmpIntersection2 = new Vector3(),
 								 tmpIntersection3 = new Vector3();
-	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus();
+	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus(),
+								 tmpSegmentOut = new SegmentPlus();
 	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
 
@@ -140,6 +141,25 @@ public class Intersector3D {
 	}
 
 	/**
+	 * Computes the intersection of 2 segments. The intersection can either be a point or another
+	 * collinear segment. If the intersection is a point or a segment, it is set in the out
+	 * parameter. (points are represented by a segment of length 0) If the segments are collinear
+	 * but not intersecting, {@link LineIntersectionResult#NONE} is returned.
+	 *
+	 * @param first first segment to check for intersection
+	 * @param second second segment to check for intersection
+	 * @param tol tolerance to use for computations
+	 * @param out intersection segment or point if intersection
+	 * @return result of the intersection
+	 */
+	public static LineIntersectionResult intersectSegmentSegment(Segment first,
+			Segment second,
+			float tol,
+			Segment out) {
+		return intersectSegmentSegment(first.a, first.b, second.a, second.b, tol, out);
+	}
+
+	/**
 	 * @see #intersectSegmentSegment(Segment, Segment, float, Vector3)
 	 */
 	public static LineIntersectionResult intersectSegmentSegment(Vector3 firstStart,
@@ -148,6 +168,26 @@ public class Intersector3D {
 			Vector3 secondEnd,
 			float tol,
 			Vector3 out) {
+		LineIntersectionResult result = intersectSegmentSegment(firstStart,
+				firstEnd,
+				secondStart,
+				secondEnd,
+				tol,
+				tmpSegmentOut);
+		if(result == POINT)
+			out.set(tmpSegmentOut.a);
+		return result;
+	}
+
+	/**
+	 * @see #intersectSegmentSegment( Segment, Segment, float, Segment)
+	 */
+	public static LineIntersectionResult intersectSegmentSegment(Vector3 firstStart,
+			Vector3 firstEnd,
+			Vector3 secondStart,
+			Vector3 secondEnd,
+			float tol,
+			Segment out) {
 		tmpSegDir1.set(firstEnd).sub(firstStart);
 		tmpSegDir2.set(secondEnd).sub(secondStart);
 
@@ -156,7 +196,7 @@ public class Intersector3D {
 				secondStart,
 				tmpSegDir2,
 				tol,
-				out);
+				tmpIntersection1);
 
 		if(result == NONE)
 			return NONE;
@@ -174,22 +214,35 @@ public class Intersector3D {
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
 
-			if(tMin > 1f + tol || tMax < -tol)
+			if(tMin - 1f > tol || tMax < -tol)
 				return NONE;
 
-			return tMin < 1f - tol && tMax > tol ? COLLINEAR : POINT;
+			if(tMin < -tol)
+				out.a.set(firstStart);
+			else
+				out.a.set(secondStart);
+
+			if(tMax - 1f > tol)
+				out.b.set(firstEnd);
+			else
+				out.b.set(secondEnd);
+
+			return tMin - 1f < -tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = tmpSegDir1.dot(out.x - firstStart.x, out.y - firstStart.y, out.z - firstStart.z)
+		float t1 = tmpSegDir1.dot(tmpIntersection1.x - firstStart.x,
+						   tmpIntersection1.y - firstStart.y,
+						   tmpIntersection1.z - firstStart.z)
 				/ tmpSegDir1.len2();
-		float t2 = tmpSegDir2.dot(out.x - secondStart.x,
-						   out.y - secondStart.y,
-						   out.z - secondStart.z)
+		float t2 = tmpSegDir2.dot(tmpIntersection1.x - secondStart.x,
+						   tmpIntersection1.y - secondStart.y,
+						   tmpIntersection1.z - secondStart.z)
 				/ tmpSegDir2.len2();
 
-		if(t1 < -tol || t1 > 1f + tol || t2 < -tol || t2 > 1f + tol)
+		if(t1 < -tol || t1 - 1f > tol || t2 < -tol || t2 - 1f > tol)
 			return NONE;
 
+		out.a.set(out.b.set(tmpIntersection1));
 		return POINT;
 	}
 
@@ -241,99 +294,7 @@ public class Intersector3D {
 			if(signFace1Vert1 != 0 || ignoreCoplanar)
 				return TriangleIntersectionResult.NONE;
 
-			// for each side of each triangle, try to find collinear sides
-			for(int i = 0; i < 3; i++) {
-				Vector3 start = first.getPoint(i + 1);
-				Vector3 end = first.getPoint((i + 1) % 3 + 1);
-				for(int j = 0; j < 3; j++) {
-
-					LineIntersectionResult result = intersectSegmentSegment(start,
-							end,
-							second.getPoint(j + 1),
-							second.getPoint((j + 1) % 3 + 1),
-							tol,
-							tmpIntersection1);
-
-					if(result == COLLINEAR) {
-						Vector3 otherPointA = first.getPoint((i + 2) % 3 + 1);
-						Vector3 otherPointB = second.getPoint((j + 2) % 3 + 1);
-
-						Vector3 perp = tmpIntersection1.set(end).sub(start);
-						perp.crs(first.getNormal());
-						tmpIntersection2.set(otherPointA).sub(start);
-						tmpIntersection3.set(otherPointB).sub(start);
-						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
-								== Math.signum(perp.dot(tmpIntersection3));
-						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-									   : TriangleIntersectionResult.EDGE_EDGE;
-					}
-				}
-			}
-
-			// check for triangle corners matching other corners
-			for(int i = 0; i < 3; i++) {
-				Vector3 a = first.getPoint(i + 1);
-				Vector3 a1 = tmpIntersection1.set(first.getPoint((i + 1) % 3 + 1)).sub(a);
-				Vector3 a2 = tmpIntersection2.set(first.getPoint((i + 2) % 3 + 1)).sub(a);
-				for(int j = 0; j < 3; j++) {
-					Vector3 b = second.getPoint(j + 1);
-					Vector3 b1 = tmpSegDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
-					Vector3 b2 = tmpSegDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
-
-					if(a.epsilonEquals(b, tol)) {
-						boolean overlap = isBetween(a1, a2, b1, tol) || isBetween(a1, a2, b2, tol)
-								|| isBetween(b1, b2, a1, tol) || isBetween(b1, b2, a2, tol);
-						return overlap ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-									   : TriangleIntersectionResult.POINT;
-					}
-				}
-			}
-
-			// look for corners of a triangle being on the edge of another
-			for(int i = 0; i < 3; i++) {
-				Vector3 a = first.getPoint(i + 1);
-				Vector3 e1a = first.getPoint((i + 1) % 3 + 1);
-				Vector3 e2a = first.getPoint((i + 2) % 3 + 1);
-				for(int j = 0; j < 3; j++) {
-					Vector3 b = second.getPoint(j + 1);
-					Vector3 e1b = second.getPoint((j + 1) % 3 + 1);
-					Vector3 e2b = second.getPoint((j + 2) % 3 + 1);
-
-					if(intersectSegmentSegment(a, e1a, e1b, e2b, tol, tmpIntersection1) == POINT
-							&& tmpIntersection1.epsilonEquals(a, tol)) {
-
-						Vector3 perp = tmpIntersection1.set(e1b).sub(e2b);
-						perp.crs(first.getNormal());
-
-						tmpIntersection2.set(e1a).sub(a);
-						tmpIntersection3.set(b).sub(a);
-
-						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
-								== Math.signum(perp.dot(tmpIntersection3));
-						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-									   : TriangleIntersectionResult.POINT;
-					}
-
-					if(intersectSegmentSegment(e1a, e2a, b, e2b, tol, tmpIntersection1) == POINT
-							&& tmpIntersection1.epsilonEquals(b, tol)) {
-
-						Vector3 perp = tmpIntersection1.set(e1a).sub(e2a);
-						perp.crs(first.getNormal());
-
-						tmpIntersection2.set(e2b).sub(b);
-						tmpIntersection3.set(a).sub(b);
-
-						boolean sameDir = Math.signum(perp.dot(tmpIntersection2))
-								== Math.signum(perp.dot(tmpIntersection3));
-						return sameDir ? TriangleIntersectionResult.COPLANAR_FACE_FACE
-									   : TriangleIntersectionResult.POINT;
-					}
-				}
-			}
-
-			return intersectCoplanarTriangles(first, second, tol)
-					? TriangleIntersectionResult.COPLANAR_FACE_FACE
-					: TriangleIntersectionResult.NONE;
+			return intersectCoplanarTriangles(first, second, tol, out);
 		}
 
 		rayFromIntersection(first, second, tol, tmpIntersectRay);
@@ -430,6 +391,126 @@ public class Intersector3D {
 			return TriangleIntersectionResult.EDGE_FACE;
 
 		return TriangleIntersectionResult.NONCOPLANAR_FACE_FACE;
+	}
+
+	/**
+	 * Test whether 2 given co-planar triangles are intersecting, sharing an edge, touching at a
+	 * point or not intersecting. This function assumes the provided triangles are co-planar and
+	 * if they aren't, the result is undefined.
+	 *
+	 * @param first first triangle
+	 * @param second second triangle
+	 * @param tol distance at which 2 floating points are considered to be the same
+	 * @param out segment of the intersection, only set if applicable based on the result.
+	 * @return result of the intersection
+	 */
+	public static TriangleIntersectionResult intersectCoplanarTriangles(Triangle first,
+			Triangle second,
+			float tol,
+			Segment out) {
+		// for each side of each triangle, try to find collinear sides
+		for(int i = 0; i < 3; i++) {
+			Vector3 start = first.getPoint(i + 1);
+			Vector3 end = first.getPoint((i + 1) % 3 + 1);
+			for(int j = 0; j < 3; j++) {
+
+				LineIntersectionResult result = intersectSegmentSegment(start,
+						end,
+						second.getPoint(j + 1),
+						second.getPoint((j + 1) % 3 + 1),
+						tol,
+						tmpSegmentOut);
+
+				if(result != COLLINEAR)
+					continue;
+
+				Vector3 otherPointA = first.getPoint((i + 2) % 3 + 1);
+				Vector3 otherPointB = second.getPoint((j + 2) % 3 + 1);
+
+				Vector3 perp = tmpIntersection1.set(end).sub(start);
+				perp.crs(first.getNormal());
+				tmpIntersection2.set(otherPointA).sub(start);
+				tmpIntersection3.set(otherPointB).sub(start);
+				if(Math.signum(perp.dot(tmpIntersection2))
+						== Math.signum(perp.dot(tmpIntersection3)))
+					return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+				out.a.set(tmpSegmentOut.a);
+				out.b.set(tmpSegmentOut.b);
+				return TriangleIntersectionResult.EDGE_EDGE;
+			}
+		}
+
+		// check for triangle corners matching other corners
+		for(int i = 0; i < 3; i++) {
+			Vector3 a = first.getPoint(i + 1);
+			Vector3 a1 = tmpIntersection1.set(first.getPoint((i + 1) % 3 + 1)).sub(a);
+			Vector3 a2 = tmpIntersection2.set(first.getPoint((i + 2) % 3 + 1)).sub(a);
+			for(int j = 0; j < 3; j++) {
+				Vector3 b = second.getPoint(j + 1);
+				Vector3 b1 = tmpSegDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
+				Vector3 b2 = tmpSegDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
+
+				if(a.epsilonEquals(b, tol)) {
+					if(isBetween(a1, a2, b1, tol) || isBetween(a1, a2, b2, tol)
+							|| isBetween(b1, b2, a1, tol) || isBetween(b1, b2, a2, tol))
+						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+					out.a.set(out.b.set(a));
+					return TriangleIntersectionResult.POINT;
+				}
+			}
+		}
+
+		// look for corners of a triangle being on the edge of another
+		for(int i = 0; i < 3; i++) {
+			Vector3 a = first.getPoint(i + 1);
+			Vector3 e1a = first.getPoint((i + 1) % 3 + 1);
+			Vector3 e2a = first.getPoint((i + 2) % 3 + 1);
+			for(int j = 0; j < 3; j++) {
+				Vector3 b = second.getPoint(j + 1);
+				Vector3 e1b = second.getPoint((j + 1) % 3 + 1);
+				Vector3 e2b = second.getPoint((j + 2) % 3 + 1);
+
+				if(intersectSegmentSegment(a, e1a, e1b, e2b, tol, tmpIntersection1) == POINT
+						&& tmpIntersection1.epsilonEquals(a, tol)) {
+
+					Vector3 perp = tmpIntersection1.set(e1b).sub(e2b);
+					perp.crs(first.getNormal());
+
+					tmpIntersection2.set(e1a).sub(a);
+					tmpIntersection3.set(b).sub(a);
+
+					if(Math.signum(perp.dot(tmpIntersection2))
+							== Math.signum(perp.dot(tmpIntersection3)))
+						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+					out.a.set(out.b.set(a));
+					return TriangleIntersectionResult.POINT;
+				}
+
+				if(intersectSegmentSegment(e1a, e2a, b, e2b, tol, tmpIntersection1) == POINT
+						&& tmpIntersection1.epsilonEquals(b, tol)) {
+
+					Vector3 perp = tmpIntersection1.set(e1a).sub(e2a);
+					perp.crs(first.getNormal());
+
+					tmpIntersection2.set(e2b).sub(b);
+					tmpIntersection3.set(a).sub(b);
+
+					if(Math.signum(perp.dot(tmpIntersection2))
+							== Math.signum(perp.dot(tmpIntersection3)))
+						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+					out.a.set(out.b.set(b));
+					return TriangleIntersectionResult.POINT;
+				}
+			}
+		}
+
+		return intersectCoplanarTriangles(first, second, tol)
+				? TriangleIntersectionResult.COPLANAR_FACE_FACE
+				: TriangleIntersectionResult.NONE;
 	}
 
 	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {

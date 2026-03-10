@@ -17,6 +17,8 @@ public class EnumConstantCache {
 	private static final ObjectMap<Class<?>, Object[]> map = new ObjectMap<>();
 	private static final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+	private EnumConstantCache() {}
+
 	public static <T extends Enum<T>> T[] store(T[] values) {
 		if(values.length == 0)
 			throw new IllegalArgumentException("Received empty array, to use store with an empty "

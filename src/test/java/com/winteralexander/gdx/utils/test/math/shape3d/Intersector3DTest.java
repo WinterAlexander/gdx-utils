@@ -687,6 +687,19 @@ public class Intersector3DTest {
 	}
 
 	@Test
+	public void testCollinearSegmentIntersection() {
+		Segment segment1 = new SegmentPlus(new Vector3(0f, 0f, 0f), new Vector3(1f, 1f, 1f));
+		Segment segment2 = new SegmentPlus(new Vector3(-1f, -1f, -1f),
+				new Vector3(0.2f, 0.2f, 0.2f));
+		Segment intersection = new SegmentPlus();
+
+		assertEquals(COLLINEAR, intersectSegmentSegment(segment1, segment2, 1e-4f, intersection));
+
+		assertTrue(intersection.a.epsilonEquals(0f, 0f, 0f, 0.001f));
+		assertTrue(intersection.b.epsilonEquals(0.2f, 0.2f, 0.2f, 0.001f));
+	}
+
+	@Test
 	public void testFailingCollinearSegmentIntersection() {
 		Segment segment1 = new SegmentPlus(0.42672676f,
 				-0.5f,
@@ -696,8 +709,11 @@ public class Intersector3DTest {
 				-0.5f);
 		Segment segment2 = new SegmentPlus(-0.5f, -0.5f, -0.5f, -0.3436038f, -0.5f, -0.48769438f);
 
-		Vector3 out = new Vector3();
+		Segment intersection = new SegmentPlus();
 
-		assertEquals(COLLINEAR, intersectSegmentSegment(segment1, segment2, 1e-4f, out));
+		assertEquals(COLLINEAR, intersectSegmentSegment(segment1, segment2, 1e-4f, intersection));
+
+		assertTrue(intersection.a.epsilonEquals(-0.5f, -0.5f, -0.5f, 0.001f));
+		assertTrue(intersection.b.epsilonEquals(-0.5f, -0.5f, -0.5f, 0.001f));
 	}
 }
