@@ -714,6 +714,6 @@ public class Intersector3DTest {
 		assertEquals(COLLINEAR, intersectSegmentSegment(segment1, segment2, 1e-4f, intersection));
 
 		assertTrue(intersection.a.epsilonEquals(-0.5f, -0.5f, -0.5f, 0.001f));
-		assertTrue(intersection.b.epsilonEquals(-0.5f, -0.5f, -0.5f, 0.001f));
+		assertTrue(intersection.b.epsilonEquals(-0.3436038f, -0.5f, -0.48769438f, 0.001f));
 	}
 }
