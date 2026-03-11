@@ -36,6 +36,10 @@ public class SegmentPlus extends Segment {
 				|| a.epsilonEquals(other.b, epsilon) && b.epsilonEquals(other.a, epsilon);
 	}
 
+	public float getSegmentParameter(Vector3 point) {
+		return getSegmentParameter(a, b, point);
+	}
+
 	@Override
 	public String toString() {
 		return a + " -> " + b;
@@ -43,5 +47,10 @@ public class SegmentPlus extends Segment {
 
 	public SegmentPlus cpy() {
 		return new SegmentPlus(a, b);
+	}
+
+	public static float getSegmentParameter(Vector3 a, Vector3 b, Vector3 point) {
+		// ((b - a) dot (x - a)) / ||b - a||^2 but unrolled
+		return (b.dot(point) - b.dot(a) - a.dot(point) + a.dot(a)) / a.dst2(b);
 	}
 }

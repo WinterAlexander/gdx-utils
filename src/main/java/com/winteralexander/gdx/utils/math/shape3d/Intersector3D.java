@@ -8,6 +8,7 @@ import com.winteralexander.gdx.utils.EnumConstantCache;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 import static com.winteralexander.gdx.utils.math.shape3d.Intersector3D.LineIntersectionResult.*;
+import static com.winteralexander.gdx.utils.math.shape3d.SegmentPlus.getSegmentParameter;
 import static java.lang.Math.*;
 
 /**
@@ -188,13 +189,10 @@ public class Intersector3D {
 			Vector3 secondEnd,
 			float tol,
 			Segment out) {
-		tmpSegDir1.set(firstEnd).sub(firstStart);
-		tmpSegDir2.set(secondEnd).sub(secondStart);
-
 		LineIntersectionResult result = intersectRayRay(firstStart,
-				tmpSegDir1,
+				tmpSegDir1.set(firstEnd).sub(firstStart),
 				secondStart,
-				tmpSegDir2,
+				tmpSegDir2.set(secondEnd).sub(secondStart),
 				tol,
 				tmpIntersection1);
 
@@ -202,14 +200,8 @@ public class Intersector3D {
 			return NONE;
 
 		if(result == COLLINEAR) {
-			float t1 = tmpSegDir1.dot(secondStart.x - firstStart.x,
-							   secondStart.y - firstStart.y,
-							   secondStart.z - firstStart.z)
-					/ tmpSegDir1.len2();
-			float t2 = tmpSegDir1.dot(secondEnd.x - firstStart.x,
-							   secondEnd.y - firstStart.y,
-							   secondEnd.z - firstStart.z)
-					/ tmpSegDir1.len2();
+			float t1 = getSegmentParameter(firstStart, firstEnd, secondStart);
+			float t2 = getSegmentParameter(firstStart, firstEnd, secondEnd);
 
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
@@ -217,27 +209,14 @@ public class Intersector3D {
 			if(tMin - 1f > tol || tMax < -tol)
 				return NONE;
 
-			if(tMin < -tol)
-				out.a.set(firstStart);
-			else
-				out.a.set(secondStart);
-
-			if(tMax - 1f > tol)
-				out.b.set(firstEnd);
-			else
-				out.b.set(secondEnd);
+			out.a.set(tMin < -tol ? firstStart : secondStart);
+			out.b.set(tMax - 1f > tol ? firstEnd : secondEnd);
 
 			return tMin - 1f < -tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = tmpSegDir1.dot(tmpIntersection1.x - firstStart.x,
-						   tmpIntersection1.y - firstStart.y,
-						   tmpIntersection1.z - firstStart.z)
-				/ tmpSegDir1.len2();
-		float t2 = tmpSegDir2.dot(tmpIntersection1.x - secondStart.x,
-						   tmpIntersection1.y - secondStart.y,
-						   tmpIntersection1.z - secondStart.z)
-				/ tmpSegDir2.len2();
+		float t1 = getSegmentParameter(firstStart, firstEnd, tmpIntersection1);
+		float t2 = getSegmentParameter(secondStart, secondEnd, tmpIntersection1);
 
 		if(t1 < -tol || t1 - 1f > tol || t2 < -tol || t2 - 1f > tol)
 			return NONE;
