@@ -255,10 +255,8 @@ public class ReflectionUtil {
 		while(type != null) {
 			try {
 				for(Method methodHandle : type.getDeclaredMethods()) {
-					if(methodHandle.getName() != method)
-						continue;
-
-					if(methodHandle.getParameterCount() != params.length)
+					if(methodHandle.getName() != method
+							|| methodHandle.getParameterCount() != params.length)
 						continue;
 
 					if(!methodHandle.isAccessible())
@@ -289,10 +287,8 @@ public class ReflectionUtil {
 		while(t != null) {
 			try {
 				for(Method methodHandle : t.getDeclaredMethods()) {
-					if(methodHandle.getName() != method)
-						continue;
-
-					if(methodHandle.getParameterCount() != params.length)
+					if(methodHandle.getName() != method
+							|| methodHandle.getParameterCount() != params.length)
 						continue;
 
 					if(!methodHandle.isAccessible())

@@ -26,9 +26,18 @@ public class SegmentPlus extends Segment {
 		super(aX, aY, aZ, bX, bY, bZ);
 	}
 
+	public void set(Segment other) {
+		a.set(other.a);
+		b.set(other.b);
+	}
+
 	public boolean epsilonEquals(Segment other, float epsilon) {
 		return a.epsilonEquals(other.a, epsilon) && b.epsilonEquals(other.b, epsilon)
 				|| a.epsilonEquals(other.b, epsilon) && b.epsilonEquals(other.a, epsilon);
+	}
+
+	public float getParameter(Vector3 point) {
+		return getParameter(a, b, point);
 	}
 
 	@Override
@@ -38,5 +47,10 @@ public class SegmentPlus extends Segment {
 
 	public SegmentPlus cpy() {
 		return new SegmentPlus(a, b);
+	}
+
+	public static float getParameter(Vector3 a, Vector3 b, Vector3 point) {
+		// ((b - a) dot (x - a)) / ||b - a||^2 but unrolled
+		return (b.dot(point) - b.dot(a) - a.dot(point) + a.dot(a)) / a.dst2(b);
 	}
 }
