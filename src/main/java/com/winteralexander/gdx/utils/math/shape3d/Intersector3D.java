@@ -8,7 +8,6 @@ import com.winteralexander.gdx.utils.EnumConstantCache;
 
 import static com.winteralexander.gdx.utils.math.MathUtil.pow2;
 import static com.winteralexander.gdx.utils.math.shape3d.Intersector3D.LineIntersectionResult.*;
-import static com.winteralexander.gdx.utils.math.shape3d.SegmentPlus.getSegmentParameter;
 import static java.lang.Math.*;
 
 /**
@@ -200,8 +199,8 @@ public class Intersector3D {
 			return NONE;
 
 		if(result == COLLINEAR) {
-			float t1 = getSegmentParameter(firstStart, firstEnd, secondStart);
-			float t2 = getSegmentParameter(firstStart, firstEnd, secondEnd);
+			float t1 = SegmentPlus.getParameter(firstStart, firstEnd, secondStart);
+			float t2 = SegmentPlus.getParameter(firstStart, firstEnd, secondEnd);
 
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
@@ -215,8 +214,8 @@ public class Intersector3D {
 			return tMin - 1f < -tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = getSegmentParameter(firstStart, firstEnd, tmpIntersection1);
-		float t2 = getSegmentParameter(secondStart, secondEnd, tmpIntersection1);
+		float t1 = SegmentPlus.getParameter(firstStart, firstEnd, tmpIntersection1);
+		float t2 = SegmentPlus.getParameter(secondStart, secondEnd, tmpIntersection1);
 
 		if(t1 < -tol || t1 - 1f > tol || t2 < -tol || t2 - 1f > tol)
 			return NONE;
