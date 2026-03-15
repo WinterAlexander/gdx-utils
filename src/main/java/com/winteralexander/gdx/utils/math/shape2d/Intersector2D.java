@@ -353,6 +353,37 @@ public class Intersector2D {
 	}
 
 	/**
+	 * @see #isAABBfullyInAABB(float, float, float, float, float, float, float, float)
+	 */
+	public static boolean isAABBfullyInAABB(Vector2 innerPosition,
+			Vector2 innerSize,
+			Vector2 outerPosition,
+			Vector2 outerSize) {
+		return isAABBfullyInAABB(innerPosition.x,
+				innerPosition.y,
+				innerSize.x,
+				innerSize.y,
+				outerPosition.x,
+				outerPosition.y,
+				outerSize.x,
+				outerSize.y);
+	}
+
+	/**
+	 * @see #isAABBfullyInAABB(float, float, float, float, float, float, float, float)
+	 */
+	public static boolean isAABBfullyInAABB(Rectangle inner, Rectangle outer) {
+		return isAABBfullyInAABB(inner.x,
+				inner.y,
+				inner.width,
+				inner.height,
+				outer.x,
+				outer.y,
+				outer.width,
+				outer.height);
+	}
+
+	/**
 	 * Computes the overlap between two rectangles and return it as a vector containing the overlap
 	 * in X and Y
 	 * @param rect1 first rectangle to compute overlap
