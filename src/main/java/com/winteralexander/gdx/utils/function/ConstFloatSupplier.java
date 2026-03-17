@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.function;
 
 /**
  * {@link FloatSupplier} which will always return the same value

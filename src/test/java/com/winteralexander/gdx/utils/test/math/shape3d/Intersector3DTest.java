@@ -192,10 +192,8 @@ public class Intersector3DTest {
 			segment2.a.set(ray.getEndPoint(tmpIntersection, startRay2));
 			segment2.b.set(ray.getEndPoint(tmpIntersection, endRay2));
 
-			LineIntersectionResult result = intersectSegmentSegment(segment1,
-					segment2,
-					1e-5f,
-					tmpIntersection);
+			LineIntersectionResult
+					result = intersectSegmentSegment(segment1, segment2, 1e-5f, tmpIntersection);
 			LineIntersectionResult expected = shouldIntersect ? COLLINEAR : NONE;
 
 			assertEquals(expected, result);

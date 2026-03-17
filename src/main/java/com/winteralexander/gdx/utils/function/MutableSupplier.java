@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.function;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

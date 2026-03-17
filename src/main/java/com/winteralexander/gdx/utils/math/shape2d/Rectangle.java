@@ -1,8 +1,8 @@
 package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.ConstFloatSupplier;
-import com.winteralexander.gdx.utils.FloatSupplier;
+import com.winteralexander.gdx.utils.function.ConstFloatSupplier;
+import com.winteralexander.gdx.utils.function.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.math.vector.Vec2Supplier;
 
@@ -25,8 +25,8 @@ public class Rectangle implements Shape {
 
 	private final Vector2 tmpVec2 = new Vector2();
 
-	private final com.badlogic.gdx.math.Rectangle tmpGdxRect = new com.badlogic.gdx.math
-																	   .Rectangle();
+	private final com.badlogic.gdx.math.Rectangle
+			tmpGdxRect = new com.badlogic.gdx.math.Rectangle();
 
 	public Rectangle(Vector2 position, Vector2 size) {
 		this(() -> position, () -> size);

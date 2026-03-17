@@ -2,7 +2,7 @@ package com.winteralexander.gdx.utils.collection;
 
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.winteralexander.gdx.utils.FloatPredicate;
+import com.winteralexander.gdx.utils.function.FloatPredicate;
 import com.winteralexander.gdx.utils.collection.iterator.JavaArrayIndexIterator;
 
 import java.util.*;

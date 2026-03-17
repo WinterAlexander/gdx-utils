@@ -25,9 +25,8 @@ public class GLUtil {
 		if(MAX_TEXTURE_IMAGE_UNITS != -1)
 			return MAX_TEXTURE_IMAGE_UNITS;
 
-		IntBuffer buffer = ByteBuffer.allocateDirect(64)
-								   .order(ByteOrder.nativeOrder())
-								   .asIntBuffer();
+		IntBuffer
+				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
 		Gdx.gl.glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
 		return MAX_TEXTURE_IMAGE_UNITS = buffer.get();
 	}
@@ -36,9 +35,8 @@ public class GLUtil {
 		if(MAX_TEXTURE_SIZE != -1)
 			return MAX_TEXTURE_SIZE;
 
-		IntBuffer buffer = ByteBuffer.allocateDirect(64)
-								   .order(ByteOrder.nativeOrder())
-								   .asIntBuffer();
+		IntBuffer
+				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
 		Gdx.gl.glGetIntegerv(GL_MAX_TEXTURE_SIZE, buffer);
 		return MAX_TEXTURE_SIZE = buffer.get();
 	}
@@ -47,9 +45,8 @@ public class GLUtil {
 		if(MAX_VERTEX_UNIFORM_VECTORS != -1)
 			return MAX_VERTEX_UNIFORM_VECTORS;
 
-		IntBuffer buffer = ByteBuffer.allocateDirect(64)
-								   .order(ByteOrder.nativeOrder())
-								   .asIntBuffer();
+		IntBuffer
+				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
 		Gdx.gl.glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, buffer);
 		return MAX_VERTEX_UNIFORM_VECTORS = buffer.get();
 	}

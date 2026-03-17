@@ -31,8 +31,11 @@ public class IcoSphereShapeBuilder extends BaseShapeBuilder {
 	/**
 	 * Missing vertical uv of the undivided icosphere compared to a normal sphere
 	 */
-	private static final float UNDIVIDED_ICOSPHERE_UV_GAP
-			= asin(-(ISOSPHERE_EXTENT_Y / (float)sqrt(1f + pow2(ISOSPHERE_EXTENT_Y)))) / PI + 0.5f;
+	private static final float
+			UNDIVIDED_ICOSPHERE_UV_GAP = asin(-(ISOSPHERE_EXTENT_Y
+												 / (float)sqrt(1f + pow2(ISOSPHERE_EXTENT_Y))))
+					/ PI
+			+ 0.5f;
 
 	private static final FloatArray tmpVertices = new FloatArray();
 	private static final ShortArray tmpIndices = new ShortArray();

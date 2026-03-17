@@ -1,7 +1,7 @@
 package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.ConstSupplier;
+import com.winteralexander.gdx.utils.function.ConstSupplier;
 import com.winteralexander.gdx.utils.Validation;
 
 import java.util.function.Supplier;
