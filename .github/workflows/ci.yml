@@ -60,7 +60,7 @@ jobs:
           ref: master
       - name: Check format
         run: |
-          export WINTERFMT_CLANG_FORMAT="clang-format-21"
+          export WINTERFMT_CLANG_FORMAT="clang-format-22"
           $WINTERFMT_CLANG_FORMAT --version
           source winterfmt/init.sh
           winterfmt check
