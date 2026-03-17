@@ -2,7 +2,7 @@ package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.FloatSupplier;
+import com.winteralexander.gdx.utils.function.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 import com.winteralexander.gdx.utils.math.vector.Vec2Supplier;
 

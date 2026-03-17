@@ -2,9 +2,9 @@ package com.winteralexander.gdx.utils.math.shape2d;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import com.winteralexander.gdx.utils.ConstFloatSupplier;
-import com.winteralexander.gdx.utils.ConstSupplier;
-import com.winteralexander.gdx.utils.FloatSupplier;
+import com.winteralexander.gdx.utils.function.ConstFloatSupplier;
+import com.winteralexander.gdx.utils.function.ConstSupplier;
+import com.winteralexander.gdx.utils.function.FloatSupplier;
 import com.winteralexander.gdx.utils.Validation;
 
 import java.util.function.Supplier;
@@ -26,8 +26,8 @@ public class Polygon implements Shape {
 	private final FloatSupplier angle;
 	private final com.badlogic.gdx.math.Polygon polygon;
 
-	private final com.badlogic.gdx.math.Polygon tmpRectPolygon = new com.badlogic.gdx.math.Polygon(
-			new float[8]);
+	private final com.badlogic.gdx.math.Polygon
+			tmpRectPolygon = new com.badlogic.gdx.math.Polygon(new float[8]);
 	private final Vector2 tmpCircleCenter = new Vector2();
 	private final Vector2 tmpStart = new Vector2(), tmpEnd = new Vector2();
 

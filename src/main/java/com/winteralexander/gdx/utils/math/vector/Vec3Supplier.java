@@ -1,8 +1,8 @@
 package com.winteralexander.gdx.utils.math.vector;
 
 import com.badlogic.gdx.math.Vector3;
-import com.winteralexander.gdx.utils.ConstSupplier;
-import com.winteralexander.gdx.utils.MutableSupplier;
+import com.winteralexander.gdx.utils.function.ConstSupplier;
+import com.winteralexander.gdx.utils.function.MutableSupplier;
 
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.function;
 
 import com.badlogic.gdx.utils.ObjectMap;
 

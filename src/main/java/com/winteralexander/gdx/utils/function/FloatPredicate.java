@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.function;
 
 /**
  * {@link java.util.function.Predicate} for floating points

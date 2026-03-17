@@ -1,4 +1,4 @@
-package com.winteralexander.gdx.utils;
+package com.winteralexander.gdx.utils.function;
 
 /**
  * Represents a function that returns a primitive floating point type
