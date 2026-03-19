@@ -24,6 +24,14 @@ public class BatchUtil {
 		batch.setColor(color.r, color.g, color.b, alpha);
 	}
 
+	public static void multiplyColor(Batch batch, Color color) {
+		Color current = batch.getColor();
+		batch.setColor(color.r * current.r,
+				color.g * current.g,
+				color.b * current.b,
+				color.a * current.a);
+	}
+
 	public static void premultiplyAlpha(Batch batch) {
 		Color color = batch.getColor();
 		batch.setColor(color.r * color.a, color.g * color.a, color.b * color.a, color.a);
