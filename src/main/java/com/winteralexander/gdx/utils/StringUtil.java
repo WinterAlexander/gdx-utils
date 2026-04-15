@@ -3,6 +3,7 @@ package com.winteralexander.gdx.utils;
 import java.nio.ByteOrder;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Utility class for string operations
@@ -22,6 +23,9 @@ public class StringUtil {
 			0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46
 	};
 	// clang-format on
+
+	private static final String ALPHANUM_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvw"
+			+ "xyz0123456789";
 
 	private StringUtil() {}
 
@@ -187,5 +191,12 @@ public class StringUtil {
 
 	public static String toHexString(byte[] byteArray) {
 		return toHexString(byteArray, true, ByteOrder.BIG_ENDIAN);
+	}
+
+	public static String randomAlphanumericalString(Random random, int length) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < length; i++)
+			sb.append(ALPHANUM_CHARS.charAt(random.nextInt(ALPHANUM_CHARS.length())));
+		return sb.toString();
 	}
 }
