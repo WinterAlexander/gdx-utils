@@ -370,6 +370,12 @@ public class AsyncCall<R> {
 		return exceptRetry(type, wrapper.wrap(ex -> retryCallback.run()));
 	}
 
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types) {
+		for(Class<? extends T> type : types)
+			exceptRetry(type);
+		return this;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types,
 			Consumer<T> callback) {
@@ -398,9 +404,103 @@ public class AsyncCall<R> {
 		return exceptRetry(types, wrapper.wrap(ex -> callback.run()));
 	}
 
-	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T>[] types) {
-		for(Class<? extends T> type : types)
-			exceptRetry(type);
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType) {
+		exceptRetry(firstType);
+		exceptRetry(secondType);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Consumer<T> callback) {
+		exceptRetry((Class<T>)firstType, callback);
+		exceptRetry((Class<T>)secondType, callback);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Runnable callback) {
+		exceptRetry(firstType, callback);
+		exceptRetry(secondType, callback);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Consumer<T> callback,
+	                                                      CallbackWrapper wrapper) {
+		exceptRetry((Class<T>)firstType, wrapper.wrap(callback));
+		exceptRetry((Class<T>)secondType, wrapper.wrap(callback));
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Runnable callback,
+	                                                      CallbackWrapper wrapper) {
+		exceptRetry((Class<T>)firstType, wrapper.wrap(ex -> callback.run()));
+		exceptRetry((Class<T>)secondType, wrapper.wrap(ex -> callback.run()));
+		return this;
+	}
+
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Class<? extends T> thirdType) {
+		exceptRetry(firstType);
+		exceptRetry(secondType);
+		exceptRetry(thirdType);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Class<? extends T> thirdType,
+	                                                      Consumer<T> callback) {
+		exceptRetry((Class<T>)firstType, callback);
+		exceptRetry((Class<T>)secondType, callback);
+		exceptRetry((Class<T>)thirdType, callback);
+		return this;
+	}
+
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Class<? extends T> thirdType,
+	                                                      Runnable callback) {
+		exceptRetry(firstType, callback);
+		exceptRetry(secondType, callback);
+		exceptRetry(thirdType, callback);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Class<? extends T> thirdType,
+	                                                      Consumer<T> callback,
+	                                                      CallbackWrapper wrapper) {
+		exceptRetry((Class<T>)firstType, wrapper.wrap(callback));
+		exceptRetry((Class<T>)secondType, wrapper.wrap(callback));
+		exceptRetry((Class<T>)thirdType, wrapper.wrap(callback));
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Exception> AsyncCall<R> exceptRetry(Class<? extends T> firstType,
+	                                                      Class<? extends T> secondType,
+	                                                      Class<? extends T> thirdType,
+	                                                      Runnable callback,
+	                                                      CallbackWrapper wrapper) {
+		exceptRetry((Class<T>)firstType, wrapper.wrap(ex -> callback.run()));
+		exceptRetry((Class<T>)secondType, wrapper.wrap(ex -> callback.run()));
+		exceptRetry((Class<T>)thirdType, wrapper.wrap(ex -> callback.run()));
 		return this;
 	}
 
