@@ -32,7 +32,7 @@ public class Vector2iTest {
 		v1.clamp(v2, v3);
 		assertEquals(new Vector2i(5, 9), v1);
 
-		v1.set(1000, -1).clamp(v2, v3);
+		v1.set(1_000, -1).clamp(v2, v3);
 		assertEquals(new Vector2i(10, 6), v1);
 	}
 }
