@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.math.vector;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 import java.io.IOException;
@@ -207,6 +208,39 @@ public class Vector3i implements IntVector<Vector3i> {
 
 	public Vector3i mulAdd(Vector3i v, Vector3 mulVec) {
 		return mulAdd(v, mulVec.x, mulVec.y, mulVec.z);
+	}
+
+	public Vector3i min(int x, int y, int z) {
+		this.x = Math.min(this.x, x);
+		this.y = Math.min(this.y, y);
+		this.z = Math.min(this.z, z);
+		return this;
+	}
+
+	public Vector3i min(Vector3i other) {
+		return min(other.x, other.y, other.z);
+	}
+
+	public Vector3i max(int x, int y, int z) {
+		this.x = Math.max(this.x, x);
+		this.y = Math.max(this.y, y);
+		this.z = Math.max(this.z, z);
+		return this;
+	}
+
+	public Vector3i max(Vector3i other) {
+		return max(other.x, other.y, other.z);
+	}
+
+	public Vector3i clamp(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		this.x = MathUtils.clamp(this.x, minX, maxX);
+		this.y = MathUtils.clamp(this.y, minY, maxY);
+		this.z = MathUtils.clamp(this.z, minZ, maxZ);
+		return this;
+	}
+
+	public Vector3i clamp(Vector3i min, Vector3i max) {
+		return clamp(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 
 	public Vector3 toVec3() {
