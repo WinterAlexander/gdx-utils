@@ -210,25 +210,37 @@ public class Vector3i implements IntVector<Vector3i> {
 		return mulAdd(v, mulVec.x, mulVec.y, mulVec.z);
 	}
 
+	public Vector3i min(int x, int y, int z) {
+		this.x = Math.min(this.x, x);
+		this.y = Math.min(this.y, y);
+		this.z = Math.min(this.z, z);
+		return this;
+	}
+
 	public Vector3i min(Vector3i other) {
-		this.x = Math.min(this.x, other.x);
-		this.y = Math.min(this.y, other.y);
-		this.z = Math.min(this.z, other.z);
+		return min(other.x, other.y, other.z);
+	}
+
+	public Vector3i max(int x, int y, int z) {
+		this.x = Math.max(this.x, x);
+		this.y = Math.max(this.y, y);
+		this.z = Math.max(this.z, z);
 		return this;
 	}
 
 	public Vector3i max(Vector3i other) {
-		this.x = Math.max(this.x, other.x);
-		this.y = Math.max(this.y, other.y);
-		this.z = Math.max(this.z, other.z);
+		return max(other.x, other.y, other.z);
+	}
+
+	public Vector3i clamp(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		this.x = MathUtils.clamp(this.x, minX, maxX);
+		this.y = MathUtils.clamp(this.y, minY, maxY);
+		this.z = MathUtils.clamp(this.z, minZ, maxZ);
 		return this;
 	}
 
 	public Vector3i clamp(Vector3i min, Vector3i max) {
-		this.x = MathUtils.clamp(this.x, min.x, max.x);
-		this.y = MathUtils.clamp(this.y, min.y, max.y);
-		this.z = MathUtils.clamp(this.z, min.z, max.z);
-		return this;
+		return clamp(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
 
 	public Vector3 toVec3() {

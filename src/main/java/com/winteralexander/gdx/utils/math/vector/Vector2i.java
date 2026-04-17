@@ -191,22 +191,34 @@ public class Vector2i implements IntVector<Vector2i> {
 		return this;
 	}
 
+	public Vector2i min(int x, int y) {
+		this.x = Math.min(this.x, x);
+		this.y = Math.min(this.y, y);
+		return this;
+	}
+
 	public Vector2i min(Vector2i other) {
-		this.x = Math.min(this.x, other.x);
-		this.y = Math.min(this.y, other.y);
+		return min(other.x, other.y);
+	}
+
+	public Vector2i max(int x, int y) {
+		this.x = Math.max(this.x, x);
+		this.y = Math.max(this.y, y);
 		return this;
 	}
 
 	public Vector2i max(Vector2i other) {
-		this.x = Math.max(this.x, other.x);
-		this.y = Math.max(this.y, other.y);
+		return max(other.x, other.y);
+	}
+
+	public Vector2i clamp(int minX, int minY, int maxX, int maxY) {
+		this.x = MathUtils.clamp(this.x, minX, maxX);
+		this.y = MathUtils.clamp(this.y, minY, maxY);
 		return this;
 	}
 
 	public Vector2i clamp(Vector2i min, Vector2i max) {
-		this.x = MathUtils.clamp(this.x, min.x, max.x);
-		this.y = MathUtils.clamp(this.y, min.y, max.y);
-		return this;
+		return clamp(min.x, min.y, max.x, max.y);
 	}
 
 	public Vector2 toVec2() {
