@@ -209,6 +209,9 @@ public class Validation {
 					+ types.length + " but only given " + objects.length);
 
 		for(int i = 0; i < types.length; i++) {
+			if(!types[i].isPrimitive() && objects[i] == null)
+				continue;
+
 			if(types[i].isAssignableFrom(objects[i].getClass()))
 				continue;
 
