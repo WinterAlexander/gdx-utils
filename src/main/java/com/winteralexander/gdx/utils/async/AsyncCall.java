@@ -8,6 +8,7 @@ import com.winteralexander.gdx.utils.error.Tracker;
 import com.winteralexander.gdx.utils.log.Logger;
 import com.winteralexander.gdx.utils.log.NullLogger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
@@ -28,8 +29,10 @@ public class AsyncCall<R> {
 	private Consumer<Void> finallyCallback;
 	private final OrderedMap<Class<? extends Exception>, ExceptionCallback>
 			exCallbacks = new OrderedMap<>();
+	private BooleanSupplier condition = null;
+
 	private boolean called = false;
-	private volatile boolean cancelled = false;
+	private volatile boolean cancelled = false, done = false;
 
 	private long retryDelay;
 
@@ -527,6 +530,11 @@ public class AsyncCall<R> {
 		return this;
 	}
 
+	public AsyncCall<R> when(BooleanSupplier condition) {
+		this.condition = condition;
+		return this;
+	}
+
 	public void cancel() {
 		cancelled = true;
 	}
@@ -538,42 +546,54 @@ public class AsyncCall<R> {
 			retry = false;
 			try {
 				R value = call.execute();
-				if(callback != null && !cancelled)
+				if(callback != null && !cancelled
+						&& (condition == null || condition.getAsBoolean()))
 					callback.accept(value);
 			} catch(Exception ex) {
-				if(!cancelled) {
+				if(!cancelled && (condition == null || condition.getAsBoolean())) {
 					StackTracker.appendFullStack(ex);
 					retry = dispatch(ex);
 					if(retry)
 						SystemUtil.sleepIfRequired(retryDelay);
 				}
 			} finally {
-				if(!retry && !cancelled) {
+				if(!retry && !cancelled && (condition == null || condition.getAsBoolean())) {
 					if(finallyCallback != null)
 						finallyCallback.accept(null);
 					StackTracker.exit(tracker);
 				}
 			}
 		} while(retry && !cancelled);
+
+		synchronized(this) {
+			done = true;
+			notifyAll();
+		}
 	}
 
 	/**
 	 * Executes the async call
 	 */
-	public void execute() {
+	public AsyncCall<R> execute() {
 		called = true;
 
 		if(cancelled)
-			return;
+			return this;
 
 		manager.getExecutor().execute(this::run);
+		return this;
+	}
+
+	public synchronized void join() throws InterruptedException {
+		while(!done)
+			wait();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void finalize() {
 		if(!called)
-			manager.getLogger().error("AsyncCaller was destroyed without ever being executed !",
+			manager.getLogger().error("AsyncCaller was destroyed without ever being executed",
 					tracker.get());
 	}
 
