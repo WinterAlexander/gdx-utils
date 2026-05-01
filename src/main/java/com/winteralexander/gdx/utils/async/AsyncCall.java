@@ -30,7 +30,7 @@ public class AsyncCall<R> {
 	private final OrderedMap<Class<? extends Exception>, ExceptionCallback>
 			exCallbacks = new OrderedMap<>();
 	private boolean called = false;
-	private volatile boolean cancelled = false;
+	private volatile boolean cancelled = false, done = false;
 	private BooleanSupplier condition = null;
 
 	private long retryDelay;
@@ -545,8 +545,7 @@ public class AsyncCall<R> {
 			retry = false;
 			try {
 				R value = call.execute();
-				if(callback != null
-						&& !cancelled
+				if(callback != null && !cancelled
 						&& (condition == null || condition.getAsBoolean()))
 					callback.accept(value);
 			} catch(Exception ex) {
@@ -564,25 +563,39 @@ public class AsyncCall<R> {
 				}
 			}
 		} while(retry && !cancelled);
+
+		synchronized(this) {
+			done = true;
+			notifyAll();
+		}
 	}
 
 	/**
 	 * Executes the async call
 	 */
-	public void execute() {
+	public AsyncCall<R> execute() {
 		called = true;
 
 		if(cancelled)
-			return;
+			return this;
 
 		manager.getExecutor().execute(this::run);
+		return this;
+	}
+
+	public synchronized void join() {
+		if(done)
+			return;
+		try {
+			wait();
+		} catch(InterruptedException ignored) {}
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void finalize() {
 		if(!called)
-			manager.getLogger().error("AsyncCaller was destroyed without ever being executed !",
+			manager.getLogger().error("AsyncCaller was destroyed without ever being executed",
 					tracker.get());
 	}
 

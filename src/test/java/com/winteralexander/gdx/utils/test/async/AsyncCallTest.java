@@ -18,25 +18,35 @@ import static org.junit.Assert.fail;
 public class AsyncCallTest {
 	@Test
 	public void testWhen() {
-		MutableBox<Boolean> box = new MutableBox<>(true);
+		MutableBox<Boolean> conditionFlag = new MutableBox<>(true);
 		MutableBox<String> result = new MutableBox<>();
-		async((AsyncCall.CheckedVoidFunction<Long>)Thread::sleep, 1000L)
-		.when(() -> box.get() == true)
-		.then(v -> {
-			result.set("Success");
-		})
-		.execute();
 
-		assertEquals("Success", result.get());
+		async((AsyncCall.CheckedVoidFunction<Long>)Thread::sleep, 10L)
+				.when(() -> conditionFlag.get() == true)
+				.then(v -> result.set("A"))
+				.always(() -> result.set(result.get() + "B"))
+				.execute()
+				.join();
 
-		box.set(false);
+		assertEquals("AB", result.get());
 
-		async((AsyncCall.CheckedVoidFunction<Long>)Thread::sleep, 1000L)
-		.when(() -> box.get() == true)
-		.then(v -> {
-			fail("When should protect this call");
-		})
-		.execute();
+		conditionFlag.set(false);
 
+		async((AsyncCall.CheckedVoidFunction<Long>)Thread::sleep, 10L)
+				.when(() -> conditionFlag.get() == true)
+				.then(v -> fail(".when() should protect against this call"))
+				.execute()
+				.join();
+
+		async((AsyncCall.CheckedVoidFunction<Long>)(value -> {
+			throw new RuntimeException("Fail");
+		}), 10L)
+				.when(() -> conditionFlag.get() == true)
+				.then(v -> fail("Function that always throws should never enter .then()"))
+				.except(RuntimeException.class,
+						ex -> fail(".when() should protect against this call"))
+				.always(() -> fail(".when() should protect against this call"))
+				.execute()
+				.join();
 	}
 }
