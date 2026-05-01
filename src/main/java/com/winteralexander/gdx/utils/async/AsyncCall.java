@@ -8,6 +8,7 @@ import com.winteralexander.gdx.utils.error.Tracker;
 import com.winteralexander.gdx.utils.log.Logger;
 import com.winteralexander.gdx.utils.log.NullLogger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import static com.winteralexander.gdx.utils.Validation.ensureNotNull;
@@ -30,6 +31,7 @@ public class AsyncCall<R> {
 			exCallbacks = new OrderedMap<>();
 	private boolean called = false;
 	private volatile boolean cancelled = false;
+	private BooleanSupplier condition = null;
 
 	private long retryDelay;
 
@@ -527,6 +529,11 @@ public class AsyncCall<R> {
 		return this;
 	}
 
+	public AsyncCall<R> when(BooleanSupplier condition) {
+		this.condition = condition;
+		return this;
+	}
+
 	public void cancel() {
 		cancelled = true;
 	}
@@ -538,17 +545,19 @@ public class AsyncCall<R> {
 			retry = false;
 			try {
 				R value = call.execute();
-				if(callback != null && !cancelled)
+				if(callback != null
+						&& !cancelled
+						&& (condition == null || condition.getAsBoolean()))
 					callback.accept(value);
 			} catch(Exception ex) {
-				if(!cancelled) {
+				if(!cancelled && (condition == null || condition.getAsBoolean())) {
 					StackTracker.appendFullStack(ex);
 					retry = dispatch(ex);
 					if(retry)
 						SystemUtil.sleepIfRequired(retryDelay);
 				}
 			} finally {
-				if(!retry && !cancelled) {
+				if(!retry && !cancelled && (condition == null || condition.getAsBoolean())) {
 					if(finallyCallback != null)
 						finallyCallback.accept(null);
 					StackTracker.exit(tracker);
