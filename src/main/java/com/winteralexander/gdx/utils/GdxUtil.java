@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.winteralexander.gdx.utils.io.NullPrintStream;
 import com.winteralexander.gdx.utils.system.SystemUtil;
@@ -15,6 +16,17 @@ import java.io.PrintStream;
  */
 public class GdxUtil {
 	private GdxUtil() {}
+
+	public static boolean isRunning() {
+		return isRunning(Gdx.app);
+	}
+
+	public static boolean isRunning(Application application) {
+		if(application instanceof GdxApplication)
+			return ((GdxApplication)application).isRunning();
+
+		return ReflectionUtil.get(application, "running");
+	}
 
 	public static void postRunnable(Runnable runnable) {
 		Gdx.app.postRunnable(runnable);
@@ -41,5 +53,9 @@ public class GdxUtil {
 		} finally {
 			System.setErr(prevErr);
 		}
+	}
+
+	public interface GdxApplication extends Application {
+		boolean isRunning();
 	}
 }
