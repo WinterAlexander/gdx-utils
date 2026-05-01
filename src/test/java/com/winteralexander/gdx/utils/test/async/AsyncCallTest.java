@@ -38,9 +38,7 @@ public class AsyncCallTest {
 				.execute()
 				.join();
 
-		async((AsyncCall.CheckedVoidFunction<Long>)(value -> {
-			throw new RuntimeException("Fail");
-		}), 10L)
+		async(() -> { throw new RuntimeException("Fail"); })
 				.when(() -> conditionFlag.get() == true)
 				.then(v -> fail("Function that always throws should never enter .then()"))
 				.except(RuntimeException.class,
