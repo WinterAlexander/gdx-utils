@@ -29,9 +29,10 @@ public class AsyncCall<R> {
 	private Consumer<Void> finallyCallback;
 	private final OrderedMap<Class<? extends Exception>, ExceptionCallback>
 			exCallbacks = new OrderedMap<>();
+	private BooleanSupplier condition = null;
+
 	private boolean called = false;
 	private volatile boolean cancelled = false, done = false;
-	private BooleanSupplier condition = null;
 
 	private long retryDelay;
 
@@ -583,12 +584,9 @@ public class AsyncCall<R> {
 		return this;
 	}
 
-	public synchronized void join() {
-		if(done)
-			return;
-		try {
+	public synchronized void join() throws InterruptedException {
+		while(!done)
 			wait();
-		} catch(InterruptedException ignored) {}
 	}
 
 	@SuppressWarnings("deprecation")

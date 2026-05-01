@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
  */
 public class AsyncCallTest {
 	@Test
-	public void testWhen() {
+	public void testWhen() throws InterruptedException {
 		MutableBox<Boolean> conditionFlag = new MutableBox<>(true);
 		MutableBox<String> result = new MutableBox<>();
 
