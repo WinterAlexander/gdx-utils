@@ -29,8 +29,6 @@ public class GdxUtil {
 	}
 
 	public static void postRunnable(Runnable runnable) {
-		if(!isRunning())
-			return;
 		Gdx.app.postRunnable(runnable);
 	}
 
