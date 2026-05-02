@@ -18,7 +18,8 @@ public interface GdxCallback<T> extends Consumer<T> {
 
 	@Override
 	default void accept(T value) {
-		GdxUtil.postRunnable(() -> receive(value));
+		if(GdxUtil.isRunning())
+			GdxUtil.postRunnable(() -> receive(value));
 	}
 
 	void receive(T t);
