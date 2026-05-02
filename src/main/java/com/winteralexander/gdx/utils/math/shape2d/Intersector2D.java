@@ -281,6 +281,14 @@ public class Intersector2D {
 				size.y);
 	}
 
+	public static float distanceSquaredToAABB(Vector2 point, Rectangle aabb) {
+		return distanceSquaredToAABB(point.x, point.y, aabb.x, aabb.y, aabb.width, aabb.height);
+	}
+
+	public static float distanceSquaredToAABB(float px, float py, Rectangle aabb) {
+		return distanceSquaredToAABB(px, py, aabb.x, aabb.y, aabb.width, aabb.height);
+	}
+
 	public static boolean doAABBIntersectWithAABB(Vector2 start1,
 			Vector2 size1,
 			Vector2 start2,
