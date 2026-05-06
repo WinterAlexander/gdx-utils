@@ -44,13 +44,13 @@ public class CollectionUtilTest {
 		objs.add("Henloo");
 		objs.add("Halo");
 		objs.add("Allo");
-		assertTrue(CollectionUtil.allInstanceOf(objs, String.class));
-		assertTrue(CollectionUtil.allInstanceOf(objs, CharSequence.class));
+		assertTrue(CollectionUtil.allInstancesOf(objs, String.class));
+		assertTrue(CollectionUtil.allInstancesOf(objs, CharSequence.class));
 		Iterable<String> strs = CollectionUtil.castIterable(objs);
 		Array<String> array = CollectionUtil.toGdxArray(strs);
 		assertEquals(objs, array);
 		objs.add(new Object());
-		assertFalse(CollectionUtil.allInstanceOf(objs, String.class));
+		assertFalse(CollectionUtil.allInstancesOf(objs, String.class));
 	}
 
 	@Test

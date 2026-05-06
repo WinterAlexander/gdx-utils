@@ -6,6 +6,7 @@ import com.winteralexander.gdx.utils.function.FloatPredicate;
 import com.winteralexander.gdx.utils.collection.iterator.JavaArrayIndexIterator;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -209,6 +210,33 @@ public class CollectionUtil {
 	}
 
 	/**
+	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
+	 * The alternate overload is prefered.
+	 * @see CollectionUtil#any(Iterable, Predicate)
+	 */
+	public static <T> boolean areAny(Iterable<T> array,
+			com.badlogic.gdx.utils.Predicate<T> predicate) {
+		for(T element : array)
+			if(predicate.evaluate(element))
+				return true;
+
+		return false;
+	}
+
+	/**
+	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
+	 * The alternate overload is prefered.
+	 * @see CollectionUtil#any(T[], Predicate)
+	 */
+	public static <T> boolean areAny(T[] array, com.badlogic.gdx.utils.Predicate<T> predicate) {
+		for(T element : array)
+			if(predicate.evaluate(element))
+				return true;
+
+		return false;
+	}
+
+	/**
 	 * Evaluates elements of an array and returns true if any of the element match the specified
 	 * predicate. May not evaluate all elements if one is found to be true early.
 	 *
@@ -219,7 +247,7 @@ public class CollectionUtil {
 	 */
 	public static <T> boolean any(Iterable<T> array, Predicate<T> predicate) {
 		for(T element : array)
-			if(predicate.evaluate(element))
+			if(predicate.test(element))
 				return true;
 
 		return false;
@@ -236,7 +264,7 @@ public class CollectionUtil {
 	 */
 	public static <T> boolean any(T[] array, Predicate<T> predicate) {
 		for(T element : array)
-			if(predicate.evaluate(element))
+			if(predicate.test(element))
 				return true;
 
 		return false;
@@ -307,15 +335,25 @@ public class CollectionUtil {
 	}
 
 	/**
-	 * Evaluates elements of an array and returns true if all the elements match the specified
-	 * predicate. May not evaluate all elements if one is found to be false early.
-	 *
-	 * @param array array of elements to evaluate
-	 * @param predicate predicate to test on elements
-	 * @return true if the predicate matches all elements in the array
-	 * @param <T> type of elements
+	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
+	 * The alternate overload is prefered.
+	 * @see CollectionUtil#all(Iterable, Predicate)
 	 */
-	public static <T> boolean all(Iterable<T> array, Predicate<T> predicate) {
+	public static <T> boolean areAll(Iterable<T> array,
+			com.badlogic.gdx.utils.Predicate<T> predicate) {
+		for(T element : array)
+			if(!predicate.evaluate(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
+	 * The alternate overload is prefered.
+	 * @see CollectionUtil#all(T[], Predicate)
+	 */
+	public static <T> boolean areAll(T[] array, com.badlogic.gdx.utils.Predicate<T> predicate) {
 		for(T element : array)
 			if(!predicate.evaluate(element))
 				return false;
@@ -332,9 +370,26 @@ public class CollectionUtil {
 	 * @return true if the predicate matches all elements in the array
 	 * @param <T> type of elements
 	 */
+	public static <T> boolean all(Iterable<T> array, Predicate<T> predicate) {
+		for(T element : array)
+			if(!predicate.test(element))
+				return false;
+
+		return true;
+	}
+
+	/**
+	 * Evaluates elements of an array and returns true if all the elements match the specified
+	 * predicate. May not evaluate all elements if one is found to be false early.
+	 *
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches all elements in the array
+	 * @param <T> type of elements
+	 */
 	public static <T> boolean all(T[] array, Predicate<T> predicate) {
 		for(T element : array)
-			if(!predicate.evaluate(element))
+			if(!predicate.test(element))
 				return false;
 
 		return true;
@@ -674,8 +729,12 @@ public class CollectionUtil {
 		return (Iterable<T>)(Iterable)other;
 	}
 
-	public static boolean allInstanceOf(Iterable<?> iterable, Class<?> type) {
-		return all(iterable, type::isInstance);
+	public static boolean allInstancesOf(Iterable<?> iterable, Class<?> type) {
+		for(Object element : iterable)
+			if(!type.isInstance(element))
+				return false;
+
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
