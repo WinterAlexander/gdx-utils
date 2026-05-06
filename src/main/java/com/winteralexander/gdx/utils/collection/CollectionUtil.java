@@ -212,6 +212,10 @@ public class CollectionUtil {
 	/**
 	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
 	 * The alternate overload is prefered.
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches any element in the iterable
+	 * @param <T> type of elements
 	 * @see CollectionUtil#any(Iterable, Predicate)
 	 */
 	public static <T> boolean areAny(Iterable<T> array,
@@ -226,7 +230,11 @@ public class CollectionUtil {
 	/**
 	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
 	 * The alternate overload is prefered.
-	 * @see CollectionUtil#any(T[], Predicate)
+	 * @param array array of elements to evaluate
+	 * @param predicate predicate to test on elements
+	 * @return true if the predicate matches any element in the array
+	 * @param <T> type of elements
+	 * @see CollectionUtil#any(Object[], Predicate)
 	 */
 	public static <T> boolean areAny(T[] array, com.badlogic.gdx.utils.Predicate<T> predicate) {
 		for(T element : array)
@@ -242,7 +250,7 @@ public class CollectionUtil {
 	 *
 	 * @param array array of elements to evaluate
 	 * @param predicate predicate to test on elements
-	 * @return true if the predicate matches any element in the array
+	 * @return true if the predicate matches any element in the iterable
 	 * @param <T> type of elements
 	 */
 	public static <T> boolean any(Iterable<T> array, Predicate<T> predicate) {
@@ -337,6 +345,10 @@ public class CollectionUtil {
 	/**
 	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
 	 * The alternate overload is prefered.
+	 * @param array array of elements to evaluate
+	 * @param predicate libGDX predicate to test on elements
+	 * @return true if the predicate matches all elements in the iterable
+	 * @param <T> type of elements
 	 * @see CollectionUtil#all(Iterable, Predicate)
 	 */
 	public static <T> boolean areAll(Iterable<T> array,
@@ -351,7 +363,11 @@ public class CollectionUtil {
 	/**
 	 * "Overload" that takes a libGDX Predicate. Can't be a true overload without lambda ambiguity.
 	 * The alternate overload is prefered.
-	 * @see CollectionUtil#all(T[], Predicate)
+	 * @param array array of elements to evaluate
+	 * @param predicate libGDX predicate to test on elements
+	 * @return true if the predicate matches all elements in the array
+	 * @param <T> type of elements
+	 * @see CollectionUtil#all(Object[], Predicate)
 	 */
 	public static <T> boolean areAll(T[] array, com.badlogic.gdx.utils.Predicate<T> predicate) {
 		for(T element : array)
@@ -367,7 +383,7 @@ public class CollectionUtil {
 	 *
 	 * @param array array of elements to evaluate
 	 * @param predicate predicate to test on elements
-	 * @return true if the predicate matches all elements in the array
+	 * @return true if the predicate matches all elements in the iterable
 	 * @param <T> type of elements
 	 */
 	public static <T> boolean all(Iterable<T> array, Predicate<T> predicate) {
