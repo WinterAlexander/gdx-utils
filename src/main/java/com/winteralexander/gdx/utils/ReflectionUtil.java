@@ -9,6 +9,7 @@ import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Enumeration;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -27,6 +28,275 @@ import static com.winteralexander.gdx.utils.collection.CollectionUtil.last;
  */
 public class ReflectionUtil {
 	private ReflectionUtil() {}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T construct(Class<T> type, Object... params) {
+		ensureNotNull(type, "type");
+
+		for(Constructor<?> constructor : type.getDeclaredConstructors()) {
+			try {
+				if(!constructor.isAccessible())
+					constructor.setAccessible(true);
+
+				return (T)constructor.newInstance(params);
+			} catch(InstantiationException | IllegalArgumentException
+			        | IllegalAccessException ignored) {
+				// continue
+			} catch(InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+
+		throw new IllegalArgumentException("No matching constructor found");
+	}
+
+	/**
+	 * Sets the field of an object to a specified value
+	 *
+	 * @param object object to edit field's of
+	 * @param field  field to edit
+	 * @param value  value to set
+	 */
+	public static void set(Object object, String field, Object value) {
+		ensureNotNull(object, "object");
+
+		set(object.getClass(), object, field, value);
+	}
+
+	/**
+	 * Sets the field of an object to a specified value
+	 *
+	 * @param type   type of object to set value of
+	 * @param object object to edit field's of, or null if static field
+	 * @param field  field to edit
+	 * @param value  value to set
+	 */
+	public static void set(Class<?> type, Object object, String field, Object value) {
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+		ensureNotNull(value, "value");
+
+		while(type != null) {
+			try {
+				Field fieldHandle = type.getDeclaredField(field);
+
+				fieldHandle.setAccessible(true);
+
+				fieldHandle.set(object, value);
+				return;
+			} catch(IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			} catch(NoSuchFieldException ignored) {}
+
+			type = type.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Field not found");
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T get(Object object, String field) {
+		return (T)get(object, field, Object.class);
+	}
+
+	/**
+	 * Gets the field of an object for a specified field name
+	 *
+	 * @param object object to edit field's of
+	 * @param field  field to edit
+	 * @param type   type of field
+	 */
+	public static <T> T get(Object object, String field, Class<T> type) {
+		ensureNotNull(object, "object");
+		ensureNotNull(field, "field");
+		ensureNotNull(type, "type");
+
+		Class<?> t = object.getClass();
+
+		while(t != null) {
+			try {
+				Field fieldHandle = t.getDeclaredField(field);
+
+				if(!fieldHandle.isAccessible())
+					fieldHandle.setAccessible(true);
+
+				return type.cast(fieldHandle.get(object));
+			} catch(IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			} catch(NoSuchFieldException ignored) {}
+
+			t = t.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Field " + field + " not found for type "
+				+ object.getClass());
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T getStatic(Class<?> type, String field) {
+		return (T)getStatic(type, field, Object.class);
+	}
+
+	public static <T> T getStatic(Class<?> type, String field, Class<T> returnType) {
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+		ensureNotNull(returnType, "returnType");
+
+		Class<?> origType = type;
+		while(type != null) {
+			try {
+				Field fieldHandle = type.getDeclaredField(field);
+
+				if(!fieldHandle.isAccessible())
+					fieldHandle.setAccessible(true);
+
+				return returnType.cast(fieldHandle.get(null));
+			} catch(IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			} catch(NoSuchFieldException ignored) {}
+
+			type = type.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Field " + field + " not found for type " + origType);
+	}
+
+	public static boolean has(Class<?> type, String field) {
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+
+		Class<?> t = type;
+
+		while(t != null) {
+			try {
+				t.getDeclaredField(field);
+				return true;
+			} catch(NoSuchFieldException ignored) {}
+
+			t = t.getSuperclass();
+		}
+
+		return false;
+	}
+
+	public static Class<?> getType(Class<?> type, String field) {
+		ensureNotNull(type, "type");
+		ensureNotNull(field, "field");
+
+		Class<?> t = type;
+
+		while(t != null) {
+			try {
+				return t.getDeclaredField(field).getType();
+			} catch(NoSuchFieldException ignored) {}
+
+			t = t.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Field " + field + " not found for type " + type);
+	}
+
+	@SuppressWarnings({"unchecked", "StringEquality"})
+	public static <T> T call(Object object, String method, Object... params) {
+		ensureNotNull(object, "object");
+		ensureNotNull(method, "method");
+
+		method = method.intern();
+		Class<?> t = object.getClass();
+
+		while(t != null) {
+			try {
+				for(Method methodHandle : t.getDeclaredMethods()) {
+					if(methodHandle.getName() != method
+							|| methodHandle.getParameterCount() != params.length)
+						continue;
+
+					if(!methodHandle.isAccessible())
+						methodHandle.setAccessible(true);
+
+					try {
+						return (T)methodHandle.invoke(object, params);
+					} catch(IllegalArgumentException ignored) {}
+				}
+			} catch(IllegalAccessException | InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
+
+			t = t.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Method " + method + " not found for type "
+				+ object.getClass());
+	}
+
+	@SuppressWarnings({"unchecked", "StringEquality"})
+	public static <T> T callStatic(Class<?> type, String method, Object... params) {
+		ensureNotNull(method, "method");
+
+		method = method.intern();
+		Class<?> origType = type;
+
+		while(type != null) {
+			try {
+				for(Method methodHandle : type.getDeclaredMethods()) {
+					if(methodHandle.getName() != method
+							|| methodHandle.getParameterCount() != params.length)
+						continue;
+
+					if(!methodHandle.isAccessible())
+						methodHandle.setAccessible(true);
+
+					try {
+						return (T)methodHandle.invoke(null, params);
+					} catch(IllegalArgumentException ignored) {}
+				}
+			} catch(IllegalAccessException | InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
+
+			type = type.getSuperclass();
+		}
+
+		throw new IllegalArgumentException("Method " + method + " not found for type " + origType);
+	}
+
+	public static Array<String> getFields(Class<?> type) {
+		Array<String> out = new Array<>();
+		getFields(type, out::add);
+		return out;
+	}
+
+	public static void getFields(Class<?> type, Consumer<String> out) {
+		ensureNotNull(type, "type");
+		ensureNotNull(out, "out");
+
+		while(type != null) {
+			for(Field field : type.getDeclaredFields())
+				if(!Modifier.isStatic(field.getModifiers()))
+					out.accept(field.getName());
+
+			type = type.getSuperclass();
+		}
+	}
+
+	public static Array<String> getStaticFields(Class<?> type) {
+		Array<String> out = new Array<>();
+		getStaticFields(type, out::add);
+		return out;
+	}
+
+	public static void getStaticFields(Class<?> type, Consumer<String> out) {
+		ensureNotNull(type, "type");
+		ensureNotNull(out, "out");
+
+		while(type != null) {
+			for(Field field : type.getDeclaredFields())
+				if(Modifier.isStatic(field.getModifiers()))
+					out.accept(field.getName());
+
+			type = type.getSuperclass();
+		}
+	}
 
 	/**
 	 * Swap all fields value for 2 objects
@@ -97,237 +367,6 @@ public class ReflectionUtil {
 
 			type = type.getSuperclass();
 		}
-	}
-
-	/**
-	 * Sets the field of an object to a specified value
-	 *
-	 * @param object object to edit field's of
-	 * @param field  field to edit
-	 * @param value  value to set
-	 */
-	public static void set(Object object, String field, Object value) {
-		ensureNotNull(object, "object");
-
-		set(object.getClass(), object, field, value);
-	}
-
-	/**
-	 * Sets the field of an object to a specified value
-	 *
-	 * @param type   type of object to set value of
-	 * @param object object to edit field's of, or null if static field
-	 * @param field  field to edit
-	 * @param value  value to set
-	 */
-	public static void set(Class<?> type, Object object, String field, Object value) {
-		ensureNotNull(type, "type");
-		ensureNotNull(field, "field");
-		ensureNotNull(value, "value");
-
-		while(type != null) {
-			try {
-				Field fieldHandle = type.getDeclaredField(field);
-
-				fieldHandle.setAccessible(true);
-
-				fieldHandle.set(object, value);
-				return;
-			} catch(IllegalAccessException ex) {
-				throw new RuntimeException(ex);
-			} catch(NoSuchFieldException ignored) {}
-
-			type = type.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Field not found");
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T getStatic(Class<?> type, String field) {
-		return (T)getStatic(type, field, Object.class);
-	}
-
-	public static <T> T getStatic(Class<?> type, String field, Class<T> returnType) {
-		ensureNotNull(type, "type");
-		ensureNotNull(field, "field");
-		ensureNotNull(returnType, "returnType");
-
-		Class<?> origType = type;
-		while(type != null) {
-			try {
-				Field fieldHandle = type.getDeclaredField(field);
-
-				if(!fieldHandle.isAccessible())
-					fieldHandle.setAccessible(true);
-
-				return returnType.cast(fieldHandle.get(null));
-			} catch(IllegalAccessException ex) {
-				throw new RuntimeException(ex);
-			} catch(NoSuchFieldException ignored) {}
-
-			type = type.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Field " + field + " not found for type " + origType);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T get(Object object, String field) {
-		return (T)get(object, field, Object.class);
-	}
-
-	/**
-	 * Gets the field of an object for a specified field name
-	 *
-	 * @param object object to edit field's of
-	 * @param field  field to edit
-	 * @param type   type of field
-	 */
-	public static <T> T get(Object object, String field, Class<T> type) {
-		ensureNotNull(object, "object");
-		ensureNotNull(field, "field");
-		ensureNotNull(type, "type");
-
-		Class<?> t = object.getClass();
-
-		while(t != null) {
-			try {
-				Field fieldHandle = t.getDeclaredField(field);
-
-				if(!fieldHandle.isAccessible())
-					fieldHandle.setAccessible(true);
-
-				return type.cast(fieldHandle.get(object));
-			} catch(IllegalAccessException ex) {
-				throw new RuntimeException(ex);
-			} catch(NoSuchFieldException ignored) {}
-
-			t = t.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Field " + field + " not found for type "
-				+ object.getClass());
-	}
-
-	public static boolean has(Class<?> type, String field) {
-		ensureNotNull(type, "type");
-		ensureNotNull(field, "field");
-
-		Class<?> t = type;
-
-		while(t != null) {
-			try {
-				t.getDeclaredField(field);
-				return true;
-			} catch(NoSuchFieldException ignored) {}
-
-			t = t.getSuperclass();
-		}
-
-		return false;
-	}
-
-	public static Class<?> getType(Class<?> type, String field) {
-		ensureNotNull(type, "type");
-		ensureNotNull(field, "field");
-
-		Class<?> t = type;
-
-		while(t != null) {
-			try {
-				return t.getDeclaredField(field).getType();
-			} catch(NoSuchFieldException ignored) {}
-
-			t = t.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Field " + field + " not found for type " + type);
-	}
-
-	@SuppressWarnings({"unchecked", "StringEquality"})
-	public static <T> T callStatic(Class<?> type, String method, Object... params) {
-		ensureNotNull(method, "method");
-
-		method = method.intern();
-		Class<?> origType = type;
-
-		while(type != null) {
-			try {
-				for(Method methodHandle : type.getDeclaredMethods()) {
-					if(methodHandle.getName() != method
-							|| methodHandle.getParameterCount() != params.length)
-						continue;
-
-					if(!methodHandle.isAccessible())
-						methodHandle.setAccessible(true);
-
-					try {
-						return (T)methodHandle.invoke(null, params);
-					} catch(IllegalArgumentException ignored) {}
-				}
-			} catch(IllegalAccessException | InvocationTargetException ex) {
-				throw new RuntimeException(ex);
-			}
-
-			type = type.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Method " + method + " not found for type " + origType);
-	}
-
-	@SuppressWarnings({"unchecked", "StringEquality"})
-	public static <T> T call(Object object, String method, Object... params) {
-		ensureNotNull(object, "object");
-		ensureNotNull(method, "method");
-
-		method = method.intern();
-		Class<?> t = object.getClass();
-
-		while(t != null) {
-			try {
-				for(Method methodHandle : t.getDeclaredMethods()) {
-					if(methodHandle.getName() != method
-							|| methodHandle.getParameterCount() != params.length)
-						continue;
-
-					if(!methodHandle.isAccessible())
-						methodHandle.setAccessible(true);
-
-					try {
-						return (T)methodHandle.invoke(object, params);
-					} catch(IllegalArgumentException ignored) {}
-				}
-			} catch(IllegalAccessException | InvocationTargetException ex) {
-				throw new RuntimeException(ex);
-			}
-
-			t = t.getSuperclass();
-		}
-
-		throw new IllegalArgumentException("Method " + method + " not found for type "
-				+ object.getClass());
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T construct(Class<T> type, Object... params) {
-		ensureNotNull(type, "type");
-
-		for(Constructor<?> constructor : type.getDeclaredConstructors()) {
-			try {
-				if(!constructor.isAccessible())
-					constructor.setAccessible(true);
-
-				return (T)constructor.newInstance(params);
-			} catch(InstantiationException | IllegalArgumentException
-					| IllegalAccessException ignored) {
-				// continue
-			} catch(InvocationTargetException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-
-		throw new IllegalArgumentException("No matching constructor found");
 	}
 
 	public static String toPrettyString(Object object) {

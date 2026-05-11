@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.test;
 
+import com.badlogic.gdx.utils.Array;
 import com.winteralexander.gdx.utils.ReflectionUtil;
 import org.junit.Test;
 
@@ -65,8 +66,50 @@ public class ReflectionUtilTest {
 		childMethod();
 	}
 
+	@Test
+	public void testGetFields() {
+		Array<String> fields = ReflectionUtil.getFields(TestChild.class);
+		assertEquals(3, fields.size);
+		assertTrue(fields.contains("string", false));
+		assertTrue(fields.contains("a", false));
+		assertTrue(fields.contains("b", false));
+
+		assertTrue(ReflectionUtil.has(TestChild.class, "string"));
+		assertTrue(ReflectionUtil.has(TestChild.class, "a"));
+		assertTrue(ReflectionUtil.has(TestChild.class, "b"));
+
+		assertEquals(String.class, ReflectionUtil.getType(TestChild.class, "string"));
+		assertEquals(int.class, ReflectionUtil.getType(TestChild.class, "a"));
+		assertEquals(Object.class, ReflectionUtil.getType(TestChild.class, "b"));
+	}
+
+	@Test
+	public void testGetStaticFields() {
+		Array<String> fields = ReflectionUtil.getStaticFields(TestChild.class);
+		assertEquals(2, fields.size);
+		assertTrue(fields.contains("c", false));
+		assertTrue(fields.contains("d", false));
+
+		assertTrue(ReflectionUtil.has(TestChild.class, "c"));
+		assertTrue(ReflectionUtil.has(TestChild.class, "d"));
+
+		assertEquals(long.class, ReflectionUtil.getType(TestChild.class, "c"));
+		assertEquals(float.class, ReflectionUtil.getType(TestChild.class, "d"));
+	}
+
 	private void childMethod() {
 		assertTrue(ReflectionUtil.getParentStackLocation().startsWith("ReflectionUtilTest#"
 				+ "testParentStackLocation"));
+	}
+
+	private static class TestClass {
+		private String string;
+		private int a;
+		private static long c;
+	}
+
+	private static class TestChild extends TestClass {
+		private Object b;
+		private static float d;
 	}
 }
