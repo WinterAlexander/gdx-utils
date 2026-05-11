@@ -40,7 +40,7 @@ public class ReflectionUtil {
 
 				return (T)constructor.newInstance(params);
 			} catch(InstantiationException | IllegalArgumentException
-			        | IllegalAccessException ignored) {
+					| IllegalAccessException ignored) {
 				// continue
 			} catch(InvocationTargetException ex) {
 				throw new RuntimeException(ex);
