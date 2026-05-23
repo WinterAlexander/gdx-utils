@@ -21,7 +21,7 @@ public interface Listenable<L> {
 	 *
 	 * @param listeners listeners to add
 	 */
-	default void addListeners(Iterable<L> listeners) {
+	default void addListeners(Iterable<? extends L> listeners) {
 		for(L l : listeners)
 			addListener(l);
 	}
@@ -39,7 +39,7 @@ public interface Listenable<L> {
 	 *
 	 * @param listeners listeners to remove
 	 */
-	default void removeListeners(Iterable<L> listeners) {
+	default void removeListeners(Iterable<? extends L> listeners) {
 		for(L l : listeners)
 			removeListener(l);
 	}

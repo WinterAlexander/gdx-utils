@@ -24,8 +24,8 @@ public interface PriorityListenable<L, P> extends Listenable<L> {
 	 *
 	 * @param listeners listeners with priority
 	 */
-	default void addListeners(ObjectMap<L, P> listeners) {
-		for(Entry<L, P> entry : listeners)
+	default void addListeners(ObjectMap<? extends L, ? extends P> listeners) {
+		for(Entry<? extends L, ? extends P> entry : listeners)
 			addListener(entry.key, entry.value);
 	}
 }
