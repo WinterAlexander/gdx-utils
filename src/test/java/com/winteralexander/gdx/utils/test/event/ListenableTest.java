@@ -1,10 +1,13 @@
 package com.winteralexander.gdx.utils.test.event;
 
+import com.badlogic.gdx.utils.Array;
+import com.winteralexander.gdx.utils.collection.CollectionUtil;
 import com.winteralexander.gdx.utils.event.Listenable;
 import com.winteralexander.gdx.utils.event.ListenableImpl;
 import com.winteralexander.gdx.utils.property.MutableBox;
 import org.junit.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 
 /**
@@ -101,5 +104,17 @@ public class ListenableTest {
 
 		listenable.trigger(Runnable::run);
 		assertEquals("Listener not added after unlock", 1, (int)value.get());
+	}
+
+	@Test
+	public void testAddListeners() {
+		ListenableImpl<Object> listenable = new ListenableImpl<>();
+		Array<Long> array = CollectionUtil.toGdxArray(1L, 2L);
+		listenable.addListeners(array);
+		listenable.removeListeners(CollectionUtil.toGdxSet("Hello", "test"));
+
+		AtomicInteger value = new AtomicInteger();
+		listenable.trigger(v -> value.incrementAndGet());
+		assertEquals(2, value.get());
 	}
 }
