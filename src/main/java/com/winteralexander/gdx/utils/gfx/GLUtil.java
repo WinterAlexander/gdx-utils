@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static com.badlogic.gdx.graphics.GL20.*;
@@ -17,8 +18,9 @@ import static com.badlogic.gdx.graphics.GL20.*;
  * @author Alexander Winter
  */
 public class GLUtil {
-	public static final int GL_LINE_SMOOTH = 2_848;
+	public static final int GL_LINE_SMOOTH = 0xB20;
 	public static final int GL_SMOOTH_LINE_WIDTH_RANGE = 0xB22;
+	public static final int GL_SMOOTH_LINE_WIDTH_GRANULARITY = 0xB23;
 
 	private static int maxTextureImageUnits = -1;
 	private static int maxTextureSize = -1;
@@ -26,37 +28,43 @@ public class GLUtil {
 
 	private static int minSmoothLineWidth = -1;
 	private static int maxSmoothLineWidth = -1;
+	private static float smoothLineGranularity = -1;
 	private static int minAliasedLineWidth = -1;
 	private static int maxAliasedLineWidth = -1;
+
+	private static int getSingleInteger(int key) {
+		IntBuffer
+				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
+		Gdx.gl.glGetIntegerv(key, buffer);
+		return buffer.get();
+	}
+
+	private static float getSingleFloat(int key) {
+		FloatBuffer buffer = ByteBuffer.allocateDirect(64)
+									 .order(ByteOrder.nativeOrder())
+									 .asFloatBuffer();
+		Gdx.gl.glGetFloatv(key, buffer);
+		return buffer.get();
+	}
 
 	public static int getMaxTextureImageUnits() {
 		if(maxTextureImageUnits != -1)
 			return maxTextureImageUnits;
-
-		IntBuffer
-				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
-		Gdx.gl.glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
-		return maxTextureImageUnits = buffer.get();
+		return maxTextureImageUnits = getSingleInteger(GL_MAX_TEXTURE_IMAGE_UNITS);
 	}
 
 	public static int getMaxTextureSize() {
 		if(maxTextureSize != -1)
 			return maxTextureSize;
 
-		IntBuffer
-				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
-		Gdx.gl.glGetIntegerv(GL_MAX_TEXTURE_SIZE, buffer);
-		return maxTextureSize = buffer.get();
+		return maxTextureSize = getSingleInteger(GL_MAX_TEXTURE_SIZE);
 	}
 
 	public static int getMaxVertexUniformVectors() {
 		if(maxVertexUniformVectors != -1)
 			return maxVertexUniformVectors;
 
-		IntBuffer
-				buffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asIntBuffer();
-		Gdx.gl.glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, buffer);
-		return maxVertexUniformVectors = buffer.get();
+		return maxVertexUniformVectors = getSingleInteger(GL_MAX_VERTEX_UNIFORM_VECTORS);
 	}
 
 	public static int getMinSmoothLineWidth() {
@@ -83,7 +91,13 @@ public class GLUtil {
 		return maxSmoothLineWidth;
 	}
 
-	public static int getMinAliasLineWidth() {
+	public static float getSmoothLineGranularity() {
+		if(smoothLineGranularity != -1)
+			return smoothLineGranularity;
+		return smoothLineGranularity = getSingleFloat(GL_SMOOTH_LINE_WIDTH_GRANULARITY);
+	}
+
+	public static int getMinAliasedLineWidth() {
 		if(minAliasedLineWidth != -1)
 			return minAliasedLineWidth;
 
@@ -95,7 +109,7 @@ public class GLUtil {
 		return minAliasedLineWidth;
 	}
 
-	public static int getMaxAliasLineWidth() {
+	public static int getMaxAliasedLineWidth() {
 		if(maxAliasedLineWidth != -1)
 			return maxAliasedLineWidth;
 
