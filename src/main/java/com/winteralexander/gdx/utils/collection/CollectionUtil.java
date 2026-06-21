@@ -525,19 +525,41 @@ public class CollectionUtil {
 
 	@SafeVarargs
 	public static <T> ObjectSet<T> toGdxSet(T... elements) {
-		ObjectSet<T> set = new ObjectSet<>();
+		ObjectSet<T> set = new ObjectSet<>(elements.length);
 		set.addAll(elements);
 		return set;
 	}
 
 	public static <T> ObjectSet<T> toGdxSet(Iterable<T> iterable) {
-		return toGdxSet(iterable.iterator());
+		int size = 0;
+		if(iterable instanceof Array)
+			size = ((Array<T>)iterable).size;
+		if(iterable instanceof List)
+			size = ((List<T>)iterable).size();
+
+		return toGdxSet(iterable.iterator(), size);
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterable<T> iterable, int initialCapacity) {
+		return toGdxSet(iterable.iterator(), initialCapacity);
 	}
 
 	public static <T> ObjectSet<T> toGdxSet(Iterator<T> iterator) {
-		ObjectSet<T> set = new ObjectSet<>();
+		return toGdxSet(iterator, 0);
+	}
+
+	public static <T> ObjectSet<T> toGdxSet(Iterator<T> iterator, int initialCapacity) {
+		ObjectSet<T> set = initialCapacity <= 0
+				? new ObjectSet<>()
+				: new ObjectSet<>(initialCapacity);
 		while(iterator.hasNext())
 			set.add(iterator.next());
+		return set;
+	}
+
+	public static IntSet toGdxSet(IntArray array) {
+		IntSet set = new IntSet(array.size);
+		set.addAll(array);
 		return set;
 	}
 
