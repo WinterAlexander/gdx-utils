@@ -1,6 +1,8 @@
 package com.winteralexander.gdx.utils.test.collection;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.LongArray;
 import com.winteralexander.gdx.utils.collection.CollectionUtil;
 import org.junit.Test;
 
@@ -94,5 +96,15 @@ public class CollectionUtilTest {
 		assertTrue(all(new int[] {1, 2, 3, 4}, i -> i < 10));
 		assertFalse(all(new double[] {1.123123, 2.34243, 3.231423, 4.324234}, i -> i > 2.0));
 		assertFalse(all(new long[] {1L, 2L, 3L, 4L}, i -> i == 3L));
+	}
+
+	@Test
+	public void testMinMax() {
+		assertEquals(3, CollectionUtil.max(1, 2, 3, -1));
+		assertEquals(-1, CollectionUtil.min(1, 2, 3, -1));
+		assertEquals(32,
+				CollectionUtil.max(new IntArray(new int[] {1, 2, 3, -1, 32, 15, 22, 11, 22})));
+		assertEquals(-22,
+				CollectionUtil.min(new LongArray(new long[] {1, 2, 3, -1, 32, 15, -22, -11, 22})));
 	}
 }

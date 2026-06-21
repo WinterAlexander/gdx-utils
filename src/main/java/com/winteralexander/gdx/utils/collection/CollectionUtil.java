@@ -757,4 +757,76 @@ public class CollectionUtil {
 	public static <T> Array<T> emptyArray() {
 		return (Array<T>)EMPTY_ARRAY;
 	}
+
+	public static int max(IntArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		int maxValue = array.get(0);
+		for(int i = 1; i < array.size; i++)
+			maxValue = Math.max(maxValue, array.get(i));
+		return maxValue;
+	}
+
+	public static int min(IntArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		int minValue = array.get(0);
+		for(int i = 1; i < array.size; i++)
+			minValue = Math.min(minValue, array.get(i));
+		return minValue;
+	}
+
+	public static int max(int... array) {
+		if(array.length == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		int maxValue = array[0];
+		for(int i = 1; i < array.length; i++)
+			maxValue = Math.max(maxValue, array[i]);
+		return maxValue;
+	}
+
+	public static int min(int... array) {
+		if(array.length == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		int minValue = array[0];
+		for(int i = 1; i < array.length; i++)
+			minValue = Math.min(minValue, array[i]);
+		return minValue;
+	}
+
+	public static long max(LongArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		long maxValue = array.get(0);
+		for(int i = 1; i < array.size; i++)
+			maxValue = Math.max(maxValue, array.get(i));
+		return maxValue;
+	}
+
+	public static long min(LongArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		long minValue = array.get(0);
+		for(int i = 1; i < array.size; i++)
+			minValue = Math.min(minValue, array.get(i));
+		return minValue;
+	}
+
+	public static long max(long... array) {
+		if(array.length == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		long maxValue = array[0];
+		for(int i = 1; i < array.length; i++)
+			maxValue = Math.max(maxValue, array[i]);
+		return maxValue;
+	}
+
+	public static long min(long... array) {
+		if(array.length == 0)
+			throw new IllegalArgumentException("Provided array must have at least one element");
+		long minValue = array[0];
+		for(int i = 1; i < array.length; i++)
+			minValue = Math.min(minValue, array[i]);
+		return minValue;
+	}
 }
