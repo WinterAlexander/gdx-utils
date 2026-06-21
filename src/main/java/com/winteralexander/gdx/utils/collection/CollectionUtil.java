@@ -137,6 +137,78 @@ public class CollectionUtil {
 	}
 
 	/**
+	 * Retrieves the last element of an array of ints
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static int last(IntArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Retrieves the last element of an array of longs
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static long last(LongArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Retrieves the last element of an array of floats
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static float last(FloatArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Retrieves the last element of an array of shorts
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static short last(ShortArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Retrieves the last element of an array of bytes
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static byte last(ByteArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
+	 * Retrieves the last element of an array of booleans
+	 * @param array array to get the last element of
+	 * @return last element
+	 */
+	public static boolean last(BooleanArray array) {
+		if(array.size == 0)
+			throw new IllegalArgumentException("Array is empty");
+
+		return array.get(array.size - 1);
+	}
+
+	/**
 	 * Selects the element of the array that is of greatest value according to the comparator. In
 	 * case of equality, it returns the first one encountered in the array
 	 * @param array array to select greatest element
