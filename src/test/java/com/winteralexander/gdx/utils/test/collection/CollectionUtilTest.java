@@ -107,4 +107,25 @@ public class CollectionUtilTest {
 		assertEquals(-22,
 				CollectionUtil.min(new LongArray(new long[] {1, 2, 3, -1, 32, 15, -22, -11, 22})));
 	}
+
+	@Test
+	public void testFillRange() {
+		IntArray array = new IntArray();
+		CollectionUtil.fillFromRange(0, 10, array);
+		CollectionUtil.fillFromRange(20, 30, array);
+		CollectionUtil.fillFromRange(-30, -20, array);
+		CollectionUtil.fillFromRange(18, 16, array);
+		CollectionUtil.fillFromRange(-7, -9, array);
+		assertEquals(34, array.size);
+		assertEquals(0, array.get(0));
+		assertEquals(9, array.get(9));
+		assertEquals(20, array.get(10));
+		assertEquals(29, array.get(19));
+		assertEquals(-30, array.get(20));
+		assertEquals(-21, array.get(29));
+		assertEquals(18, array.get(30));
+		assertEquals(17, array.get(31));
+		assertEquals(-7, array.get(32));
+		assertEquals(-8, array.get(33));
+	}
 }
