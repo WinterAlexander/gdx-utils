@@ -923,4 +923,40 @@ public class CollectionUtil {
 			minValue = Math.min(minValue, array[i]);
 		return minValue;
 	}
+
+	/**
+	 * Creates an array from a provided range
+	 *
+	 * @param start start of the range, inclusive
+	 * @param end end of the range, exclusive
+	 * @return newly created array with the range as its content
+	 */
+	public static IntArray arrayFromRange(int start, int end) {
+		return fillFromRange(start, end, new IntArray());
+	}
+
+	public static IntArray fillFromRange(int start, int end, IntArray array) {
+		int dir = start < end ? 1 : -1;
+		for(int i = start; i * dir < end * dir; i += dir)
+			array.add(i);
+		return array;
+	}
+
+	/**
+	 * Creates an array from a provided range
+	 *
+	 * @param start start of the range, inclusive
+	 * @param end end of the range, exclusive
+	 * @return newly created array with the range as its content
+	 */
+	public static LongArray arrayFromRange(long start, long end) {
+		return fillFromRange(start, end, new LongArray());
+	}
+
+	public static LongArray fillFromRange(long start, long end, LongArray array) {
+		int dir = start < end ? 1 : -1;
+		for(long i = start; i * dir < end * dir; i += dir)
+			array.add(i);
+		return array;
+	}
 }
