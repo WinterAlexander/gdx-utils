@@ -51,6 +51,15 @@ public class SegmentPlus extends Segment {
 
 	public static float getParameter(Vector3 a, Vector3 b, Vector3 point) {
 		// ((b - a) dot (x - a)) / ||b - a||^2 but unrolled
-		return (b.dot(point) - b.dot(a) - a.dot(point) + a.dot(a)) / a.dst2(b);
+		float relBx = b.x - a.x;
+		float relBy = b.y - a.y;
+		float relBz = b.z - a.z;
+
+		float relPx = point.x - a.x;
+		float relPy = point.y - a.y;
+		float relPz = point.z - a.z;
+
+		return (relBx * relPx + relBy * relPy + relBz * relPz)
+				/ (relBx * relBx + relBy * relBy + relBz * relBz);
 	}
 }
