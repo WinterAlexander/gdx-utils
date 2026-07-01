@@ -79,12 +79,12 @@ public class Intersector3D {
 				&& Math.abs(denom3) <= tolerance) {
 			float originDst2 = (pow2((float)sx) + pow2((float)sy) + pow2((float)sz));
 
-			if(originDst2 <= tolerance)
+			if(originDst2 <= pow2(tolerance))
 				return COLLINEAR;
 
 			float len2 = originDst2 * direction1.len2();
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / len2 - 1f)
-							<= tolerance
+			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) - len2)
+							<= pow2(tolerance)
 					? COLLINEAR
 					: NONE;
 		}
@@ -115,7 +115,7 @@ public class Intersector3D {
 		double y2 = origin2.y + direction2.y * t2;
 		double z2 = origin2.z + direction2.z * t2;
 
-		if(pow2(x1 - x2) + pow2(y1 - y2) + pow2(z1 - z2) > tolerance)
+		if(pow2(x1 - x2) + pow2(y1 - y2) + pow2(z1 - z2) > pow2(tolerance))
 			return NONE;
 
 		out.set((float)x1, (float)y1, (float)z1);
@@ -245,7 +245,7 @@ public class Intersector3D {
 	 *
 	 * @param first first triangle
 	 * @param second second triangle
-	 * @param tol distance at which 2 floating points are considered to be the same
+	 * @param tol distance at which 2 points are considered to be the same
 	 * @param ignoreCoplanar if true, coplanar triangles will be considered as non intersecting,
 	 * increasing performance as coplanar triangle intersection won't need to be checked
 	 * @param out segment of the intersection, only set if applicable based on the result.
