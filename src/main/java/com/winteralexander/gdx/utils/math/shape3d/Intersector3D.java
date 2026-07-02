@@ -492,7 +492,7 @@ public class Intersector3D {
 	}
 
 	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {
-		return Math.abs(first.dst(second) - first.dst(between) - second.dst(between)) < tol;
+		return Math.abs(first.dst2(second) - first.dst2(between) - second.dst2(between)) < pow2(tol);
 	}
 
 	private static void rayFromIntersection(Triangle first, Triangle second, float tol, Ray out) {
