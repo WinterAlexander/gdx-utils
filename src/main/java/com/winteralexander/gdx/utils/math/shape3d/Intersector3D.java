@@ -63,6 +63,7 @@ public class Intersector3D {
 			Vector3 origin2,
 			Vector3 direction2,
 			float tolerance,
+			float absTol,
 			Vector3 out) {
 		double sx = origin1.x - origin2.x;
 		double sy = origin1.y - origin2.y;
