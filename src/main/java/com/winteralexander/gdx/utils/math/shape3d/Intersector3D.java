@@ -1,5 +1,6 @@
 package com.winteralexander.gdx.utils.math.shape3d;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -27,7 +28,8 @@ public class Intersector3D {
 								 tmpIntersection3 = new Vector3();
 	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus(),
 								 tmpSegmentOut = new SegmentPlus();
-	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3();
+	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3(),
+								 tmpVec1 = new Vector3(), tmpVec2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
 
 	private Intersector3D() {}
@@ -67,30 +69,21 @@ public class Intersector3D {
 		double sx = origin1.x - origin2.x;
 		double sy = origin1.y - origin2.y;
 		double sz = origin1.z - origin2.z;
-		float originDst2 = pow2((float)sx) + pow2((float)sy) + pow2((float)sz);
 
 		// cross product
 		double denom1 = direction2.y * direction1.x - direction1.y * direction2.x;
 		double denom2 = direction2.z * direction1.y - direction1.z * direction2.y;
 		double denom3 = direction2.x * direction1.z - direction1.x * direction2.z;
 
-		float dir1Len = direction1.len();
-		float dir2Len = direction2.len();
-
-		// The cross product gives an area. In close to collinear case the parallelogram is very
-		// thin and so the long side can be approximated to be the sum of the size of the 2 vectors.
-		// The tolerance is transformed to correspond to comparing the "opposite side" of the
-		// parallelogram. Finaly the tolerance is in the unit of distance, so divide by the
-		// distance between origins to normalize
-		double denomTol = pow2(dir1Len + dir2Len) * tolerance * tolerance;
-
 		// means the ray directions are collinear
-		if(pow2(denom1) + pow2(denom2) + pow2(denom3) <= denomTol) {
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len
-						   - originDst2)
-							<= pow2(tolerance)
-					? COLLINEAR
-					: NONE;
+		if(pow2(denom1) + pow2(denom2) + pow2(denom3) <= MathUtils.FLOAT_ROUNDING_ERROR) {
+			double crossX = sy * direction1.z - sz * direction1.y;
+			double crossY = sz * direction1.x - sx * direction1.z;
+			double crossZ = sx * direction1.y - sy * direction1.x;
+			double dst2 = (pow2(crossX) + pow2(crossY) + pow2(crossZ))
+					/ (direction1.len2() + pow2(sx) + pow2(sy) + pow2(sz));
+
+			return dst2 <= pow2(tolerance) ? COLLINEAR : NONE;
 		}
 
 		double t;
@@ -500,8 +493,23 @@ public class Intersector3D {
 	}
 
 	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {
-		return Math.abs(first.dst2(second) - first.dst2(between) - second.dst2(between))
-				< pow2(tol);
+		if(first.epsilonEquals(between, tol) || second.epsilonEquals(between, tol))
+			return true;
+
+		tmpVec1.set(first).sub(second);
+		tmpVec2.set(between).sub(second);
+
+		if(tmpVec1.dot(tmpVec2) < 0f)
+			return false; // between is too far
+
+		tmpVec1.set(second).sub(first);
+		tmpVec2.set(between).sub(first);
+
+		if(tmpVec1.dot(tmpVec2) < 0f)
+			return false; // between is behind
+
+		float vec2Len2 = tmpVec2.len2();
+		return tmpVec2.crs(tmpVec1).len2() / (tmpVec1.len2() + vec2Len2) < pow2(tol);
 	}
 
 	private static void rayFromIntersection(Triangle first, Triangle second, float tol, Ray out) {
@@ -720,7 +728,7 @@ public class Intersector3D {
 							triangle.p3.z - triangle.p1.z)
 				/ len2;
 
-		if(!inTriangle(pU, pV, p3U, tol / (float)Math.sqrt(Math.min(len2, h2))))
+		if(!inTriangle(pU, pV, p3U, tol / (float)Math.sqrt(Math.abs(Math.min(len2, h2)))))
 			return false;
 
 		out.b.set(out.a.set(x, y, z));

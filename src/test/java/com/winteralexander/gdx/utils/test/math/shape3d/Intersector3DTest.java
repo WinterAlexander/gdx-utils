@@ -196,7 +196,7 @@ public class Intersector3DTest {
 					result = intersectSegmentSegment(segment1, segment2, 1e-5f, tmpIntersection);
 			LineIntersectionResult expected = shouldIntersect ? COLLINEAR : NONE;
 
-			assertEquals(expected, result);
+			assertEquals("Fail at iteration " + i, expected, result);
 		}
 	}
 
