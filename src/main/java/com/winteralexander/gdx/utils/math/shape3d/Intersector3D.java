@@ -202,13 +202,15 @@ public class Intersector3D {
 			return NONE;
 
 		if(result == COLLINEAR) {
+			float len = firstStart.dst(firstEnd);
+			tol /= len;
 			float t1 = SegmentPlus.getParameter(firstStart, firstEnd, secondStart);
 			float t2 = SegmentPlus.getParameter(firstStart, firstEnd, secondEnd);
 
 			float tMin = min(t1, t2);
 			float tMax = max(t1, t2);
 
-			if(tMin - 1f > tol || tMax < -tol)
+			if(tMin - 1f > tol / len || tMax < -tol)
 				return NONE;
 
 			out.a.set(tMin < -tol ? firstStart : secondStart);
@@ -217,10 +219,12 @@ public class Intersector3D {
 			return tMin - 1f < -tol && tMax > tol ? COLLINEAR : POINT;
 		}
 
-		float t1 = SegmentPlus.getParameter(firstStart, firstEnd, tmpIntersection1);
-		float t2 = SegmentPlus.getParameter(secondStart, secondEnd, tmpIntersection1);
+		float len1 = firstStart.dst(firstEnd);
+		float len2 = firstStart.dst(firstEnd);
+		float t1 = SegmentPlus.getParameter(firstStart, firstEnd, tmpIntersection1) * len1;
+		float t2 = SegmentPlus.getParameter(secondStart, secondEnd, tmpIntersection1) * len2;
 
-		if(t1 < -tol || t1 - 1f > tol || t2 < -tol || t2 - 1f > tol)
+		if(t1 < -tol || t1 - len1 > tol || t2 < -tol || t2 - len2 > tol)
 			return NONE;
 
 		out.a.set(out.b.set(tmpIntersection1));
@@ -512,11 +516,11 @@ public class Intersector3D {
 
 		float d1 = -(normalFace1.x * v1p.x + normalFace1.y * v1p.y + normalFace1.z * v1p.z);
 		float d2 = -(normalFace2.x * v2p.x + normalFace2.y * v2p.y + normalFace2.z * v2p.z);
-		if(abs(out.direction.x) > tol) {
+		if(abs(out.direction.x) > max(abs(out.direction.y), abs(out.direction.z))) {
 			out.origin.x = 0;
 			out.origin.y = (d2 * normalFace1.z - d1 * normalFace2.z) / out.direction.x;
 			out.origin.z = (d1 * normalFace2.y - d2 * normalFace1.y) / out.direction.x;
-		} else if(abs(out.direction.y) > tol) {
+		} else if(abs(out.direction.y) > abs(out.direction.z)) {
 			out.origin.x = (d1 * normalFace2.z - d2 * normalFace1.z) / out.direction.y;
 			out.origin.y = 0;
 			out.origin.z = (d2 * normalFace1.x - d1 * normalFace2.x) / out.direction.y;
@@ -636,7 +640,7 @@ public class Intersector3D {
 					triangle.p2.y - tmpEdgeLine1.origin.y,
 					triangle.p2.z - tmpEdgeLine1.origin.z);
 
-			if(t >= -tol && t <= tEnd + tol) {
+			if(t >= -tol && t - tEnd <= tol) {
 				out.a.set(tmpIntersection1);
 				countIntersections++;
 			}
@@ -650,7 +654,7 @@ public class Intersector3D {
 					triangle.p3.y - tmpEdgeLine2.origin.y,
 					triangle.p3.z - tmpEdgeLine2.origin.z);
 
-			if(t >= -tol && t <= tEnd + tol) {
+			if(t >= -tol && t - tEnd <= tol) {
 				(countIntersections == 0 ? out.a : out.b).set(tmpIntersection2);
 				countIntersections++;
 
@@ -667,7 +671,7 @@ public class Intersector3D {
 					triangle.p1.y - tmpEdgeLine3.origin.y,
 					triangle.p1.z - tmpEdgeLine3.origin.z);
 
-			if(t >= -tol && t <= tEnd + tol) {
+			if(t >= -tol && t - tEnd <= tol) {
 				(countIntersections == 0 ? out.a : out.b).set(tmpIntersection3);
 				countIntersections++;
 
@@ -714,7 +718,7 @@ public class Intersector3D {
 							triangle.p3.z - triangle.p1.z)
 				/ len2;
 
-		if(!inTriangle(pU, pV, p3U, tol))
+		if(!inTriangle(pU, pV, p3U, tol / (float)Math.sqrt(Math.min(len2, h2))))
 			return false;
 
 		out.b.set(out.a.set(x, y, z));
@@ -807,6 +811,8 @@ public class Intersector3D {
 
 		float p3U = tmpSegDir1.dot(tmpTriangle.p3) / len2;
 		float p3V = tmpSegDir2.dot(tmpTriangle.p3) / height2;
+
+		tol /= (float)Math.sqrt(Math.min(len2, height2));
 
 		if(inTriangle(p1U, p1V, peakU, tol))
 			return true;
