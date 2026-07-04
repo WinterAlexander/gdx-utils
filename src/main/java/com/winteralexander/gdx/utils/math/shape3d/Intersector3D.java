@@ -74,6 +74,24 @@ public class Intersector3D {
 		double denom2 = direction2.z * direction1.y - direction1.z * direction2.y;
 		double denom3 = direction2.x * direction1.z - direction1.x * direction2.z;
 
+		float dir1Len = direction1.len();
+		float dir2Len = direction2.len();
+
+		// The cross product gives an area. In close to collinear case the parallelogram is very
+		// thin and so the long side can be approximated to be the sum of the size of the 2 vectors.
+		// The tolerance is transformed to correspond to comparing the "opposite side" of the
+		// parallelogram. Finaly the tolerance is in the unit of distance, so divide by the
+		// distance between origins to normalize
+		double denomTol = pow2(dir1Len + dir2Len) * tolerance * tolerance;
+
+		// means the ray directions are collinear
+		if(pow2(denom1) + pow2(denom2) + pow2(denom3) <= denomTol) {
+			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len - originDst2)
+							<= pow2(tolerance)
+					? COLLINEAR
+					: NONE;
+		}
+
 		double t;
 		// for the sake of precision, use the largest dominator for the computation
 		if(abs(denom1) > max(abs(denom2), abs(denom3)))
@@ -82,16 +100,6 @@ public class Intersector3D {
 			t = (sz * direction2.y - sy * direction2.z) / denom2;
 		else
 			t = (sx * direction2.z - sz * direction2.x) / denom3;
-
-		// if two points "tolerance" away are considered the same, then two lines that meet at
-		// 1 / "tolerance" away can be considered pretty much parallel
-		if(t * t * direction1.len2() > pow2(1.0 / tolerance)) {
-			float dir1Len = direction1.len();
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len - originDst2)
-					<= pow2(tolerance)
-					? COLLINEAR
-					: NONE;
-		}
 
 		double t2;
 		// for the sake of precision, compute t2 from t using the largest component
