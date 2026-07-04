@@ -63,33 +63,18 @@ public class Intersector3D {
 			Vector3 origin2,
 			Vector3 direction2,
 			float tolerance,
-			float absTol,
 			Vector3 out) {
 		double sx = origin1.x - origin2.x;
 		double sy = origin1.y - origin2.y;
 		double sz = origin1.z - origin2.z;
+		float originDst2 = pow2((float)sx) + pow2((float)sy) + pow2((float)sz);
 
+		// cross product
 		double denom1 = direction2.y * direction1.x - direction1.y * direction2.x;
 		double denom2 = direction2.z * direction1.y - direction1.z * direction2.y;
 		double denom3 = direction2.x * direction1.z - direction1.x * direction2.z;
 
 		double t;
-
-		// means the rays are collinear
-		if(Math.abs(denom1) <= tolerance && Math.abs(denom2) <= tolerance
-				&& Math.abs(denom3) <= tolerance) {
-			float originDst2 = (pow2((float)sx) + pow2((float)sy) + pow2((float)sz));
-
-			if(originDst2 <= pow2(tolerance))
-				return COLLINEAR;
-
-			float len2 = originDst2 * direction1.len2();
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) - len2)
-							<= pow2(tolerance)
-					? COLLINEAR
-					: NONE;
-		}
-
 		// for the sake of precision, use the largest dominator for the computation
 		if(abs(denom1) > max(abs(denom2), abs(denom3)))
 			t = (sy * direction2.x - sx * direction2.y) / denom1;
@@ -98,8 +83,17 @@ public class Intersector3D {
 		else
 			t = (sx * direction2.z - sz * direction2.x) / denom3;
 
-		double t2;
+		// if two points "tolerance" away are considered the same, then two lines that meet at
+		// 1 / "tolerance" away can be considered pretty much parallel
+		if(t * t * direction1.len2() > pow2(1.0 / tolerance)) {
+			float dir1Len = direction1.len();
+			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len - originDst2)
+					<= pow2(tolerance)
+					? COLLINEAR
+					: NONE;
+		}
 
+		double t2;
 		// for the sake of precision, compute t2 from t using the largest component
 		if(abs(direction2.x) > max(abs(direction2.y), abs(direction2.z)))
 			t2 = t * direction1.x / direction2.x + sx / direction2.x;
