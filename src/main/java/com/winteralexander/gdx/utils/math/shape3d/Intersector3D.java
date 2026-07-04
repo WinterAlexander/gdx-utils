@@ -276,7 +276,7 @@ public class Intersector3D {
 			return intersectCoplanarTriangles(first, second, tol, out);
 		}
 
-		rayFromIntersection(first, second, tol, tmpIntersectRay);
+		rayFromIntersection(first, second, tmpIntersectRay);
 
 		if(!intersectTriangleRay(first, tmpIntersectRay, tol, tmpSegment1)
 				|| !intersectTriangleRay(second, tmpIntersectRay, tol, tmpSegment2))
@@ -512,7 +512,7 @@ public class Intersector3D {
 		return tmpVec2.crs(tmpVec1).len2() / (tmpVec1.len2() + vec2Len2) < pow2(tol);
 	}
 
-	private static void rayFromIntersection(Triangle first, Triangle second, float tol, Ray out) {
+	private static void rayFromIntersection(Triangle first, Triangle second, Ray out) {
 		Vector3 normalFace1 = first.getNormal();
 		Vector3 normalFace2 = second.getNormal();
 
