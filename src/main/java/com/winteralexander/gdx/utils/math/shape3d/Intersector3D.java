@@ -86,7 +86,8 @@ public class Intersector3D {
 
 		// means the ray directions are collinear
 		if(pow2(denom1) + pow2(denom2) + pow2(denom3) <= denomTol) {
-			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len - originDst2)
+			return Math.abs(pow2(direction1.dot((float)sx, (float)sy, (float)sz)) / dir1Len
+						   - originDst2)
 							<= pow2(tolerance)
 					? COLLINEAR
 					: NONE;
@@ -499,7 +500,8 @@ public class Intersector3D {
 	}
 
 	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {
-		return Math.abs(first.dst2(second) - first.dst2(between) - second.dst2(between)) < pow2(tol);
+		return Math.abs(first.dst2(second) - first.dst2(between) - second.dst2(between))
+				< pow2(tol);
 	}
 
 	private static void rayFromIntersection(Triangle first, Triangle second, float tol, Ray out) {
