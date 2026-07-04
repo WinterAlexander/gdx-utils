@@ -214,7 +214,7 @@ public class Intersector3D {
 		}
 
 		float len1 = firstStart.dst(firstEnd);
-		float len2 = firstStart.dst(firstEnd);
+		float len2 = secondStart.dst(secondEnd);
 		float t1 = SegmentPlus.getParameter(firstStart, firstEnd, tmpIntersection1) * len1;
 		float t2 = SegmentPlus.getParameter(secondStart, secondEnd, tmpIntersection1) * len2;
 

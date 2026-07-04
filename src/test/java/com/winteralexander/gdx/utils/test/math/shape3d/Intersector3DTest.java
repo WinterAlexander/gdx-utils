@@ -211,6 +211,15 @@ public class Intersector3DTest {
 		assertTrue(intersection.epsilonEquals(0.5f, 0.5f, 0f, 1e-5f));
 
 		segment1.a.set(0f, 0f, 0f);
+		segment1.b.set(1f, 2f, 3f);
+
+		segment2.a.set(100f, -2f, 1.5f);
+		segment2.b.set(0.5f, 1f, 1.5f);
+
+		assertEquals(POINT, intersectSegmentSegment(segment1, segment2, 1e-5f, intersection));
+		assertTrue(intersection.epsilonEquals(0.5f, 1f, 1.5f, 1e-5f));
+
+		segment1.a.set(0f, 0f, 0f);
 		segment1.b.set(1f, 1f, 0f);
 
 		segment2.a.set(0f, 5f, 0f);
