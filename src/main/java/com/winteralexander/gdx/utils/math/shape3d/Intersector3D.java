@@ -30,9 +30,9 @@ public class Intersector3D {
 								 tmpVec1 = new Vector3(), tmpVec2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
 	private static final Plane tmpPlane = new Plane();
-	private static final Polygon tmpPolygon1 = new Polygon(new float[6]),
-			tmpPolygon2 = new Polygon(new float[6]),
-			tmpPolygon3 = new Polygon(new float[6]);
+	private static final Polygon
+			tmpPolygon1 = new Polygon(new float[6]),
+			tmpPolygon2 = new Polygon(new float[6]), tmpPolygon3 = new Polygon(new float[6]);
 
 	private Intersector3D() {}
 

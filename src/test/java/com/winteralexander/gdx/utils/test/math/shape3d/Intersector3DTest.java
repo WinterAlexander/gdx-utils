@@ -726,16 +726,39 @@ public class Intersector3DTest {
 
 	@Test
 	public void testCoplanarTrianglesPointEdgeBad() {
-		Triangle tri1 = new Triangle(-1.1593691f, -1.0f, -53.56633f, -4.9108276f, -1.0f, -53.56633f, -6.0674586f, -1.0f, -54.406296f);
-		Triangle tri2 = new Triangle(-3.842144f, -1.0f, -53.566772f, -1.9671164f, -1.0f, -52.205475f, -5.0f, -1.0f, -50.0f);
-		assertEquals(TriangleIntersectionResult.POINT, Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-3f, new SegmentPlus()));
+		Triangle tri1 = new Triangle(-1.1593691f,
+				-1.0f,
+				-53.56633f,
+				-4.9108276f,
+				-1.0f,
+				-53.56633f,
+				-6.0674586f,
+				-1.0f,
+				-54.406296f);
+		Triangle tri2 = new Triangle(-3.842144f,
+				-1.0f,
+				-53.566772f,
+				-1.9671164f,
+				-1.0f,
+				-52.205475f,
+				-5.0f,
+				-1.0f,
+				-50.0f);
+		assertEquals(TriangleIntersectionResult.POINT,
+				Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-3f, new SegmentPlus()));
 	}
 
 	@Test
 	public void testSegmentSegmentPointEdge() {
-		SegmentPlus first = new SegmentPlus(-1.1593691f, -1.0f, -53.56633f, -4.9108276f, -1.0f, -53.56633f);
+		SegmentPlus first = new SegmentPlus(-1.1593691f,
+				-1.0f,
+				-53.56633f,
+				-4.9108276f,
+				-1.0f,
+				-53.56633f);
 		SegmentPlus second = new SegmentPlus(-3.842144f, -1.0f, -53.566772f, -5.0f, -1.0f, -50.0f);
-		assertEquals(POINT, Intersector3D.intersectSegmentSegment(first, second, 1e-5f, new Vector3()));
+		assertEquals(POINT,
+				Intersector3D.intersectSegmentSegment(first, second, 1e-5f, new Vector3()));
 	}
 
 	@Test
