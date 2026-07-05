@@ -737,4 +737,12 @@ public class Intersector3DTest {
 		SegmentPlus second = new SegmentPlus(-3.842144f, -1.0f, -53.566772f, -5.0f, -1.0f, -50.0f);
 		assertEquals(POINT, Intersector3D.intersectSegmentSegment(first, second, 1e-5f, new Vector3()));
 	}
+
+	@Test
+	public void testCoplanarTrianglesArea() {
+		Triangle tri1 = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 1f, 1f, 0f);
+		Triangle tri2 = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 1f, 0f, 0f);
+
+		assertEquals(0.25f, Intersector3D.computeOverlapArea(tri1, tri2), 1e-5f);
+	}
 }

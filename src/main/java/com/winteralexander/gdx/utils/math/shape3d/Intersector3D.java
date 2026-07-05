@@ -1,8 +1,6 @@
 package com.winteralexander.gdx.utils.math.shape3d;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Segment;
 import com.winteralexander.gdx.utils.EnumConstantCache;
@@ -31,6 +29,10 @@ public class Intersector3D {
 	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3(),
 								 tmpVec1 = new Vector3(), tmpVec2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
+	private static final Plane tmpPlane = new Plane();
+	private static final Polygon tmpPolygon1 = new Polygon(new float[6]),
+			tmpPolygon2 = new Polygon(new float[6]),
+			tmpPolygon3 = new Polygon(new float[6]);
 
 	private Intersector3D() {}
 
@@ -568,6 +570,22 @@ public class Intersector3D {
 		Vector3 normal = triangle.getNormal();
 		return abs(normal.dot(ray.direction)) <= tolerance
 				&& abs(normal.dot(ray.origin) - normal.dot(triangle.p1)) <= tolerance;
+	}
+
+	/**
+	 * Given two coplanar triangles, compute the area of their overlapping region.
+	 * Undefined if the provided triangles are not coplanar.
+	 * @param first first triangle
+	 * @param second second triangle
+	 * @return area of their intersection
+	 */
+	public static float computeOverlapArea(Triangle first, Triangle second) {
+		tmpPlane.set(first.p1, first.getNormal());
+		tmpVec1.set(first.p1).sub(first.p2);
+		first.project(tmpPlane, tmpVec1, tmpPolygon1);
+		second.project(tmpPlane, tmpVec1, tmpPolygon2);
+		Intersector.intersectPolygons(tmpPolygon1, tmpPolygon2, tmpPolygon3);
+		return tmpPolygon3.area();
 	}
 
 	/**
