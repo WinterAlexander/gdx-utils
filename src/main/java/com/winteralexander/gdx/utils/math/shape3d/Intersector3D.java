@@ -584,7 +584,8 @@ public class Intersector3D {
 		tmpVec1.set(first.p1).sub(first.p2);
 		first.project(tmpPlane, tmpVec1, tmpPolygon1);
 		second.project(tmpPlane, tmpVec1, tmpPolygon2);
-		Intersector.intersectPolygons(tmpPolygon1, tmpPolygon2, tmpPolygon3);
+		if(!Intersector.intersectPolygons(tmpPolygon1, tmpPolygon2, tmpPolygon3))
+			return 0f;
 		return tmpPolygon3.area();
 	}
 

@@ -244,4 +244,17 @@ public class Triangle {
 	public String toString() {
 		return p1 + ", " + p2 + ", " + p3;
 	}
+
+	public String toJavaString() {
+		StringBuilder sb = new StringBuilder("new Triangle(");
+
+		for(int i = 1; i <= 3; i++) {
+			Vector3 p = getPoint(i);
+			sb.append(p.x).append("f, ").append(p.y).append("f, ").append(p.z).append(i == 3
+							? "f)"
+							: "f, ");
+		}
+
+		return sb.toString();
+	}
 }

@@ -1,8 +1,6 @@
 package com.winteralexander.gdx.utils.test.math.shape3d;
 
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.collision.Segment;
 import com.badlogic.gdx.utils.Array;
@@ -767,5 +765,82 @@ public class Intersector3DTest {
 		Triangle tri2 = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 1f, 0f, 0f);
 
 		assertEquals(0.25f, Intersector3D.computeOverlapArea(tri1, tri2), 1e-5f);
+
+		Matrix4 transform = new Matrix4();
+		Random r = new Random();
+
+		for(int i = 0; i < 100; i++) {
+			transform.idt()
+					.translate(r.nextFloat(), r.nextFloat(), r.nextFloat())
+					.rotate(r.nextFloat(), r.nextFloat(), r.nextFloat(), r.nextFloat() * 360f);
+
+			tri1.p1.mul(transform);
+			tri1.p2.mul(transform);
+			tri1.p3.mul(transform);
+
+			tri2.p1.mul(transform);
+			tri2.p2.mul(transform);
+			tri2.p3.mul(transform);
+
+			assertEquals(0.25f, Intersector3D.computeOverlapArea(tri1, tri2), 1e-5f);
+		}
+	}
+
+	@Test
+	@Ignore // because Triangle's getArea() is slightly different from Polygon
+	public void testRandomCoplanarTrianglesSanity() {
+		Triangle tri1 = new Triangle();
+		Triangle tri2 = new Triangle();
+		Random r = new Random();
+
+		for(int i = 0; i < 1_000_000; i++) {
+			tri1.p1.x = r.nextFloat();
+			tri1.p1.y = r.nextFloat();
+			tri1.p2.x = r.nextFloat();
+			tri1.p2.y = r.nextFloat();
+			tri1.p3.x = r.nextFloat();
+			tri1.p3.y = r.nextFloat();
+
+			tri2.p1.x = r.nextFloat();
+			tri2.p1.y = r.nextFloat();
+			tri2.p2.x = r.nextFloat();
+			tri2.p2.y = r.nextFloat();
+			tri2.p3.x = r.nextFloat();
+			tri2.p3.y = r.nextFloat();
+			float tri1Area = tri1.getArea();
+			float tri2Area = tri2.getArea();
+			float intersectArea = Intersector3D.computeOverlapArea(tri1, tri2);
+			assertTrue(intersectArea <= tri1Area);
+			assertTrue(intersectArea <= tri2Area);
+		}
+	}
+
+	@Test
+	@Ignore // because Triangle's getArea() is slightly different from Polygon
+	public void testOverlapAreaSpecificCase() {
+		Triangle tri1 = new Triangle(0.027005732f,
+				0.03699881f,
+				0.0f,
+				0.8280547f,
+				0.87065154f,
+				0.0f,
+				0.59884685f,
+				0.05896032f,
+				0.0f);
+		Triangle tri2 = new Triangle(0.76207465f,
+				0.8283432f,
+				0.0f,
+				0.38125956f,
+				0.25859058f,
+				0.0f,
+				0.11758214f,
+				0.02023369f,
+				0.0f);
+
+		float tri1Area = tri1.getArea();
+		float tri2Area = tri2.getArea();
+		float intersectArea = Intersector3D.computeOverlapArea(tri1, tri2);
+		assertTrue(intersectArea <= tri1Area);
+		assertTrue(intersectArea <= tri2Area);
 	}
 }
