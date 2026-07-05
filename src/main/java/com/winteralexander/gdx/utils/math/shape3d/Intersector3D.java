@@ -247,7 +247,7 @@ public class Intersector3D {
 	 * @param first first triangle
 	 * @param second second triangle
 	 * @param tol distance at which 2 points are considered to be the same
-	 * @param ignoreCoplanar if true, coplanar triangles will be considered as non intersecting,
+	 * @param ignoreCoplanar if true, coplanar triangles will be considered as non-intersecting,
 	 * increasing performance as coplanar triangle intersection won't need to be checked
 	 * @param out segment of the intersection, only set if applicable based on the result.
 	 * @return result of the intersection
