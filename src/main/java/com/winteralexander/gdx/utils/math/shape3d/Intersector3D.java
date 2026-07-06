@@ -581,7 +581,7 @@ public class Intersector3D {
 	 */
 	public static float computeOverlapArea(Triangle first, Triangle second) {
 		tmpPlane.set(first.p1, first.getNormal());
-		tmpVec1.set(first.p1).sub(first.p2);
+		tmpVec1.set(first.p1).sub(first.p2).nor();
 		first.project(tmpPlane, tmpVec1, tmpPolygon1);
 		second.project(tmpPlane, tmpVec1, tmpPolygon2);
 		if(!Intersector.intersectPolygons(tmpPolygon1, tmpPolygon2, tmpPolygon3))

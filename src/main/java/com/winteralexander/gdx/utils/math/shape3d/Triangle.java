@@ -185,7 +185,7 @@ public class Triangle {
 	}
 
 	public void project(Plane plane, Vector3 axisX, Polygon out) {
-		Vector3 axisY = tmpDir1.set(axisX).crs(plane.normal);
+		Vector3 axisY = tmpDir1.set(axisX).crs(plane.normal).nor();
 		if(out.getVertexCount() != 3)
 			throw new IllegalArgumentException("Provided polygon must have 3 vertices");
 

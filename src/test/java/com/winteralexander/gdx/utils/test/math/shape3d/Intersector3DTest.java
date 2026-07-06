@@ -816,8 +816,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	@Ignore // because Triangle's getArea() is slightly different from Polygon
-	public void testOverlapAreaSpecificCase() {
+	public void testOverlapAreaSpecificCase1() {
 		Triangle tri1 = new Triangle(0.027005732f,
 				0.03699881f,
 				0.0f,
@@ -836,6 +835,34 @@ public class Intersector3DTest {
 				0.11758214f,
 				0.02023369f,
 				0.0f);
+
+		float tri1Area = tri1.getArea();
+		float tri2Area = tri2.getArea();
+		float intersectArea = Intersector3D.computeOverlapArea(tri1, tri2);
+		assertTrue(intersectArea <= tri1Area);
+		assertTrue(intersectArea <= tri2Area);
+	}
+
+	@Test
+	public void testOverlapAreaSpecificCase2() {
+		Triangle tri1 = new Triangle(-3.840783f,
+				1.0f,
+				-46.43367f,
+				-1.9662683f,
+				1.0f,
+				-47.795696f,
+				-4.500352f,
+				1.0f,
+				-46.43367f);
+		Triangle tri2 = new Triangle(-3.8407764f,
+				1.0f,
+				-46.43367f,
+				-1.9662707f,
+				1.0f,
+				-47.79569f,
+				-5.0f,
+				1.0f,
+				-50.0f);
 
 		float tri1Area = tri1.getArea();
 		float tri2Area = tri2.getArea();
