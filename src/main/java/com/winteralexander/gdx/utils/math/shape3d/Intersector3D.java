@@ -856,8 +856,8 @@ public class Intersector3D {
 		for(int i = 1; i <= 3; i++)
 			for(int j = 1; j <= 3; j++)
 				if(intersectSegmentSegment(tmpSegment1.set(first.getPoint(i),
-												   first.getPoint(i + 1)),
-						   tmpSegment2.set(second.getPoint(i), second.getPoint(i + 1)),
+												   first.getPoint((i % 3) + 1)),
+						   tmpSegment2.set(second.getPoint(i), second.getPoint((i % 3) + 1)),
 						   tol,
 						   tmpSegmentOut)
 						== POINT)
