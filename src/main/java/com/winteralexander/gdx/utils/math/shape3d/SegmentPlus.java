@@ -26,9 +26,16 @@ public class SegmentPlus extends Segment {
 		super(aX, aY, aZ, bX, bY, bZ);
 	}
 
-	public void set(Segment other) {
+	public SegmentPlus set(Segment other) {
 		a.set(other.a);
 		b.set(other.b);
+		return this;
+	}
+
+	public SegmentPlus set(Vector3 a, Vector3 b) {
+		this.a.set(a);
+		this.b.set(b);
+		return this;
 	}
 
 	public boolean epsilonEquals(Segment other, float epsilon) {

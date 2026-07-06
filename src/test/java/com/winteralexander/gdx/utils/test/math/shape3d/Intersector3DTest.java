@@ -747,6 +747,15 @@ public class Intersector3DTest {
 	}
 
 	@Test
+	public void testCoplanarTrianglesCrossingNoses() {
+		Triangle tri1 = new Triangle(0f, 0f, 0f, 1f, 0f, 0f, 0.5f, 10f, 0f);
+		Triangle tri2 = new Triangle(-2f, 2f, 0f, -2f, 4f, 0f, 8f, 3f, 0f);
+		assertTrue(Intersector3D.intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertEquals(COPLANAR_FACE_FACE,
+				Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-5f, new SegmentPlus()));
+	}
+
+	@Test
 	public void testSegmentSegmentPointEdge() {
 		SegmentPlus first = new SegmentPlus(-1.1593691f,
 				-1.0f,

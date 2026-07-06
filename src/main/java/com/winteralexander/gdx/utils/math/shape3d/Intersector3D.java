@@ -24,8 +24,9 @@ public class Intersector3D {
 							 tmpEdgeLine3 = new Ray();
 	private static final Vector3 tmpIntersection1 = new Vector3(), tmpIntersection2 = new Vector3(),
 								 tmpIntersection3 = new Vector3();
-	private static final Segment tmpSegment1 = new SegmentPlus(), tmpSegment2 = new SegmentPlus(),
-								 tmpSegmentOut = new SegmentPlus();
+	private static final SegmentPlus
+			tmpSegment1 = new SegmentPlus(),
+			tmpSegment2 = new SegmentPlus(), tmpSegmentOut = new SegmentPlus();
 	private static final Vector3 tmpSegDir1 = new Vector3(), tmpSegDir2 = new Vector3(),
 								 tmpVec1 = new Vector3(), tmpVec2 = new Vector3();
 	private static final Triangle tmpTriangle = new Triangle();
@@ -773,7 +774,7 @@ public class Intersector3D {
 			//   \____- .
 			// this is for the case where p3U is to the left of p1, in this case check
 			// for both diagonals
-			return pV - pU / p3U >= tol && pV - (1 - pU) / (1 - p3U) <= tol;
+			return pV - pU / p3U >= tol && pV - (1f - pU) / (1f - p3U) <= tol;
 		}
 
 		if(pU < -tol || pV - pU / p3U > tol)
@@ -851,6 +852,16 @@ public class Intersector3D {
 
 		if(inTriangle(p3U, p3V, peakU, tol))
 			return true;
+
+		for(int i = 1; i <= 3; i++)
+			for(int j = 1; j <= 3; j++)
+				if(intersectSegmentSegment(tmpSegment1.set(first.getPoint(i),
+												   first.getPoint(i + 1)),
+						   tmpSegment2.set(second.getPoint(i), second.getPoint(i + 1)),
+						   tol,
+						   tmpSegmentOut)
+						== POINT)
+					return true;
 
 		return false;
 	}
