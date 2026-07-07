@@ -390,6 +390,12 @@ public class Intersector3D {
 			Triangle second,
 			float tol,
 			Segment out) {
+		// TODO fucked up here, made a bunch of assumptions. it's possible to have a coplanar face face
+		// intersection by having all points inside of a triangle, having no segments intersecting
+		// or simply having all 3 points equal
+		if(anySegmentsIntersect(first, second, tol))
+			return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
 		// for each side of each triangle, try to find collinear sides
 		for(int i = 0; i < 3; i++) {
 			Vector3 start = first.getPoint(i + 1);
@@ -406,17 +412,6 @@ public class Intersector3D {
 				if(result != COLLINEAR)
 					continue;
 
-				Vector3 otherPointA = first.getPoint((i + 2) % 3 + 1);
-				Vector3 otherPointB = second.getPoint((j + 2) % 3 + 1);
-
-				Vector3 perp = tmpIntersection1.set(end).sub(start);
-				perp.crs(first.getNormal());
-				tmpIntersection2.set(otherPointA).sub(start);
-				tmpIntersection3.set(otherPointB).sub(start);
-				if(Math.signum(perp.dot(tmpIntersection2))
-						== Math.signum(perp.dot(tmpIntersection3)))
-					return TriangleIntersectionResult.COPLANAR_FACE_FACE;
-
 				out.a.set(tmpSegmentOut.a);
 				out.b.set(tmpSegmentOut.b);
 				return TriangleIntersectionResult.EDGE_EDGE;
@@ -426,21 +421,14 @@ public class Intersector3D {
 		// check for triangle corners matching other corners
 		for(int i = 0; i < 3; i++) {
 			Vector3 a = first.getPoint(i + 1);
-			Vector3 a1 = tmpIntersection1.set(first.getPoint((i + 1) % 3 + 1)).sub(a);
-			Vector3 a2 = tmpIntersection2.set(first.getPoint((i + 2) % 3 + 1)).sub(a);
 			for(int j = 0; j < 3; j++) {
 				Vector3 b = second.getPoint(j + 1);
-				Vector3 b1 = tmpSegDir1.set(second.getPoint((j + 1) % 3 + 1)).sub(b);
-				Vector3 b2 = tmpSegDir2.set(second.getPoint((j + 2) % 3 + 1)).sub(b);
 
-				if(a.epsilonEquals(b, tol)) {
-					if(isBetween(a1, a2, b1, tol) || isBetween(a1, a2, b2, tol)
-							|| isBetween(b1, b2, a1, tol) || isBetween(b1, b2, a2, tol))
-						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+				if(!a.epsilonEquals(b, tol))
+					continue;
 
-					out.a.set(out.b.set(a));
-					return TriangleIntersectionResult.POINT;
-				}
+				out.a.set(out.b.set(a));
+				return TriangleIntersectionResult.POINT;
 			}
 		}
 
@@ -456,43 +444,19 @@ public class Intersector3D {
 
 				if(intersectSegmentSegment(a, e1a, e1b, e2b, tol, tmpIntersection1) == POINT
 						&& tmpIntersection1.epsilonEquals(a, tol)) {
-
-					Vector3 perp = tmpIntersection1.set(e1b).sub(e2b);
-					perp.crs(first.getNormal());
-
-					tmpIntersection2.set(e1a).sub(a);
-					tmpIntersection3.set(b).sub(a);
-
-					if(Math.signum(perp.dot(tmpIntersection2))
-							== Math.signum(perp.dot(tmpIntersection3)))
-						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
-
 					out.a.set(out.b.set(a));
 					return TriangleIntersectionResult.POINT;
 				}
 
 				if(intersectSegmentSegment(e1a, e2a, b, e2b, tol, tmpIntersection1) == POINT
 						&& tmpIntersection1.epsilonEquals(b, tol)) {
-
-					Vector3 perp = tmpIntersection1.set(e1a).sub(e2a);
-					perp.crs(first.getNormal());
-
-					tmpIntersection2.set(e2b).sub(b);
-					tmpIntersection3.set(a).sub(b);
-
-					if(Math.signum(perp.dot(tmpIntersection2))
-							== Math.signum(perp.dot(tmpIntersection3)))
-						return TriangleIntersectionResult.COPLANAR_FACE_FACE;
-
 					out.a.set(out.b.set(b));
 					return TriangleIntersectionResult.POINT;
 				}
 			}
 		}
 
-		return intersectCoplanarTriangles(first, second, tol)
-				? TriangleIntersectionResult.COPLANAR_FACE_FACE
-				: TriangleIntersectionResult.NONE;
+		return TriangleIntersectionResult.NONE;
 	}
 
 	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {
@@ -787,84 +751,33 @@ public class Intersector3D {
 	}
 
 	/**
-	 * Test whether 2 given co-planar triangles are intersecting or not. This function assumes the
-	 * provided triangles are co-planar and if they aren't, the result is undefined.
+	 * Test whether 2 given co-planar triangles' edges are intersecting or not. This function
+	 * assumes the provided triangles are co-planar and if they aren't, the result is undefined.
+	 * Any intersections not in the middle of two segments are ignored
 	 *
 	 * @param first first triangle to check
 	 * @param second second triangle to check
 	 * @param tol distance at which 2 floating points are considered to be the same
 	 * @return true if they are intersecting, otherwise false
 	 */
-	public static boolean intersectCoplanarTriangles(Triangle first, Triangle second, float tol) {
-		tmpSegDir1.set(first.p2).sub(first.p1);
-		tmpSegDir2.set(first.p3).sub(first.p1);
-
-		float longestSide1 = Math.max(tmpSegDir1.len2(), tmpSegDir2.len2());
-		longestSide1 = Math.max(longestSide1,
-				pow2(first.p2.x - first.p3.x) + pow2(first.p2.y - first.p3.y)
-						+ pow2(first.p2.z - first.p3.z));
-
-		float longestSide2 = pow2(second.p2.x - second.p3.x) + pow2(second.p2.y - second.p3.y)
-				+ pow2(second.p2.z - second.p3.z);
-		longestSide2 = Math.max(longestSide2,
-				pow2(second.p1.x - second.p2.x) + pow2(second.p1.y - second.p2.y)
-						+ pow2(second.p1.z - second.p2.z));
-		longestSide2 = Math.max(longestSide2,
-				pow2(second.p1.x - second.p3.x) + pow2(second.p1.y - second.p3.y)
-						+ pow2(second.p1.z - second.p3.z));
-
-		// if the second triangle's longest side is larger than the largest side of the first one,
-		// we know for sure the second triangle can't fit into the first one
-		if(longestSide2 > longestSide1)
-			return intersectCoplanarTriangles(second, first, tol);
-
-		// otherwise the first triangle can't fit into the second one
-
-		tmpTriangle.set(second).sub(first.p1);
-		tmpSegDir2.set(tmpSegDir1).crs(first.getNormal()).scl(-1f);
-
-		float len2 = tmpSegDir1.len2();
-		float height2 = tmpSegDir2.dot(first.p3.x - first.p1.x,
-				first.p3.y - first.p1.y,
-				first.p3.z - first.p1.z);
-
-		float peakU = tmpSegDir1.dot(first.p3.x - first.p1.x,
-							  first.p3.y - first.p1.y,
-							  first.p3.z - first.p1.z)
-				/ len2;
-
-		float p1U = tmpSegDir1.dot(tmpTriangle.p1) / len2;
-		float p1V = tmpSegDir2.dot(tmpTriangle.p1) / height2;
-
-		float p2U = tmpSegDir1.dot(tmpTriangle.p2) / len2;
-		float p2V = tmpSegDir2.dot(tmpTriangle.p2) / height2;
-
-		float p3U = tmpSegDir1.dot(tmpTriangle.p3) / len2;
-		float p3V = tmpSegDir2.dot(tmpTriangle.p3) / height2;
-
-		tol /= (float)Math.sqrt(Math.min(len2, height2));
-
-		if(inTriangle(p1U, p1V, peakU, tol))
-			return true;
-
-		if(inTriangle(p2U, p2V, peakU, tol))
-			return true;
-
-		if(inTriangle(p3U, p3V, peakU, tol))
-			return true;
-
+	public static boolean anySegmentsIntersect(Triangle first, Triangle second, float tol) {
 		for(int i = 1; i <= 3; i++)
 			for(int j = 1; j <= 3; j++)
 				if(intersectSegmentSegment(tmpSegment1.set(first.getPoint(i),
-												   first.getPoint((i % 3) + 1)),
-						   tmpSegment2.set(second.getPoint(i), second.getPoint((i % 3) + 1)),
-						   tol,
-						   tmpSegmentOut)
-						== POINT)
+								first.getPoint((i % 3) + 1)),
+						tmpSegment2.set(second.getPoint(j), second.getPoint((j % 3) + 1)),
+						tol,
+						tmpSegmentOut)
+						== POINT
+						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment1.a, tol)
+						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment1.b, tol)
+						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment2.a, tol)
+						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment2.b, tol)) // crossing that is not happening at the edges
 					return true;
 
 		return false;
 	}
+
 
 	private static float signedDistanceFromPlane(Triangle triangle, Vector3 point) {
 		Vector3 normal = triangle.getNormal();

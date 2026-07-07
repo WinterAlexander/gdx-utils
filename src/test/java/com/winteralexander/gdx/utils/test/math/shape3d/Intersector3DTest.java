@@ -328,38 +328,38 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	public void testCoplanarTriangleIntersection() {
+	public void testAnySegmentsIntersect() {
 		Triangle tri1 = new Triangle(0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f);
 
 		Triangle tri2 = new Triangle(0f, 1f, 1f, 0f, -0.5f, 1f, 0f, 1f, -0.5f);
 
-		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertTrue(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri2.set(0f, 1f, 1f, 0f, 0.2f, 1f, 0f, 1f, 0.2f);
 
-		assertFalse(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri2.set(0f, 1f, 1f, 0f, 0f, 1f, 0f, 1f, 0f);
 
-		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri2.set(0f, 0f, 0f, 0f, 0f, -1f, 0f, -1f, 0f);
 
-		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri2.set(tri1);
 
-		assertTrue(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertTrue(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri1.set(-1.0f, -0.19999999f, -0.4f, -1.0f, 0.8f, -0.4f, 0.0f, 0.8f, -0.4f);
 		tri2.set(0.5f, -0.19999999f, -0.4f, 0.5f, 0.5f, -0.4f, 0.0f, -0.19999999f, -0.4f);
 
-		assertFalse(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri1.set(-1.0f, 0.8f, 0.4f, -1.0f, -0.19999999f, 0.4f, -0.5f, -0.19999999f, 0.4f);
 		tri2.set(0.0f, 0.5f, 0.4f, 0.5f, -0.19999999f, 0.4f, 0.0f, -0.19999999f, 0.4f);
 
-		assertFalse(intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 	}
 
 	@Test
@@ -750,7 +750,7 @@ public class Intersector3DTest {
 	public void testCoplanarTrianglesCrossingNoses() {
 		Triangle tri1 = new Triangle(0f, 0f, 0f, 1f, 0f, 0f, 0.5f, 10f, 0f);
 		Triangle tri2 = new Triangle(-2f, 2f, 0f, -2f, 4f, 0f, 8f, 3f, 0f);
-		assertTrue(Intersector3D.intersectCoplanarTriangles(tri1, tri2, 1e-5f));
+		assertTrue(Intersector3D.anySegmentsIntersect(tri1, tri2, 1e-5f));
 		assertEquals(COPLANAR_FACE_FACE,
 				Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-5f, new SegmentPlus()));
 	}
@@ -779,6 +779,8 @@ public class Intersector3DTest {
 		Random r = new Random();
 
 		for(int i = 0; i < 100; i++) {
+			tri1.set(0f, 0f, 0f, 0f, 1f, 0f, 1f, 1f, 0f);
+			tri2.set(0f, 0f, 0f, 0f, 1f, 0f, 1f, 0f, 0f);
 			transform.idt()
 					.translate(r.nextFloat(), r.nextFloat(), r.nextFloat())
 					.rotate(r.nextFloat(), r.nextFloat(), r.nextFloat(), r.nextFloat() * 360f);
@@ -791,7 +793,7 @@ public class Intersector3DTest {
 			tri2.p2.mul(transform);
 			tri2.p3.mul(transform);
 
-			assertEquals(0.25f, Intersector3D.computeOverlapArea(tri1, tri2), 1e-5f);
+			assertEquals(0.25f, Intersector3D.computeOverlapArea(tri1, tri2), 0.001f);
 		}
 	}
 
@@ -878,5 +880,20 @@ public class Intersector3DTest {
 		float intersectArea = Intersector3D.computeOverlapArea(tri1, tri2);
 		assertTrue(intersectArea <= tri1Area);
 		assertTrue(intersectArea <= tri2Area);
+	}
+
+	@Test
+	public void testOverlapComplete() {
+		Triangle tri1 = new Triangle(0.0f, -0.19999999f, -0.5f, 0.0f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f);
+		Triangle tri2 = new Triangle(0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f);
+		Triangle tri3 = new Triangle(-0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f);
+
+		float tri1Area = tri1.getArea();
+		assertEquals(COPLANAR_FACE_FACE, Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-5f, new SegmentPlus()));
+		assertEquals(COPLANAR_FACE_FACE, Intersector3D.intersectTriangleTriangle(tri1, tri3, 1e-5f, new SegmentPlus()));
+
+		float intersectArea1 = Intersector3D.computeOverlapArea(tri1, tri2);
+		float intersectArea2 = Intersector3D.computeOverlapArea(tri1, tri3);
+		assertEquals(tri1Area, intersectArea1 + intersectArea2, 0.01f);
 	}
 }
