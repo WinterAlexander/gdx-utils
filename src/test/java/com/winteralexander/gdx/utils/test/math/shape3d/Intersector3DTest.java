@@ -922,4 +922,22 @@ public class Intersector3DTest {
 		float intersectArea2 = Intersector3D.computeOverlapArea(tri1, tri3);
 		assertEquals(tri1Area, intersectArea1 + intersectArea2, 0.01f);
 	}
+
+	@Test
+	public void testProblematicSegmentIntersection() {
+		SegmentPlus seg1 = new SegmentPlus(-0.019662704f,
+				0.01f,
+				-0.4779569f,
+				-0.06067458f,
+				0.01f,
+				-0.45591378f);
+		SegmentPlus seg2 = new SegmentPlus(-0.045003444f,
+				0.01f,
+				-0.46433672f,
+				-0.038407777f,
+				0.01f,
+				-0.46433672f);
+
+		assertEquals(POINT, intersectSegmentSegment(seg1, seg2, 1e-5f, new SegmentPlus()));
+	}
 }

@@ -189,9 +189,9 @@ public class Intersector3D {
 			float tol,
 			Segment out) {
 		LineIntersectionResult result = intersectRayRay(firstStart,
-				tmpSegDir1.set(firstEnd).sub(firstStart),
+				tmpSegDir1.set(firstEnd).sub(firstStart).nor(),
 				secondStart,
-				tmpSegDir2.set(secondEnd).sub(secondStart),
+				tmpSegDir2.set(secondEnd).sub(secondStart).nor(),
 				tol,
 				tmpIntersection1);
 
@@ -586,13 +586,13 @@ public class Intersector3D {
 			return false; // parallel but not coplanar
 
 		tmpEdgeLine1.origin.set(triangle.p1);
-		tmpEdgeLine1.direction.set(triangle.p2).sub(triangle.p1);
+		tmpEdgeLine1.direction.set(triangle.p2).sub(triangle.p1).nor();
 
 		tmpEdgeLine2.origin.set(triangle.p2);
-		tmpEdgeLine2.direction.set(triangle.p3).sub(triangle.p2);
+		tmpEdgeLine2.direction.set(triangle.p3).sub(triangle.p2).nor();
 
 		tmpEdgeLine3.origin.set(triangle.p3);
-		tmpEdgeLine3.direction.set(triangle.p1).sub(triangle.p3);
+		tmpEdgeLine3.direction.set(triangle.p1).sub(triangle.p3).nor();
 
 		int countIntersections = 0;
 
