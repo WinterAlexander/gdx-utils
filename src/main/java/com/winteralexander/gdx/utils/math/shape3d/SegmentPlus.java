@@ -52,6 +52,11 @@ public class SegmentPlus extends Segment {
 		return a + " -> " + b;
 	}
 
+	public String toJavaString() {
+		return "new SegmentPlus(" + a.x + "f, " + a.y + "f, " + a.z + "f, " + b.x + "f, " + b.y
+				+ "f, " + b.z + "f)";
+	}
+
 	public SegmentPlus cpy() {
 		return new SegmentPlus(a, b);
 	}

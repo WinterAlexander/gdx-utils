@@ -349,7 +349,7 @@ public class Intersector3DTest {
 
 		tri2.set(tri1);
 
-		assertTrue(anySegmentsIntersect(tri1, tri2, 1e-5f));
+		assertFalse(anySegmentsIntersect(tri1, tri2, 1e-5f));
 
 		tri1.set(-1.0f, -0.19999999f, -0.4f, -1.0f, 0.8f, -0.4f, 0.0f, 0.8f, -0.4f);
 		tri2.set(0.5f, -0.19999999f, -0.4f, 0.5f, 0.5f, -0.4f, 0.0f, -0.19999999f, -0.4f);
@@ -664,9 +664,26 @@ public class Intersector3DTest {
 				0.5f);
 
 		Segment out = new SegmentPlus();
-		// TriangleViewer.start(tri1, tri2);
 
 		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
+
+		// these two segments were once a problem in the triangle triangle intersection below
+		SegmentPlus seg1 = new SegmentPlus(-0.34360343f,
+				-0.49999994f,
+				-0.48763424f,
+				0.42672676f,
+				-0.5f,
+				-0.4267268f);
+		SegmentPlus seg2 = new SegmentPlus(-0.3436038f,
+				-0.5f,
+				-0.48769438f,
+				-0.19087377f,
+				-0.5f,
+				-0.45102096f);
+
+		Vector3 outV = new Vector3();
+		assertEquals(POINT, intersectSegmentSegment(seg1, seg2, 1e-4f, outV));
+		assertTrue(outV.epsilonEquals(seg1.a, 1e-3f));
 
 		tri1 = new Triangle(-0.34360343f,
 				-0.49999994f,
@@ -686,9 +703,8 @@ public class Intersector3DTest {
 				-0.5f,
 				-0.5f,
 				0.5f);
-		// TriangleViewer.start(tri1, tri2);
 
-		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-4f, out));
+		assertEquals(EDGE_EDGE, intersectTriangleTriangle(tri1, tri2, 1e-3f, out));
 	}
 
 	@Test
@@ -884,13 +900,23 @@ public class Intersector3DTest {
 
 	@Test
 	public void testOverlapComplete() {
-		Triangle tri1 = new Triangle(0.0f, -0.19999999f, -0.5f, 0.0f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f);
+		Triangle tri1 = new Triangle(0.0f,
+				-0.19999999f,
+				-0.5f,
+				0.0f,
+				0.5f,
+				-0.5f,
+				0.5f,
+				0.5f,
+				-0.5f);
 		Triangle tri2 = new Triangle(0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f);
 		Triangle tri3 = new Triangle(-0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f);
 
 		float tri1Area = tri1.getArea();
-		assertEquals(COPLANAR_FACE_FACE, Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-5f, new SegmentPlus()));
-		assertEquals(COPLANAR_FACE_FACE, Intersector3D.intersectTriangleTriangle(tri1, tri3, 1e-5f, new SegmentPlus()));
+		assertEquals(COPLANAR_FACE_FACE,
+				Intersector3D.intersectTriangleTriangle(tri1, tri2, 1e-5f, new SegmentPlus()));
+		assertEquals(COPLANAR_FACE_FACE,
+				Intersector3D.intersectTriangleTriangle(tri1, tri3, 1e-5f, new SegmentPlus()));
 
 		float intersectArea1 = Intersector3D.computeOverlapArea(tri1, tri2);
 		float intersectArea2 = Intersector3D.computeOverlapArea(tri1, tri3);

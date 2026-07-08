@@ -390,11 +390,20 @@ public class Intersector3D {
 			Triangle second,
 			float tol,
 			Segment out) {
-		// TODO fucked up here, made a bunch of assumptions. it's possible to have a coplanar face face
-		// intersection by having all points inside of a triangle, having no segments intersecting
-		// or simply having all 3 points equal
+		// if any pair of segments intersect at a point htat isn't their edges,
+		// then the triangles must intersect
 		if(anySegmentsIntersect(first, second, tol))
 			return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+		// if all points of one triangle are inside the other (including on its edges), then it must
+		// intersect
+		if(inTriangle(first, second.p1, tol) && inTriangle(first, second.p2, tol)
+						&& inTriangle(first, second.p3, tol)
+				|| inTriangle(second, first.p1, tol) && inTriangle(second, first.p2, tol)
+						&& inTriangle(second, first.p3, tol))
+			return TriangleIntersectionResult.COPLANAR_FACE_FACE;
+
+		// otherwise, all other cases are edges touching or points touching
 
 		// for each side of each triangle, try to find collinear sides
 		for(int i = 0; i < 3; i++) {
@@ -681,6 +690,14 @@ public class Intersector3D {
 		return true;
 	}
 
+	public static boolean inTriangle(Triangle triangle, Vector3 point, float tol) {
+		tmpIntersectRay.set(point, triangle.getNormal());
+		if(intersectTriangleRay(triangle, tmpIntersectRay, tol, tmpSegmentOut))
+			return true;
+		tmpIntersectRay.direction.scl(-1f);
+		return intersectTriangleRay(triangle, tmpIntersectRay, tol, tmpSegmentOut);
+	}
+
 	private static boolean intersectTriangleRayNonCoplanar(Triangle triangle,
 			Ray ray,
 			float tol,
@@ -764,20 +781,20 @@ public class Intersector3D {
 		for(int i = 1; i <= 3; i++)
 			for(int j = 1; j <= 3; j++)
 				if(intersectSegmentSegment(tmpSegment1.set(first.getPoint(i),
-								first.getPoint((i % 3) + 1)),
-						tmpSegment2.set(second.getPoint(j), second.getPoint((j % 3) + 1)),
-						tol,
-						tmpSegmentOut)
-						== POINT
+												   first.getPoint((i % 3) + 1)),
+						   tmpSegment2.set(second.getPoint(j), second.getPoint((j % 3) + 1)),
+						   tol,
+						   tmpSegmentOut)
+								== POINT
 						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment1.a, tol)
 						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment1.b, tol)
 						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment2.a, tol)
-						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment2.b, tol)) // crossing that is not happening at the edges
+						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment2.b,
+								tol)) // crossing that is not happening at the edges
 					return true;
 
 		return false;
 	}
-
 
 	private static float signedDistanceFromPlane(Triangle triangle, Vector3 point) {
 		Vector3 normal = triangle.getNormal();
