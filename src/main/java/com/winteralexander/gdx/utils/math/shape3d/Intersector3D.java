@@ -600,21 +600,19 @@ public class Intersector3D {
 		LineIntersectionResult result2 = intersectRayRay(ray, tmpEdgeLine2, tol, tmpIntersection2);
 		LineIntersectionResult result3 = intersectRayRay(ray, tmpEdgeLine3, tol, tmpIntersection3);
 
-		if(result1 != NONE && result2 != NONE
-				&& tmpIntersection2.epsilonEquals(tmpIntersection1, tol))
-			result2 = NONE;
+		if(result1 == POINT && result2 == POINT && result3 == POINT) {
+			float dst12 = tmpIntersection1.dst2(tmpIntersection2);
+			float dst13 = tmpIntersection1.dst2(tmpIntersection3);
+			float dst23 = tmpIntersection2.dst2(tmpIntersection3);
+			if(dst12 < dst13 && dst12 < dst23)
+				result2 = NONE;
+			else
+				result3 = NONE;
+		}
 
-		if(result1 != NONE && result3 != NONE
-				&& tmpIntersection3.epsilonEquals(tmpIntersection1, tol))
-			result3 = NONE;
-
-		if(result2 != NONE && result3 != NONE
-				&& tmpIntersection3.epsilonEquals(tmpIntersection2, tol))
-			result3 = NONE;
-
-		int collinearCount = (result1 == COLLINEAR ? 1 : 0) + (result2 == COLLINEAR ? 1 : 0)
-				+ (result3 == COLLINEAR ? 1 : 0);
-		if(collinearCount > 1)
+		if((result1 == COLLINEAR ? 1 : 0) + (result2 == COLLINEAR ? 1 : 0)
+						+ (result3 == COLLINEAR ? 1 : 0)
+				> 1)
 			throw new IllegalStateException("Multiple triangle edges collinear with ray");
 
 		if(result1 == COLLINEAR) {

@@ -494,6 +494,37 @@ public class Intersector3DTest {
 	}
 
 	@Test
+	public void testTriangleTriangleProblemCase() {
+		Triangle tri1 = new Triangle(0.0f,
+				-0.125f,
+				0.0f,
+				-0.14110705f,
+				-0.125f,
+				-0.4340587f,
+				-0.017018497f,
+				-0.125f,
+				-0.497297f);
+		Ray ray = new Ray(new Vector3(0.0f, -0.125f, -0.45642146f),
+				new Vector3(0.98767936f, 0.0f, -0.15649126f));
+		SegmentPlus segment = new SegmentPlus();
+
+		assertTrue(intersectTriangleRay(tri1, ray, 1e-5f, segment));
+		assertTrue(segment.len() > 0.1f);
+
+		Triangle tri2 = new Triangle(-0.13664198f,
+				-0.108143f,
+				-0.42037648f,
+				0.0f,
+				-0.108143f,
+				-0.4420265f,
+				0.0f,
+				-0.18261486f,
+				-0.50562155f);
+
+		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+	}
+
+	@Test
 	public void rayTriangleSinglePointNonCoplanar() throws InterruptedException {
 		Triangle tri = new Triangle(new Vector3(-0.70710677f, 1.3f, 5.9604645E-8f),
 				new Vector3(5.9604645E-8f, 1.3f, 0.70710677f),
