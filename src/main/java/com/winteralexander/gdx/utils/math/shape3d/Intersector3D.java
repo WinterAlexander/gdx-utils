@@ -69,6 +69,48 @@ public class Intersector3D {
 			Vector3 direction2,
 			float tolerance,
 			Vector3 out) {
+		tmpVec1.setZero();
+		tmpVec2.setZero();
+		if(computeRayRaySquaredDistance(origin1, direction1, origin2, direction2, tmpVec1, tmpVec2)
+				> pow2(tolerance))
+			return NONE;
+
+		if(Float.isInfinite(tmpVec1.x))
+			return COLLINEAR;
+
+		out.setZero().mulAdd(tmpVec1, 0.5f).mulAdd(tmpVec2, 0.5f);
+		return POINT;
+	}
+
+	private static double computeRayRaySquaredDistance(Ray ray1,
+			Ray ray2,
+			Vector3 out1,
+			Vector3 out2) {
+		return computeRayRaySquaredDistance(ray1.origin,
+				ray1.direction,
+				ray2.origin,
+				ray2.direction,
+				out1,
+				out2);
+	}
+
+	/**
+	 * Computes the closest points between two rays and returns the squared distance between them
+	 *
+	 * @param origin1 origin of the first ray
+	 * @param direction1 direction vector of the first ray
+	 * @param origin2 origin of the second ray
+	 * @param direction2 direction vector of the second ray
+	 * @param out1 vector to be set to the closest point on the first ray
+	 * @param out2 vector to be set to the closest point on the second ray
+	 * @return squared distance between the two rays
+	 */
+	private static double computeRayRaySquaredDistance(Vector3 origin1,
+			Vector3 direction1,
+			Vector3 origin2,
+			Vector3 direction2,
+			Vector3 out1,
+			Vector3 out2) {
 		double sx = origin1.x - origin2.x;
 		double sy = origin1.y - origin2.y;
 		double sz = origin1.z - origin2.z;
@@ -83,10 +125,10 @@ public class Intersector3D {
 			double crossX = sy * direction1.z - sz * direction1.y;
 			double crossY = sz * direction1.x - sx * direction1.z;
 			double crossZ = sx * direction1.y - sy * direction1.x;
-			double dst2 = (pow2(crossX) + pow2(crossY) + pow2(crossZ))
+			out1.set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+			out2.set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+			return (pow2(crossX) + pow2(crossY) + pow2(crossZ))
 					/ (direction1.len2() + pow2(sx) + pow2(sy) + pow2(sz));
-
-			return dst2 <= pow2(tolerance) ? COLLINEAR : NONE;
 		}
 
 		double t;
@@ -110,16 +152,14 @@ public class Intersector3D {
 		double x1 = origin1.x + direction1.x * t;
 		double y1 = origin1.y + direction1.y * t;
 		double z1 = origin1.z + direction1.z * t;
+		out1.set((float)x1, (float)y1, (float)z1);
 
 		double x2 = origin2.x + direction2.x * t2;
 		double y2 = origin2.y + direction2.y * t2;
 		double z2 = origin2.z + direction2.z * t2;
+		out2.set((float)x2, (float)y2, (float)z2);
 
-		if(pow2(x1 - x2) + pow2(y1 - y2) + pow2(z1 - z2) > pow2(tolerance))
-			return NONE;
-
-		out.set((float)x1, (float)y1, (float)z1);
-		return POINT;
+		return pow2(x1 - x2) + pow2(y1 - y2) + pow2(z1 - z2);
 	}
 
 	/**
@@ -578,7 +618,7 @@ public class Intersector3D {
 		Vector3 normal = triangle.getNormal();
 		float d = -normal.dot(triangle.p1);
 		float denom = ray.direction.dot(normal);
-		if(abs(denom) > tol)
+		if(abs(denom) > MathUtils.FLOAT_ROUNDING_ERROR)
 			// not coplanar, single point intersection
 			return intersectTriangleRayNonCoplanar(triangle, ray, tol, out, normal, d, denom);
 
@@ -597,18 +637,11 @@ public class Intersector3D {
 		int countIntersections = 0;
 
 		LineIntersectionResult result1 = intersectRayRay(ray, tmpEdgeLine1, tol, tmpIntersection1);
+		double dst1 = computeRayRaySquaredDistance(ray, tmpEdgeLine1, tmpVec1, tmpVec2);
 		LineIntersectionResult result2 = intersectRayRay(ray, tmpEdgeLine2, tol, tmpIntersection2);
+		double dst2 = computeRayRaySquaredDistance(ray, tmpEdgeLine2, tmpVec1, tmpVec2);
 		LineIntersectionResult result3 = intersectRayRay(ray, tmpEdgeLine3, tol, tmpIntersection3);
-
-		if(result1 == POINT && result2 == POINT && result3 == POINT) {
-			float dst12 = tmpIntersection1.dst2(tmpIntersection2);
-			float dst13 = tmpIntersection1.dst2(tmpIntersection3);
-			float dst23 = tmpIntersection2.dst2(tmpIntersection3);
-			if(dst12 < dst13 && dst12 < dst23)
-				result2 = NONE;
-			else
-				result3 = NONE;
-		}
+		double dst3 = computeRayRaySquaredDistance(ray, tmpEdgeLine3, tmpVec1, tmpVec2);
 
 		if((result1 == COLLINEAR ? 1 : 0) + (result2 == COLLINEAR ? 1 : 0)
 						+ (result3 == COLLINEAR ? 1 : 0)
@@ -630,6 +663,42 @@ public class Intersector3D {
 		if(result3 == COLLINEAR) {
 			out.a.set(triangle.p3);
 			out.b.set(triangle.p1);
+			return true;
+		}
+
+		// if 3 point intersections, reject least precise one
+		if(result1 == POINT && result2 == POINT && result3 == POINT) {
+			if(dst1 > dst2 && dst1 > dst3) {
+				result1 = NONE;
+			} else if(dst2 > dst3) {
+				result2 = NONE;
+			} else {
+				result3 = NONE;
+			}
+		}
+
+		// if 2 point intersections, make sure the 2 points together form a direction parallel to
+		// the ray, to make sure it's not hitting a corner
+		Vector3 line = null;
+		Vector3 point = null;
+		if(result1 == POINT && result2 == POINT) {
+			line = tmpVec1.set(tmpIntersection1).sub(tmpIntersection2).nor();
+			point = tmpVec2.setZero().mulAdd(tmpIntersection1, 0.5f).mulAdd(tmpIntersection2, 0.5f);
+		}
+
+		if(result2 == POINT && result3 == POINT) {
+			line = tmpVec1.set(tmpIntersection2).sub(tmpIntersection3).nor();
+			point = tmpVec2.setZero().mulAdd(tmpIntersection2, 0.5f).mulAdd(tmpIntersection3, 0.5f);
+		}
+
+		if(result3 == POINT && result1 == POINT) {
+			line = tmpVec1.set(tmpIntersection3).sub(tmpIntersection1).nor();
+			point = tmpVec2.setZero().mulAdd(tmpIntersection1, 0.5f).mulAdd(tmpIntersection1, 0.5f);
+		}
+
+		// if not 1 then wrong direction for ray, it's probably hitting a corner at a bad spot
+		if(line != null && Math.abs(line.dot(ray.direction)) < 0.9f) {
+			out.b.set(out.a.set(point));
 			return true;
 		}
 
