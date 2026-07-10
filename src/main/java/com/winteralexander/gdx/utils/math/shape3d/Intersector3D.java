@@ -666,40 +666,29 @@ public class Intersector3D {
 			return true;
 		}
 
-		// if 3 point intersections, reject least precise one
+		// in this case then the ray hits a corner
 		if(result1 == POINT && result2 == POINT && result3 == POINT) {
-			if(dst1 > dst2 && dst1 > dst3) {
-				result1 = NONE;
-			} else if(dst2 > dst3) {
-				result2 = NONE;
+			float dst12 = tmpIntersection1.dst2(tmpIntersection2);
+			float dst23 = tmpIntersection2.dst2(tmpIntersection3);
+			float dst31 = tmpIntersection3.dst2(tmpIntersection1);
+			// find the 2 points closest (most likely to be a corner)
+
+			if(dst12 < dst23 && dst12 < dst31) {
+				if(dst1 > dst2) // find the worst of the 2 points on the ray in terms of distance to the ray
+					result1 = NONE;
+				else
+					result2 = NONE;
+			} else if(dst23 > dst31) {
+				if(dst2 > dst3)
+					result2 = NONE;
+				else
+					result3 = NONE;
 			} else {
-				result3 = NONE;
+				if(dst3 > dst1)
+					result3 = NONE;
+				else
+					result1 = NONE;
 			}
-		}
-
-		// if 2 point intersections, make sure the 2 points together form a direction parallel to
-		// the ray, to make sure it's not hitting a corner
-		Vector3 line = null;
-		Vector3 point = null;
-		if(result1 == POINT && result2 == POINT) {
-			line = tmpVec1.set(tmpIntersection1).sub(tmpIntersection2).nor();
-			point = tmpVec2.setZero().mulAdd(tmpIntersection1, 0.5f).mulAdd(tmpIntersection2, 0.5f);
-		}
-
-		if(result2 == POINT && result3 == POINT) {
-			line = tmpVec1.set(tmpIntersection2).sub(tmpIntersection3).nor();
-			point = tmpVec2.setZero().mulAdd(tmpIntersection2, 0.5f).mulAdd(tmpIntersection3, 0.5f);
-		}
-
-		if(result3 == POINT && result1 == POINT) {
-			line = tmpVec1.set(tmpIntersection3).sub(tmpIntersection1).nor();
-			point = tmpVec2.setZero().mulAdd(tmpIntersection1, 0.5f).mulAdd(tmpIntersection1, 0.5f);
-		}
-
-		// if not 1 then wrong direction for ray, it's probably hitting a corner at a bad spot
-		if(line != null && Math.abs(line.dot(ray.direction)) < 0.9f) {
-			out.b.set(out.a.set(point));
-			return true;
 		}
 
 		if(result1 == POINT) {

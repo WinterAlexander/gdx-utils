@@ -494,7 +494,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	public void testTriangleTriangleProblemCase() {
+	public void testTriangleTriangleProblemCases() {
 		Triangle tri1 = new Triangle(0.0f,
 				-0.125f,
 				0.0f,
@@ -521,6 +521,11 @@ public class Intersector3DTest {
 				-0.18261486f,
 				-0.50562155f);
 
+		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
+
+
+		tri1 = new Triangle(-6.067458f, 1.0f, -54.408623f, -7.5f, 1.0f, -50.0f, 0.0f, 1.0f, -50.0f);
+		tri2 = new Triangle(-8.03373f, 1.0f, -52.20431f, -6.1592236f, 1.0f, -53.56633f, -6.1592236f, -1.0f, -53.56633f);
 		assertEquals(NONCOPLANAR_FACE_FACE, intersectTriangleTriangle(tri1, tri2, 1e-5f, segment));
 	}
 
