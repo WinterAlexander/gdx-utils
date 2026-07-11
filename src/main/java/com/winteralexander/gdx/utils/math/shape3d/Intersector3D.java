@@ -666,6 +666,42 @@ public class Intersector3D {
 			return true;
 		}
 
+		if(result1 == POINT) {
+			float t = tmpEdgeLine1.direction.dot(tmpIntersection1.x - tmpEdgeLine1.origin.x,
+					tmpIntersection1.y - tmpEdgeLine1.origin.y,
+					tmpIntersection1.z - tmpEdgeLine1.origin.z);
+			float tEnd = tmpEdgeLine1.direction.dot(triangle.p2.x - tmpEdgeLine1.origin.x,
+					triangle.p2.y - tmpEdgeLine1.origin.y,
+					triangle.p2.z - tmpEdgeLine1.origin.z);
+
+			if(t < -tol || t - tEnd > tol)
+				result1 = NONE;
+		}
+
+		if(result2 == POINT) {
+			float t = tmpEdgeLine2.direction.dot(tmpIntersection2.x - tmpEdgeLine2.origin.x,
+					tmpIntersection2.y - tmpEdgeLine2.origin.y,
+					tmpIntersection2.z - tmpEdgeLine2.origin.z);
+			float tEnd = tmpEdgeLine2.direction.dot(triangle.p3.x - tmpEdgeLine2.origin.x,
+					triangle.p3.y - tmpEdgeLine2.origin.y,
+					triangle.p3.z - tmpEdgeLine2.origin.z);
+
+			if(t < -tol || t - tEnd > tol)
+				result2 = NONE;
+		}
+
+		if(result3 == POINT) {
+			float t = tmpEdgeLine3.direction.dot(tmpIntersection3.x - tmpEdgeLine3.origin.x,
+					tmpIntersection3.y - tmpEdgeLine3.origin.y,
+					tmpIntersection3.z - tmpEdgeLine3.origin.z);
+			float tEnd = tmpEdgeLine3.direction.dot(triangle.p1.x - tmpEdgeLine3.origin.x,
+					triangle.p1.y - tmpEdgeLine3.origin.y,
+					triangle.p1.z - tmpEdgeLine3.origin.z);
+
+			if(t < -tol || t - tEnd > tol)
+				result3 = NONE;
+		}
+
 		// in this case then the ray hits a corner
 		if(result1 == POINT && result2 == POINT && result3 == POINT) {
 			float dst12 = tmpIntersection1.dst2(tmpIntersection2);
@@ -674,11 +710,12 @@ public class Intersector3D {
 			// find the 2 points closest (most likely to be a corner)
 
 			if(dst12 < dst23 && dst12 < dst31) {
-				if(dst1 > dst2) // find the worst of the 2 points on the ray in terms of distance to the ray
+				if(dst1 > dst2) // find the worst of the 2 points on the ray in terms of distance to
+								// the ray
 					result1 = NONE;
 				else
 					result2 = NONE;
-			} else if(dst23 > dst31) {
+			} else if(dst23 < dst31) {
 				if(dst2 > dst3)
 					result2 = NONE;
 				else
@@ -692,51 +729,24 @@ public class Intersector3D {
 		}
 
 		if(result1 == POINT) {
-			float t = tmpEdgeLine1.direction.dot(tmpIntersection1.x - tmpEdgeLine1.origin.x,
-					tmpIntersection1.y - tmpEdgeLine1.origin.y,
-					tmpIntersection1.z - tmpEdgeLine1.origin.z);
-			float tEnd = tmpEdgeLine1.direction.dot(triangle.p2.x - tmpEdgeLine1.origin.x,
-					triangle.p2.y - tmpEdgeLine1.origin.y,
-					triangle.p2.z - tmpEdgeLine1.origin.z);
-
-			if(t >= -tol && t - tEnd <= tol) {
-				out.a.set(tmpIntersection1);
-				countIntersections++;
-			}
+			out.a.set(tmpIntersection1);
+			countIntersections++;
 		}
 
 		if(result2 == POINT) {
-			float t = tmpEdgeLine2.direction.dot(tmpIntersection2.x - tmpEdgeLine2.origin.x,
-					tmpIntersection2.y - tmpEdgeLine2.origin.y,
-					tmpIntersection2.z - tmpEdgeLine2.origin.z);
-			float tEnd = tmpEdgeLine2.direction.dot(triangle.p3.x - tmpEdgeLine2.origin.x,
-					triangle.p3.y - tmpEdgeLine2.origin.y,
-					triangle.p3.z - tmpEdgeLine2.origin.z);
+			(countIntersections == 0 ? out.a : out.b).set(tmpIntersection2);
+			countIntersections++;
 
-			if(t >= -tol && t - tEnd <= tol) {
-				(countIntersections == 0 ? out.a : out.b).set(tmpIntersection2);
-				countIntersections++;
-
-				if(countIntersections == 2)
-					return true;
-			}
+			if(countIntersections == 2)
+				return true;
 		}
 
 		if(result3 == POINT) {
-			float t = tmpEdgeLine3.direction.dot(tmpIntersection3.x - tmpEdgeLine3.origin.x,
-					tmpIntersection3.y - tmpEdgeLine3.origin.y,
-					tmpIntersection3.z - tmpEdgeLine3.origin.z);
-			float tEnd = tmpEdgeLine3.direction.dot(triangle.p1.x - tmpEdgeLine3.origin.x,
-					triangle.p1.y - tmpEdgeLine3.origin.y,
-					triangle.p1.z - tmpEdgeLine3.origin.z);
+			(countIntersections == 0 ? out.a : out.b).set(tmpIntersection3);
+			countIntersections++;
 
-			if(t >= -tol && t - tEnd <= tol) {
-				(countIntersections == 0 ? out.a : out.b).set(tmpIntersection3);
-				countIntersections++;
-
-				if(countIntersections == 2)
-					return true;
-			}
+			if(countIntersections == 2)
+				return true;
 		}
 
 		if(countIntersections == 0)
