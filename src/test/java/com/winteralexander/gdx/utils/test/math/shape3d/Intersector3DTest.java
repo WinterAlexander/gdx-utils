@@ -363,7 +363,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	public void testTriangleTriangle() throws InterruptedException {
+	public void testTriangleTriangle() {
 		Triangle tri1 = new Triangle(), tri2 = new Triangle();
 
 		SegmentPlus segment = new SegmentPlus(), expected = new SegmentPlus();
@@ -469,7 +469,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	public void testTriangleTriangleEdgeCase() throws InterruptedException {
+	public void testTriangleTriangleEdgeCase() {
 		Triangle tri1 = new Triangle(), tri2 = new Triangle();
 		tri1.set(new Vector3(-0.3f, 0.3f, 0.5f),
 				new Vector3(-0.20710671f, 0.3f, 0.5f),
@@ -537,7 +537,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	public void rayTriangleSinglePointNonCoplanar() throws InterruptedException {
+	public void rayTriangleSinglePointNonCoplanar() {
 		Triangle tri = new Triangle(new Vector3(-0.70710677f, 1.3f, 5.9604645E-8f),
 				new Vector3(5.9604645E-8f, 1.3f, 0.70710677f),
 				new Vector3(0.70710677f, 1.3f, -5.9604645E-8f));
@@ -620,7 +620,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Visual test")
 	public void testBadSplit() {
 		Triangle tri = new Triangle(1.375f, 0.0f, 0.625f, 2.0f, 0.0f, 0.625f, 1.375f, 0.0f, 0.0f);
 		Plane plane = new Plane();
@@ -857,7 +857,7 @@ public class Intersector3DTest {
 	}
 
 	@Test
-	@Ignore // because Triangle's getArea() is slightly different from Polygon
+	@Ignore("Triangle's getArea() is slightly different from Polygon")
 	public void testRandomCoplanarTrianglesSanity() {
 		Triangle tri1 = new Triangle();
 		Triangle tri2 = new Triangle();

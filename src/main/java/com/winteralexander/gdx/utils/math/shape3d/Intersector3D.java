@@ -508,26 +508,6 @@ public class Intersector3D {
 		return TriangleIntersectionResult.NONE;
 	}
 
-	private static boolean isBetween(Vector3 first, Vector3 second, Vector3 between, float tol) {
-		if(first.epsilonEquals(between, tol) || second.epsilonEquals(between, tol))
-			return true;
-
-		tmpVec1.set(first).sub(second);
-		tmpVec2.set(between).sub(second);
-
-		if(tmpVec1.dot(tmpVec2) < 0f)
-			return false; // between is too far
-
-		tmpVec1.set(second).sub(first);
-		tmpVec2.set(between).sub(first);
-
-		if(tmpVec1.dot(tmpVec2) < 0f)
-			return false; // between is behind
-
-		float vec2Len2 = tmpVec2.len2();
-		return tmpVec2.crs(tmpVec1).len2() / (tmpVec1.len2() + vec2Len2) < pow2(tol);
-	}
-
 	private static void rayFromIntersection(Triangle first, Triangle second, Ray out) {
 		Vector3 normalFace1 = first.getNormal();
 		Vector3 normalFace2 = second.getNormal();
@@ -852,11 +832,11 @@ public class Intersector3D {
 						   tol,
 						   tmpSegmentOut)
 								== POINT
+						// crossing that is not happening at the edges
 						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment1.a, tol)
 						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment1.b, tol)
 						&& !tmpSegmentOut.a.epsilonEquals(tmpSegment2.a, tol)
-						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment2.b,
-								tol)) // crossing that is not happening at the edges
+						&& !tmpSegmentOut.b.epsilonEquals(tmpSegment2.b, tol))
 					return true;
 
 		return false;
