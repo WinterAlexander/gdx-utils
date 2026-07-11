@@ -26,9 +26,16 @@ public class SegmentPlus extends Segment {
 		super(aX, aY, aZ, bX, bY, bZ);
 	}
 
-	public void set(Segment other) {
+	public SegmentPlus set(Segment other) {
 		a.set(other.a);
 		b.set(other.b);
+		return this;
+	}
+
+	public SegmentPlus set(Vector3 a, Vector3 b) {
+		this.a.set(a);
+		this.b.set(b);
+		return this;
 	}
 
 	public boolean epsilonEquals(Segment other, float epsilon) {
@@ -43,6 +50,11 @@ public class SegmentPlus extends Segment {
 	@Override
 	public String toString() {
 		return a + " -> " + b;
+	}
+
+	public String toJavaString() {
+		return "new SegmentPlus(" + a.x + "f, " + a.y + "f, " + a.z + "f, " + b.x + "f, " + b.y
+				+ "f, " + b.z + "f)";
 	}
 
 	public SegmentPlus cpy() {

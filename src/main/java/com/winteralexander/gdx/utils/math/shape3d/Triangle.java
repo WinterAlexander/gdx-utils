@@ -2,6 +2,7 @@ package com.winteralexander.gdx.utils.math.shape3d;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -183,6 +184,23 @@ public class Triangle {
 		return base * height / 2f;
 	}
 
+	public void project(Plane plane, Vector3 axisX, Polygon out) {
+		Vector3 axisY = tmpDir1.set(axisX).crs(plane.normal).nor();
+		if(out.getVertexCount() != 3)
+			throw new IllegalArgumentException("Provided polygon must have 3 vertices");
+
+		out.getVertices()[0] = axisX.dot(p1);
+		out.getVertices()[1] = axisY.dot(p1);
+
+		out.getVertices()[2] = axisX.dot(p2);
+		out.getVertices()[3] = axisY.dot(p2);
+
+		out.getVertices()[4] = axisX.dot(p3);
+		out.getVertices()[5] = axisY.dot(p3);
+
+		out.dirty();
+	}
+
 	public void toArray(float[] out) {
 		toArray(out, 0);
 	}
@@ -225,5 +243,18 @@ public class Triangle {
 	@Override
 	public String toString() {
 		return p1 + ", " + p2 + ", " + p3;
+	}
+
+	public String toJavaString() {
+		StringBuilder sb = new StringBuilder("new Triangle(");
+
+		for(int i = 1; i <= 3; i++) {
+			Vector3 p = getPoint(i);
+			sb.append(p.x).append("f, ").append(p.y).append("f, ").append(p.z).append(i == 3
+							? "f)"
+							: "f, ");
+		}
+
+		return sb.toString();
 	}
 }
