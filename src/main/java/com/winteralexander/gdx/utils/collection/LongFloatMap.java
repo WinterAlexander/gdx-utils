@@ -327,15 +327,20 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 	public int hashCode() {
 		int h = size;
 		if(hasZeroValue)
-			h += NumberUtils.floatToRawIntBits(zeroValue);
+			h += floatHashCode(zeroValue);
 		long[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for(int i = 0, n = keyTable.length; i < n; i++) {
 			long key = keyTable[i];
 			if(key != 0)
-				h += key * 31 + NumberUtils.floatToRawIntBits(valueTable[i]);
+				h += key * 31 + floatHashCode(valueTable[i]);
 		}
 		return h;
+	}
+
+	private static int floatHashCode(float value) {
+		// equals uses float ==, which considers positive and negative zero equal.
+		return value == 0f ? 0 : NumberUtils.floatToRawIntBits(value);
 	}
 
 	public boolean equals(Object obj) {
