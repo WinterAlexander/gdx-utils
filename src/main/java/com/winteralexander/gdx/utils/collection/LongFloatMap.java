@@ -70,7 +70,7 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 
 	private int locateKey(long key) {
 		long[] keyTable = this.keyTable;
-		for(int i = place(key); ; i = i + 1 & mask) {
+		for(int i = place(key);; i = i + 1 & mask) {
 			long other = keyTable[i];
 			if(other == 0)
 				return -(i + 1); // Empty space is available.
@@ -140,7 +140,7 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 
 	private void putResize(long key, float value) {
 		long[] keyTable = this.keyTable;
-		for(int i = place(key); ; i = (i + 1) & mask) {
+		for(int i = place(key);; i = (i + 1) & mask) {
 			if(keyTable[i] == 0) {
 				keyTable[i] = key;
 				valueTable[i] = value;
@@ -503,7 +503,7 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 
 		void findNextIndex() {
 			long[] keyTable = map.keyTable;
-			for(int n = keyTable.length; ++nextIndex < n; ) {
+			for(int n = keyTable.length; ++nextIndex < n;) {
 				if(keyTable[nextIndex] != 0) {
 					hasNext = true;
 					return;
@@ -541,7 +541,8 @@ public class LongFloatMap implements Iterable<LongFloatMap.Entry> {
 		}
 	}
 
-	static public class Entries extends LongFloatMap.MapIterator implements Iterable<LongFloatMap.Entry>, Iterator<LongFloatMap.Entry> {
+	static public class Entries extends LongFloatMap.MapIterator
+			implements Iterable<LongFloatMap.Entry>, Iterator<LongFloatMap.Entry> {
 		private final LongFloatMap.Entry entry = new LongFloatMap.Entry();
 
 		public Entries(LongFloatMap map) {

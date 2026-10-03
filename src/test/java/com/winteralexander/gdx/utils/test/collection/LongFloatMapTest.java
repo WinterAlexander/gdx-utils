@@ -146,7 +146,7 @@ public class LongFloatMapTest {
 		LongFloatMap map = new LongFloatMap();
 		map.put(0, 1.25f);
 		map.put(Long.MIN_VALUE, 2.5f);
-		map.put(1234567890123L, 3.75f);
+		map.put(1_234_567_890_123L, 3.75f);
 
 		assertTrue(map.containsValue(1.25f));
 		assertTrue(map.containsValue(2.5f));
@@ -157,9 +157,9 @@ public class LongFloatMapTest {
 		assertFalse(map.containsKey(Long.MAX_VALUE));
 		assertEquals(0L, map.findKey(1.25f, -1L));
 		assertEquals(Long.MIN_VALUE, map.findKey(2.5f, -1L));
-		assertEquals(1234567890123L, map.findKey(3.75f, -1L));
+		assertEquals(1_234_567_890_123L, map.findKey(3.75f, -1L));
 		assertEquals(900L, map.findKey(4f, 900L));
-		assertEquals(1234567890123L, map.findKey(3.751f, 0.002f, -1L));
+		assertEquals(1_234_567_890_123L, map.findKey(3.751f, 0.002f, -1L));
 		assertEquals(-8L, map.findKey(4f, 0.01f, -8L));
 
 		map.remove(0, 0f);
@@ -235,7 +235,15 @@ public class LongFloatMapTest {
 		assertTrue(first.toString().startsWith("[0=1.5"));
 		assertTrue(first.toString().contains("-9223372036854775808=2.0"));
 		assertTrue(first.toString().contains("17=-3.0"));
-		assertEquals("17=-3.0", new LongFloatMap.Entry() {{ key = 17; value = -3f; }}.toString());
+		assertEquals("17=-3.0",
+				new LongFloatMap
+						.Entry() {
+							{
+								key = 17;
+								value = -3f;
+							}
+						}
+						.toString());
 	}
 
 	@Test
@@ -374,7 +382,7 @@ public class LongFloatMapTest {
 		LongFloatMap actual = new LongFloatMap(1);
 		Map<Long, Float> expected = new HashMap<>();
 		java.util.Random random = new java.util.Random(0x5eed);
-		for(int i = 0; i < 2000; i++) {
+		for(int i = 0; i < 2_000; i++) {
 			long key;
 			switch(random.nextInt(5)) {
 				case 0:
@@ -387,26 +395,32 @@ public class LongFloatMapTest {
 					key = random.nextLong();
 			}
 			switch(random.nextInt(3)) {
-				case 0: {
-					float value = random.nextInt(1000) / 10f;
-					actual.put(key, value);
-					expected.put(key, value);
-					break;
-				}
-				case 1: {
-					float increment = random.nextInt(20) / 10f;
-					float defaultValue = random.nextInt(50);
-					float before = expected.containsKey(key) ? expected.get(key) : defaultValue;
-					assertEquals(before, actual.getAndIncrement(key, defaultValue, increment), 0f);
-					expected.put(key, before + increment);
-					break;
-				}
-				default: {
-					float defaultValue = -999f;
-					Float removed = expected.remove(key);
-					assertEquals(removed == null ? defaultValue : removed,
-							actual.remove(key, defaultValue), 0f);
-				}
+				case 0:
+					{
+						float value = random.nextInt(1_000) / 10f;
+						actual.put(key, value);
+						expected.put(key, value);
+						break;
+					}
+				case 1:
+					{
+						float increment = random.nextInt(20) / 10f;
+						float defaultValue = random.nextInt(50);
+						float before = expected.containsKey(key) ? expected.get(key) : defaultValue;
+						assertEquals(before,
+								actual.getAndIncrement(key, defaultValue, increment),
+								0f);
+						expected.put(key, before + increment);
+						break;
+					}
+				default:
+					{
+						float defaultValue = -999f;
+						Float removed = expected.remove(key);
+						assertEquals(removed == null ? defaultValue : removed,
+								actual.remove(key, defaultValue),
+								0f);
+					}
 			}
 			assertEquals(expected.size(), actual.size);
 			for(Map.Entry<Long, Float> entry : expected.entrySet()) {
@@ -421,7 +435,7 @@ public class LongFloatMapTest {
 		map.put(0, 1f);
 		map.put(Long.MIN_VALUE, 2f);
 		map.put(Long.MAX_VALUE, 3f);
-		map.put(9876543210123L, 4f);
+		map.put(9_876_543_210_123L, 4f);
 		return map;
 	}
 
@@ -430,7 +444,7 @@ public class LongFloatMapTest {
 		expected.put(0L, 1f);
 		expected.put(Long.MIN_VALUE, 2f);
 		expected.put(Long.MAX_VALUE, 3f);
-		expected.put(9876543210123L, 4f);
+		expected.put(9_876_543_210_123L, 4f);
 		return expected;
 	}
 
