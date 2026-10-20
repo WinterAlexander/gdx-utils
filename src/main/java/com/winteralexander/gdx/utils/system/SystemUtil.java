@@ -62,7 +62,6 @@ public class SystemUtil {
 							OutputStream out = socket.getOutputStream();
 							out.write(1);
 							out.write(2);
-							out.close();
 						}
 					} catch(Exception ignored) {}
 				}).start();
