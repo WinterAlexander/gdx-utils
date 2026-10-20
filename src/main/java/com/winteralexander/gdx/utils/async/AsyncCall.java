@@ -541,29 +541,32 @@ public class AsyncCall<R> {
 
 	private void run() {
 		StackTracker.enter(tracker);
-		boolean retry;
-		do {
-			retry = false;
-			try {
-				R value = call.execute();
-				if(callback != null && !cancelled
-						&& (condition == null || condition.getAsBoolean()))
-					callback.accept(value);
-			} catch(Exception ex) {
-				if(!cancelled && (condition == null || condition.getAsBoolean())) {
-					StackTracker.appendFullStack(ex);
-					retry = dispatch(ex);
-					if(retry)
-						SystemUtil.sleepIfRequired(retryDelay);
+		try {
+			boolean retry;
+			do {
+				retry = false;
+				try {
+					R value = call.execute();
+					if(callback != null && !cancelled
+							&& (condition == null || condition.getAsBoolean()))
+						callback.accept(value);
+				} catch(Exception ex) {
+					if(!cancelled && (condition == null || condition.getAsBoolean())) {
+						StackTracker.appendFullStack(ex);
+						retry = dispatch(ex);
+						if(retry)
+							SystemUtil.sleepIfRequired(retryDelay);
+					}
+				} finally {
+					if(!retry && !cancelled && (condition == null || condition.getAsBoolean())) {
+						if(finallyCallback != null)
+							finallyCallback.accept(null);
+					}
 				}
-			} finally {
-				if(!retry && !cancelled && (condition == null || condition.getAsBoolean())) {
-					if(finallyCallback != null)
-						finallyCallback.accept(null);
-					StackTracker.exit(tracker);
-				}
-			}
-		} while(retry && !cancelled);
+			} while(retry && !cancelled);
+		} finally {
+			StackTracker.exit(tracker);
+		}
 
 		synchronized(this) {
 			done = true;

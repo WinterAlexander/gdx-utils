@@ -2,6 +2,8 @@ package com.winteralexander.gdx.utils.memory;
 
 import com.badlogic.gdx.utils.*;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Non static version of Pools
  * <p>
@@ -29,8 +31,9 @@ public class TypePool {
 		if(pool == null) {
 			pool = new DefaultPool<>(() -> {
 				try {
-					return type.newInstance();
-				} catch(InstantiationException | IllegalAccessException ex) {
+					return type.getDeclaredConstructor().newInstance();
+				} catch(InstantiationException | IllegalAccessException | InvocationTargetException
+						| NoSuchMethodException ex) {
 					throw new RuntimeException(ex);
 				}
 			}, 4, max);
