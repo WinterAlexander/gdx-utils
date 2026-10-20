@@ -558,10 +558,9 @@ public class AsyncCall<R> {
 							SystemUtil.sleepIfRequired(retryDelay);
 					}
 				} finally {
-					if(!retry && !cancelled && (condition == null || condition.getAsBoolean())) {
-						if(finallyCallback != null)
-							finallyCallback.accept(null);
-					}
+					if(!retry && !cancelled && (condition == null || condition.getAsBoolean())
+							&& finallyCallback != null)
+						finallyCallback.accept(null);
 				}
 			} while(retry && !cancelled);
 		} finally {
