@@ -1,6 +1,8 @@
 package com.winteralexander.gdx.utils.error;
 
+import com.badlogic.gdx.utils.DefaultPool;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
 
 import static com.winteralexander.gdx.utils.error.ExceptionUtil.appendCause;
@@ -17,6 +19,7 @@ public class StackTracker {
 	private static final int MAX_DEPTH = 50;
 
 	private static final ObjectMap<Thread, Queue<Tracker>> trackers = new ObjectMap<>();
+	private static final Pool<Queue<Tracker>> queuePool = new DefaultPool<>(Queue::new, 10);
 
 	public static Tracker cut(String name) {
 		TrackedStackTrace ex = new TrackedStackTrace("Exception in " + name);
@@ -31,7 +34,7 @@ public class StackTracker {
 		Thread thread = Thread.currentThread();
 
 		if(!trackers.containsKey(thread))
-			trackers.put(thread, new Queue<>());
+			trackers.put(thread, queuePool.obtain());
 
 		trackers.get(thread).addLast(tracker);
 	}
@@ -46,6 +49,8 @@ public class StackTracker {
 			throw new IllegalArgumentException("Invalid tracker");
 
 		trackers.get(thread).removeLast();
+		if(trackers.get(thread).size == 0)
+			queuePool.free(trackers.remove(thread));
 	}
 
 	public static synchronized void appendFullStack(Throwable ex) {

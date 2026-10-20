@@ -1,9 +1,8 @@
 package com.winteralexander.gdx.utils.memory;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.ReflectionPool;
+import com.badlogic.gdx.utils.*;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Non static version of Pools
@@ -30,7 +29,14 @@ public class TypePool {
 		Pool<?> pool = typePools.get(type);
 
 		if(pool == null) {
-			pool = new ReflectionPool<>(type, 4, max);
+			pool = new DefaultPool<>(() -> {
+				try {
+					return type.getDeclaredConstructor().newInstance();
+				} catch(InstantiationException | IllegalAccessException | InvocationTargetException
+						| NoSuchMethodException ex) {
+					throw new RuntimeException(ex);
+				}
+			}, 4, max);
 			typePools.put(type, pool);
 		}
 		return (Pool<T>)pool;
