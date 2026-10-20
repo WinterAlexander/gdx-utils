@@ -47,7 +47,6 @@ public class SystemUtil {
 	 *
 	 * @return true if the current machine experiences the Oracle bug, otherwise false
 	 */
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static boolean hasOracleSocketBug() {
 		try {
 			int port = 10_000;
@@ -55,40 +54,33 @@ public class SystemUtil {
 			while(!PortChecker.portAvailable(port))
 				port++;
 
-			ServerSocket serverSocket = new ServerSocket(port);
-
-			int fPort = port;
-			new Thread(() -> {
-				try {
-					Socket socket = new Socket("localhost", fPort);
-					OutputStream out = socket.getOutputStream();
-					out.write(1);
-					out.write(2);
-					out.close();
-					socket.close();
-				} catch(Exception ex) {
+			try(ServerSocket serverSocket = new ServerSocket(port)) {
+				int fPort = port;
+				new Thread(() -> {
 					try {
-						serverSocket.close();
-					} catch(IOException ignored) {}
+						try(Socket socket = new Socket("localhost", fPort)) {
+							OutputStream out = socket.getOutputStream();
+							out.write(1);
+							out.write(2);
+							out.close();
+						}
+					} catch(Exception ignored) {}
+				}).start();
+
+				try(Socket socket = serverSocket.accept()) {
+					InputStream in = socket.getInputStream();
+					in.read();
+					socket.getOutputStream().write(3);
+
+					try {
+						in.read();
+					} catch(Exception ex) {
+						return true;
+					}
+
+					return false;
 				}
-			}).start();
-
-			Socket socket = serverSocket.accept();
-
-			InputStream in = socket.getInputStream();
-			in.read();
-			socket.getOutputStream().write(3);
-
-			try {
-				in.read();
-			} catch(Exception ex) {
-				socket.close();
-				return true;
 			}
-
-			in.close();
-			socket.close();
-			return false;
 		} catch(Throwable ignored) {
 			return false;
 		}
