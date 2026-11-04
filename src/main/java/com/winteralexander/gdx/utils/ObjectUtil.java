@@ -109,13 +109,13 @@ public class ObjectUtil {
 	 * @return first non-negative integer of parameters or -1 if none non-negative
 	 */
 	public static long firstNonNegative(int i1, int i2, int i3, int i4, int i5, int i6) {
-		return i1 >= 0	 ? i1
+		return i1 >= 0	  ? i1
 				: i2 >= 0 ? i2
 				: i3 >= 0 ? i3
 				: i4 >= 0 ? i4
 				: i5 >= 0 ? i5
 				: i6 >= 0 ? i6
-						 : -1;
+						  : -1;
 	}
 
 	/**
@@ -194,13 +194,13 @@ public class ObjectUtil {
 	 * @return first non-negative integer of parameters or -1 if none non-negative
 	 */
 	public static long firstNonNegative(long i1, long i2, long i3, long i4, long i5, long i6) {
-		return i1 >= 0	 ? i1
+		return i1 >= 0	  ? i1
 				: i2 >= 0 ? i2
 				: i3 >= 0 ? i3
 				: i4 >= 0 ? i4
 				: i5 >= 0 ? i5
 				: i6 >= 0 ? i6
-						 : -1;
+						  : -1;
 	}
 
 	/**
