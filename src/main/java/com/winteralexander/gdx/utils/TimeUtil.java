@@ -1,6 +1,6 @@
 package com.winteralexander.gdx.utils;
 
-import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.CharArray;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,14 +27,14 @@ public class TimeUtil {
 		return displayFromMillis(toMillis(ticks, subFrame));
 	}
 
-	public static void initTimeDisplay(StringBuilder sb) {
+	public static void initTimeDisplay(CharArray sb) {
 		sb.setLength(12);
 		sb.setCharAt(2, ':');
 		sb.setCharAt(5, ':');
 		sb.setCharAt(8, '.');
 	}
 
-	public static void displayIntoFromMillis(StringBuilder sb, long millisTimestamp) {
+	public static void displayIntoFromMillis(CharArray sb, long millisTimestamp) {
 		int hours = (int)(millisTimestamp / 1_000 / 60 / 60);
 		sb.setCharAt(0, (char)('0' + hours / 10));
 		sb.setCharAt(1, (char)('0' + hours % 10));
@@ -53,7 +53,7 @@ public class TimeUtil {
 		sb.setCharAt(11, (char)('0' + millis % 10));
 	}
 
-	public static void displayIntoFromTicks(StringBuilder sb, int ticks, float subFrame) {
+	public static void displayIntoFromTicks(CharArray sb, int ticks, float subFrame) {
 		displayIntoFromMillis(sb, toMillis(ticks, subFrame));
 	}
 
