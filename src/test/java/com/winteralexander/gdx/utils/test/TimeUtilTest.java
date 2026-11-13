@@ -1,6 +1,6 @@
 package com.winteralexander.gdx.utils.test;
 
-import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.CharArray;
 import com.winteralexander.gdx.utils.TimeUtil;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class TimeUtilTest {
 	@Test
 	public void testDisplayIntoMillis() {
-		StringBuilder sb = new StringBuilder();
+		CharArray sb = new CharArray();
 		initTimeDisplay(sb);
 
 		displayIntoFromMillis(sb, 1_000);
@@ -35,7 +35,7 @@ public class TimeUtilTest {
 
 	@Test
 	public void testDisplayIntoFromTicks() {
-		StringBuilder sb = new StringBuilder();
+		CharArray sb = new CharArray();
 		initTimeDisplay(sb);
 
 		displayIntoFromTicks(sb, 60, 0f);
