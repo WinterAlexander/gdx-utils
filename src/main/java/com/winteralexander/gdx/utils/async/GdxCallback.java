@@ -21,7 +21,7 @@ public interface GdxCallback<T> extends Consumer<T> {
 	default void accept(T value) {
 		try {
 			GdxUtil.postRunnable(RunnableFromConsumer.make(this, value, true));
-		} catch(IllegalArgumentException ignored) {}
+		} catch(IllegalStateException ignored) {}
 	}
 
 	void receive(T t);
