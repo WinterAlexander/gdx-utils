@@ -1,6 +1,7 @@
 package com.winteralexander.gdx.utils.async;
 
 import com.winteralexander.gdx.utils.GdxUtil;
+import com.winteralexander.gdx.utils.function.RunnableFromConsumer;
 
 import java.util.function.Consumer;
 
@@ -18,8 +19,9 @@ public interface GdxCallback<T> extends Consumer<T> {
 
 	@Override
 	default void accept(T value) {
-		if(GdxUtil.isRunning())
-			GdxUtil.postRunnable(() -> receive(value));
+		try {
+			GdxUtil.postRunnable(RunnableFromConsumer.make(this, value, true));
+		} catch(IllegalArgumentException ignored) {}
 	}
 
 	void receive(T t);
