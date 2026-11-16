@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author Alexander Winter
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class RunnableFromConsumer implements Runnable, Pool.Poolable {
 	static {
 		Pools.set(RunnableFromConsumer::new);
