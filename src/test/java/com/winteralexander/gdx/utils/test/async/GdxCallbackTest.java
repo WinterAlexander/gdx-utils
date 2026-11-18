@@ -24,10 +24,12 @@ public class GdxCallbackTest {
 		GdxCallback<Integer> cb = box::set;
 		Gdx.app = Mockito.mock();
 		Mockito.doAnswer(invocation -> {
-			Runnable runnable = invocation.getArgument(0);
-			runnable.run();
-			return null;
-		}).when(Gdx.app).postRunnable(ArgumentMatchers.any(Runnable.class));
+				   Runnable runnable = invocation.getArgument(0);
+				   runnable.run();
+				   return null;
+			   })
+				.when(Gdx.app)
+				.postRunnable(ArgumentMatchers.any(Runnable.class));
 
 		cb.accept(5);
 		assertEquals(5, box.get().intValue());
