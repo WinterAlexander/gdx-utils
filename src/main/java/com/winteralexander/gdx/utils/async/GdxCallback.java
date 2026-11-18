@@ -19,7 +19,7 @@ public interface GdxCallback<T> extends Consumer<T> {
 	@Override
 	default void accept(T value) {
 		try {
-			GdxUtil.postRunnable(() -> accept(value));
+			GdxUtil.postRunnable(() -> receive(value));
 		} catch(IllegalStateException ignored) {}
 	}
 
