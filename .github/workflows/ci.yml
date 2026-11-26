@@ -43,7 +43,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
 
   check-format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v5
@@ -60,7 +60,7 @@ jobs:
           ref: master
       - name: Check format
         run: |
-          export WINTERFMT_CLANG_FORMAT="clang-format-22"
+          export WINTERFMT_CLANG_FORMAT="clang-format-23"
           $WINTERFMT_CLANG_FORMAT --version
           source winterfmt/init.sh
           winterfmt check
